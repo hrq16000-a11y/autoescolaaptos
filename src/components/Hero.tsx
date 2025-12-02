@@ -2,8 +2,11 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { MessageCircle, CheckCircle, Award, Users } from "lucide-react";
 import heroImage from "@/assets/hero-image.jpg";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const Hero = () => {
+  const { trackEnrollmentClick, trackEvent } = useAnalytics();
+  
   const stats = [
     { icon: Award, value: "+15", label: "Anos de Experiência" },
     { icon: Users, value: "95%", label: "Taxa de Aprovação" },
@@ -95,6 +98,7 @@ const Hero = () => {
                 href="https://api.whatsapp.com/send?phone=5541991453627&text=Olá,%20gostaria%20de%20fazer%20minha%20matrícula%20na%20Autoescola%20APTOS"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackEnrollmentClick()}
               >
                 <MessageCircle className="w-5 h-5 mr-2" />
                 Fazer Matrícula Agora
@@ -106,7 +110,9 @@ const Hero = () => {
               className="text-lg h-14 px-8 bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20"
               asChild
             >
-              <a href="#servicos">Ver Serviços</a>
+              <a href="#servicos" onClick={() => trackEvent('view_services', { source: 'hero' })}>
+                Ver Serviços
+              </a>
             </Button>
           </motion.div>
 

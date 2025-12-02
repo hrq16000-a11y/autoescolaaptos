@@ -2,8 +2,11 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Car, GraduationCap, RefreshCw, Bike, MessageCircle } from "lucide-react";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const Services = () => {
+  const { trackServiceRequest, trackWhatsAppClick } = useAnalytics();
+  
   const services = [
     {
       icon: GraduationCap,
@@ -117,6 +120,10 @@ const Services = () => {
                     href={`https://api.whatsapp.com/send?phone=5541991453627&text=Olá,%20gostaria%20de%20informações%20sobre%20o%20serviço%20de%20${encodeURIComponent(service.title)}`}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => {
+                      trackServiceRequest(service.title);
+                      trackWhatsAppClick('services', service.title);
+                    }}
                   >
                     <MessageCircle className="w-4 h-4 mr-2" />
                     Solicitar Orçamento
@@ -142,6 +149,7 @@ const Services = () => {
               href="https://api.whatsapp.com/send?phone=5541991453627&text=Olá,%20preciso%20de%20ajuda%20para%20escolher%20o%20serviço%20ideal"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackWhatsAppClick('services_consultant')}
             >
               <MessageCircle className="w-5 h-5 mr-2" />
               Fale com um Consultor

@@ -10,8 +10,11 @@ import {
   Facebook,
   Instagram,
 } from "lucide-react";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const Contact = () => {
+  const { trackWhatsAppClick, trackPhoneClick } = useAnalytics();
+  
   const contactInfo = [
     {
       icon: MapPin,
@@ -122,6 +125,7 @@ const Contact = () => {
                     href="https://api.whatsapp.com/send?phone=5541991453627&text=Olá,%20gostaria%20de%20informações%20sobre%20a%20Autoescola%20APTOS"
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => trackWhatsAppClick('contact_section')}
                   >
                     <MessageCircle className="w-5 h-5 mr-2" />
                     Abrir WhatsApp
@@ -133,7 +137,7 @@ const Contact = () => {
                   className="bg-secondary-foreground/10 backdrop-blur-sm border-white/30 text-white hover:bg-secondary-foreground/20 text-lg h-14 px-8"
                   asChild
                 >
-                  <a href="tel:4133833627">
+                  <a href="tel:4133833627" onClick={() => trackPhoneClick('contact_section')}>
                     <Phone className="w-5 h-5 mr-2" />
                     Ligar Agora
                   </a>
