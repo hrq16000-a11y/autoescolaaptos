@@ -1,12 +1,71 @@
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { MessageCircle, CheckCircle, Award, Users } from "lucide-react";
-import heroImage from "@/assets/hero-image.jpg";
+import { motion, AnimatePresence } from "framer-motion";
+import { MessageCircle, CheckCircle, Award, Users, ChevronLeft, ChevronRight } from "lucide-react";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { useCallback, useEffect, useState } from "react";
+import useEmblaCarousel from "embla-carousel-react";
+import Autoplay from "embla-carousel-autoplay";
+
+// Import slide images
+import heroSlide1 from "@/assets/hero-slide-1.png";
+import heroSlide2 from "@/assets/hero-slide-2.jpg";
+import heroSlide3 from "@/assets/hero-slide-3.jpg";
+import heroImage from "@/assets/hero-image.jpg";
+
+const slides = [
+  {
+    image: heroSlide1,
+    alt: "Aluna feliz com CNH conquistada na Autoescola APTOS",
+  },
+  {
+    image: heroImage,
+    alt: "Autoescola APTOS - Formação de condutores em São José dos Pinhais",
+  },
+  {
+    image: heroSlide2,
+    alt: "Aula prática de direção com instrutor da Autoescola APTOS",
+  },
+  {
+    image: heroSlide3,
+    alt: "Aluna aprovada celebrando com sua CNH",
+  },
+];
 
 const Hero = () => {
   const { trackEnrollmentClick, trackEvent } = useAnalytics();
+  const [selectedIndex, setSelectedIndex] = useState(0);
   
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { loop: true },
+    [Autoplay({ delay: 5000, stopOnInteraction: false })]
+  );
+
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
+
+  const scrollTo = useCallback((index: number) => {
+    if (emblaApi) emblaApi.scrollTo(index);
+  }, [emblaApi]);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    onSelect();
+    emblaApi.on("select", onSelect);
+    return () => {
+      emblaApi.off("select", onSelect);
+    };
+  }, [emblaApi, onSelect]);
+
   const stats = [
     { icon: Award, value: "+15", label: "Anos de Experiência" },
     { icon: Users, value: "95%", label: "Taxa de Aprovação" },
@@ -15,14 +74,52 @@ const Hero = () => {
 
   return (
     <section id="inicio" className="relative min-h-screen flex items-center pt-20">
-      {/* Background Image with Overlay */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src={heroImage}
-          alt="Aluno feliz com CNH conquistada na Autoescola APTOS"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 gradient-overlay" />
+      {/* Background Carousel */}
+      <div className="absolute inset-0 z-0 overflow-hidden" ref={emblaRef}>
+        <div className="flex h-full">
+          {slides.map((slide, index) => (
+            <div key={index} className="flex-[0_0_100%] min-w-0 relative h-full">
+              <img
+                src={slide.image}
+                alt={slide.alt}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 gradient-overlay" />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Navigation Arrows */}
+      <button
+        onClick={scrollPrev}
+        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 md:w-14 md:h-14 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110"
+        aria-label="Slide anterior"
+      >
+        <ChevronLeft className="w-6 h-6 text-foreground" />
+      </button>
+      <button
+        onClick={scrollNext}
+        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 md:w-14 md:h-14 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110"
+        aria-label="Próximo slide"
+      >
+        <ChevronRight className="w-6 h-6 text-foreground" />
+      </button>
+
+      {/* Dots Navigation */}
+      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => scrollTo(index)}
+            className={`w-3 h-3 rounded-full transition-all ${
+              index === selectedIndex
+                ? "bg-primary w-8"
+                : "bg-white/60 hover:bg-white/80"
+            }`}
+            aria-label={`Ir para slide ${index + 1}`}
+          />
+        ))}
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
@@ -146,7 +243,7 @@ const Hero = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1, repeat: Infinity, duration: 1.5 }}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 hidden md:block"
       >
         <div className="w-6 h-10 border-2 border-white/50 rounded-full flex items-start justify-center p-2">
           <motion.div
