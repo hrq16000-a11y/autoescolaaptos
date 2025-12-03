@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { MapPin, Phone, Mail, MessageCircle } from "lucide-react";
+import logo from "@/assets/logo.jpeg";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -19,17 +20,13 @@ const Footer = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center font-heading text-primary-foreground text-xl font-black">
-                A
-              </div>
-              <div>
-                <div className="font-heading text-xl font-black">APTOS</div>
-                <div className="text-xs text-background/70">
-                  Centro de Formação de Condutores
-                </div>
-              </div>
-            </div>
+            <Link to="/" className="inline-block mb-4">
+              <img 
+                src={logo} 
+                alt="Autoescola APTOS - Centro de Formação de Condutores" 
+                className="h-12 w-auto object-contain brightness-0 invert"
+              />
+            </Link>
             <p className="text-background/70 mb-4 max-w-md">
               Mais de 15 anos de experiência formando condutores qualificados em
               São José dos Pinhais. Sua jornada rumo à CNH começa aqui!
