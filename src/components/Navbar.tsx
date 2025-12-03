@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Phone, MessageCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -6,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,9 +21,17 @@ const Navbar = () => {
     { href: "#inicio", label: "Início" },
     { href: "#servicos", label: "Serviços" },
     { href: "#diferenciais", label: "Diferenciais" },
-    { href: "#sobre", label: "Sobre Nós" },
+    { href: "/perguntas-frequentes", label: "FAQ", isRoute: true },
+    { href: "/bairros", label: "Bairros", isRoute: true },
     { href: "#contato", label: "Contato" },
   ];
+
+  const handleNavClick = (href: string, isRoute?: boolean) => {
+    if (isRoute) return;
+    if (location.pathname !== "/") {
+      window.location.href = "/" + href;
+    }
+  };
 
   return (
     <motion.nav
@@ -36,7 +46,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <a href="#inicio" className="flex items-center space-x-3">
+          <Link to="/" className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center font-heading text-primary-foreground text-xl font-black shadow-glow">
               A
             </div>
@@ -48,18 +58,29 @@ const Navbar = () => {
                 Centro de Formação
               </div>
             </div>
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
             {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-sm font-medium text-foreground hover:text-primary transition-colors"
-              >
-                {link.label}
-              </a>
+              link.isRoute ? (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ) : (
+                <a
+                  key={link.href}
+                  href={location.pathname === "/" ? link.href : "/" + link.href}
+                  onClick={() => handleNavClick(link.href, link.isRoute)}
+                  className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+                >
+                  {link.label}
+                </a>
+              )
             ))}
           </div>
 
@@ -109,14 +130,25 @@ const Navbar = () => {
           >
             <div className="container mx-auto px-4 py-6 space-y-4">
               {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-2 text-foreground hover:text-primary transition-colors font-medium"
-                >
-                  {link.label}
-                </a>
+                link.isRoute ? (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block py-2 text-foreground hover:text-primary transition-colors font-medium"
+                  >
+                    {link.label}
+                  </Link>
+                ) : (
+                  <a
+                    key={link.href}
+                    href={location.pathname === "/" ? link.href : "/" + link.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block py-2 text-foreground hover:text-primary transition-colors font-medium"
+                  >
+                    {link.label}
+                  </a>
+                )
               ))}
               <div className="pt-4 space-y-3">
                 <Button variant="outline" className="w-full" asChild>
