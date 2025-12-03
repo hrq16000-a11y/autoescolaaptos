@@ -22,6 +22,7 @@ const Navbar = () => {
     { href: "#servicos", label: "Serviços" },
     { href: "#diferenciais", label: "Diferenciais" },
     { href: "/perguntas-frequentes", label: "FAQ", isRoute: true },
+    { href: "/blog", label: "Blog", isRoute: true },
     { href: "/bairros", label: "Bairros", isRoute: true },
     { href: "#contato", label: "Contato" },
   ];
