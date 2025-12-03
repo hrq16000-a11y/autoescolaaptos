@@ -1,14 +1,24 @@
+import { Link } from "react-router-dom";
 import { MapPin, Phone, Mail, MessageCircle } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
+  const neighborhoods = [
+    { slug: "centro", name: "Centro" },
+    { slug: "afonso-pena", name: "Afonso Pena" },
+    { slug: "cidade-jardim", name: "Cidade Jardim" },
+    { slug: "guatupe", name: "Guatupê" },
+    { slug: "costeira", name: "Costeira" },
+    { slug: "sao-marcos", name: "São Marcos" },
+  ];
+
   return (
     <footer className="bg-foreground text-background py-12">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-4 gap-8 mb-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
           {/* Brand */}
-          <div className="md:col-span-2">
+          <div className="lg:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
               <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center font-heading text-primary-foreground text-xl font-black">
                 A
@@ -39,22 +49,56 @@ const Footer = () => {
           <div>
             <h3 className="font-heading font-bold mb-4">Links Rápidos</h3>
             <ul className="space-y-2">
-              {[
-                { href: "#inicio", label: "Início" },
-                { href: "#servicos", label: "Serviços" },
-                { href: "#diferenciais", label: "Diferenciais" },
-                { href: "#sobre", label: "Sobre Nós" },
-                { href: "#contato", label: "Contato" },
-              ].map((link) => (
-                <li key={link.href}>
-                  <a
-                    href={link.href}
-                    className="text-background/70 hover:text-primary transition-colors"
+              <li>
+                <Link to="/" className="text-background/70 hover:text-primary transition-colors">
+                  Início
+                </Link>
+              </li>
+              <li>
+                <Link to="/#servicos" className="text-background/70 hover:text-primary transition-colors">
+                  Serviços
+                </Link>
+              </li>
+              <li>
+                <Link to="/perguntas-frequentes" className="text-background/70 hover:text-primary transition-colors">
+                  Perguntas Frequentes
+                </Link>
+              </li>
+              <li>
+                <Link to="/bairros" className="text-background/70 hover:text-primary transition-colors">
+                  Bairros Atendidos
+                </Link>
+              </li>
+              <li>
+                <Link to="/#contato" className="text-background/70 hover:text-primary transition-colors">
+                  Contato
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Bairros */}
+          <div>
+            <h3 className="font-heading font-bold mb-4">Bairros</h3>
+            <ul className="space-y-2">
+              {neighborhoods.map((n) => (
+                <li key={n.slug}>
+                  <Link
+                    to={`/bairros/${n.slug}`}
+                    className="text-background/70 hover:text-primary transition-colors text-sm"
                   >
-                    {link.label}
-                  </a>
+                    {n.name}
+                  </Link>
                 </li>
               ))}
+              <li>
+                <Link
+                  to="/bairros"
+                  className="text-primary hover:text-primary/80 transition-colors text-sm font-medium"
+                >
+                  Ver todos →
+                </Link>
+              </li>
             </ul>
           </div>
 
