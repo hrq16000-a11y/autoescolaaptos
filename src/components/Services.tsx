@@ -5,7 +5,7 @@ import { Car, GraduationCap, RefreshCw, Bike, MessageCircle } from "lucide-react
 import { useAnalytics } from "@/hooks/useAnalytics";
 
 const Services = () => {
-  const { trackServiceRequest, trackWhatsAppClick } = useAnalytics();
+  const { trackServiceRequest, trackWhatsAppClick, trackConsultorClick } = useAnalytics();
   
   const services = [
     {
@@ -149,7 +149,7 @@ const Services = () => {
               href="https://api.whatsapp.com/send?phone=5541991453627&text=Olá,%20preciso%20de%20ajuda%20para%20escolher%20o%20serviço%20ideal"
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => trackWhatsAppClick('services_consultant')}
+              onClick={() => trackConsultorClick()}
             >
               <MessageCircle className="w-5 h-5 mr-2" />
               Fale com um Consultor
