@@ -1,4 +1,6 @@
-// Hook para rastreamento de eventos no Google Analytics via GTM e Google Ads
+// Hook para rastreamento de eventos no Google Analytics 4 e Google Ads
+// GA4 Measurement ID: G-JKYFW14Z18
+// Google Ads ID: AW-16491950534
 
 // Labels de conversão do Google Ads para cada serviço
 const CONVERSION_LABELS = {
@@ -33,15 +35,27 @@ const CONVERSION_VALUES: Record<string, number> = {
 };
 
 export const useAnalytics = () => {
+  // Envia evento para GA4 e GTM dataLayer
   const trackEvent = (eventName: string, eventParams?: Record<string, any>) => {
-    if (typeof window !== 'undefined' && (window as any).dataLayer) {
-      (window as any).dataLayer.push({
-        event: eventName,
-        ...eventParams,
-      });
+    if (typeof window !== 'undefined') {
+      // Enviar para GA4 via gtag
+      if ((window as any).gtag) {
+        (window as any).gtag('event', eventName, {
+          ...eventParams,
+          send_to: 'G-JKYFW14Z18',
+        });
+      }
+      // Enviar para GTM dataLayer
+      if ((window as any).dataLayer) {
+        (window as any).dataLayer.push({
+          event: eventName,
+          ...eventParams,
+        });
+      }
     }
   };
 
+  // Envia conversão para Google Ads
   const trackGoogleAdsConversion = (conversionLabel: string, value?: number) => {
     if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('event', 'conversion', {
