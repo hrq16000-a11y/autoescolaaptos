@@ -121,6 +121,25 @@ export const useAnalytics = () => {
     trackGoogleAdsConversion(CONVERSION_LABELS.consultor, CONVERSION_VALUES.consultor);
   };
 
+  // Rastrear abertura de formulário externo
+  const trackFormOpen = (formName: string, source: string) => {
+    trackEvent('form_start', {
+      event_category: 'form_interaction',
+      event_label: formName,
+      form_name: formName,
+      source: source,
+    });
+  };
+
+  // Rastrear clique em link externo
+  const trackExternalLink = (linkUrl: string, linkText: string) => {
+    trackEvent('external_link_click', {
+      event_category: 'engagement',
+      event_label: linkText,
+      link_url: linkUrl,
+    });
+  };
+
   return {
     trackEvent,
     trackConversion,
@@ -129,6 +148,8 @@ export const useAnalytics = () => {
     trackEnrollmentClick,
     trackServiceRequest,
     trackConsultorClick,
+    trackFormOpen,
+    trackExternalLink,
     CONVERSION_LABELS,
   };
 };
