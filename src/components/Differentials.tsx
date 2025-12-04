@@ -8,8 +8,10 @@ import {
   Trophy,
   MapPin,
 } from "lucide-react";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const Differentials = () => {
+  const { trackFormOpen, trackWhatsAppClick } = useAnalytics();
   const differentials = [
     {
       icon: Trophy,
@@ -116,6 +118,7 @@ const Differentials = () => {
                   href="https://forms.gle/BEmCcm8opdQoA3N79"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackFormOpen('cartao_exclusivo', 'differentials_banner')}
                   className="inline-flex items-center justify-center px-8 py-4 bg-white text-primary rounded-lg font-bold hover:bg-white/90 transition-colors shadow-lg"
                 >
                   Solicitar Cartão Exclusivo
@@ -124,6 +127,7 @@ const Differentials = () => {
                   href="https://api.whatsapp.com/send?phone=5541991453627&text=Olá,%20gostaria%20de%20informações%20sobre%20o%20Cartão%20Exclusivo"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackWhatsAppClick('differentials_banner', 'Cartão Exclusivo')}
                   className="inline-flex items-center justify-center px-8 py-4 bg-primary-foreground/20 backdrop-blur-sm text-white border-2 border-white/30 rounded-lg font-bold hover:bg-primary-foreground/30 transition-colors"
                 >
                   Falar no WhatsApp

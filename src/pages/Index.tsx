@@ -7,8 +7,12 @@ import About from "@/components/About";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+import { useScrollTracking } from "@/hooks/useScrollTracking";
 
 const Index = () => {
+  // Ativa rastreamento de scroll e seções
+  useScrollTracking();
+
   return (
     <main className="min-h-screen">
       <Navbar />
