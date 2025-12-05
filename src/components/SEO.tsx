@@ -7,6 +7,7 @@ interface SEOProps {
   type?: string;
   image?: string;
   jsonLd?: object;
+  noIndex?: boolean;
 }
 
 const SEO = ({ 
@@ -15,7 +16,8 @@ const SEO = ({
   canonical, 
   type = "website",
   image = "/og-image.jpg",
-  jsonLd
+  jsonLd,
+  noIndex = false
 }: SEOProps) => {
   const siteUrl = "https://autoescolaaptos.com.br";
   const fullCanonical = canonical ? `${siteUrl}${canonical}` : siteUrl;
@@ -79,8 +81,8 @@ const SEO = ({
       <meta name="twitter:image" content={`${siteUrl}${image}`} />
       
       {/* Additional SEO */}
-      <meta name="robots" content="index, follow" />
-      <meta name="googlebot" content="index, follow" />
+      <meta name="robots" content={noIndex ? "noindex, nofollow" : "index, follow"} />
+      <meta name="googlebot" content={noIndex ? "noindex, nofollow" : "index, follow"} />
       <meta name="geo.region" content="BR-PR" />
       <meta name="geo.placename" content="São José dos Pinhais" />
       
