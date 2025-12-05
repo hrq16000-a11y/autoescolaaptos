@@ -146,14 +146,49 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Bar */}
+        {/* Partners */}
         <div className="border-t border-background/10 pt-8 mt-8">
+          <div className="text-center mb-6">
+            <p className="text-background/60 text-sm mb-3">Desenvolvido por</p>
+            <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+              <a
+                href="https://precisodeumtecnico.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-background/70 hover:text-primary transition-colors text-sm"
+              >
+                Preciso de um Técnico
+              </a>
+              <span className="text-background/30">|</span>
+              <a
+                href="https://mestredosservicos.com.br"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-background/70 hover:text-primary transition-colors text-sm"
+              >
+                Mestre dos Serviços
+              </a>
+              <span className="text-background/30">|</span>
+              <a
+                href="https://pingsolucoes.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-background/70 hover:text-primary transition-colors text-sm"
+              >
+                Ping Soluções
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="border-t border-background/10 pt-8 mt-4">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-background/60 text-sm text-center md:text-left">
               © {currentYear} Autoescola APTOS. Todos os direitos reservados.
             </p>
             <p className="text-background/60 text-sm text-center md:text-right">
-              Credenciada pelo Detran PR | CNPJ: 00.000.000/0001-00
+              Credenciada pelo Detran PR | CNPJ: 10.233.266/0001-38
             </p>
           </div>
         </div>
