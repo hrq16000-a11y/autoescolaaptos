@@ -191,7 +191,7 @@ const Contact = () => {
           <p className="text-muted-foreground mb-4">Siga-nos nas redes sociais</p>
           <div className="flex justify-center space-x-4">
             <a
-              href="https://facebook.com/autoescolaaptos"
+              href="https://www.facebook.com/cfcAutoescolaAPTOS/"
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 bg-muted rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
@@ -200,7 +200,7 @@ const Contact = () => {
               <Facebook className="w-5 h-5" />
             </a>
             <a
-              href="https://instagram.com/autoescolaaptos"
+              href="https://www.instagram.com/autoescola_aptos/"
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 bg-muted rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
