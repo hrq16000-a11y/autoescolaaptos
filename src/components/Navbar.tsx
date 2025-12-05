@@ -28,6 +28,12 @@ const Navbar = () => {
     { href: "#contato", label: "Contato" },
   ];
 
+  const partnerLinks = [
+    { href: "/preciso-de-tecnico", label: "Preciso de Técnico" },
+    { href: "/mestre-dos-servicos", label: "Mestre dos Serviços" },
+    { href: "/ping-solucoes", label: "Ping Soluções" },
+  ];
+
   const handleNavClick = (href: string, isRoute?: boolean) => {
     if (isRoute) return;
     if (location.pathname !== "/") {
@@ -57,7 +63,7 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-6">
             {navLinks.map((link) => (
               link.isRoute ? (
                 <Link
@@ -78,6 +84,26 @@ const Navbar = () => {
                 </a>
               )
             ))}
+            {/* Partner Links Dropdown */}
+            <div className="relative group">
+              <button className="text-sm font-medium text-foreground hover:text-primary transition-colors flex items-center gap-1">
+                Parceiros
+                <svg className="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div className="absolute top-full left-0 mt-2 w-48 bg-background border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                {partnerLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    className="block px-4 py-2 text-sm text-foreground hover:bg-muted hover:text-primary transition-colors first:rounded-t-lg last:rounded-b-lg"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* Desktop CTA */}
@@ -146,6 +172,19 @@ const Navbar = () => {
                   </a>
                 )
               ))}
+              <div className="border-t border-border pt-4 mt-4">
+                <p className="text-xs text-muted-foreground mb-2 uppercase tracking-wider">Parceiros</p>
+                {partnerLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block py-2 text-foreground hover:text-primary transition-colors font-medium"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
               <div className="pt-4 space-y-3">
                 <Button variant="outline" className="w-full" asChild>
                   <a href="tel:4133833627">
