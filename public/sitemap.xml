@@ -2,19 +2,19 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://autoescolaaptos.com.br/</loc>
-    <lastmod>2024-12-03</lastmod>
+    <lastmod>2024-12-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://autoescolaaptos.com.br/perguntas-frequentes</loc>
-    <lastmod>2024-12-03</lastmod>
+    <lastmod>2024-12-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://autoescolaaptos.com.br/blog</loc>
-    <lastmod>2024-12-03</lastmod>
+    <lastmod>2024-12-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -68,56 +68,80 @@
   </url>
   <url>
     <loc>https://autoescolaaptos.com.br/bairros</loc>
-    <lastmod>2024-12-03</lastmod>
+    <lastmod>2024-12-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://autoescolaaptos.com.br/bairros/centro</loc>
-    <lastmod>2024-12-03</lastmod>
+    <lastmod>2024-12-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://autoescolaaptos.com.br/bairros/afonso-pena</loc>
-    <lastmod>2024-12-03</lastmod>
+    <lastmod>2024-12-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://autoescolaaptos.com.br/bairros/cidade-jardim</loc>
-    <lastmod>2024-12-03</lastmod>
+    <lastmod>2024-12-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://autoescolaaptos.com.br/bairros/guatupe</loc>
-    <lastmod>2024-12-03</lastmod>
+    <lastmod>2024-12-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://autoescolaaptos.com.br/bairros/costeira</loc>
-    <lastmod>2024-12-03</lastmod>
+    <lastmod>2024-12-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://autoescolaaptos.com.br/bairros/sao-marcos</loc>
-    <lastmod>2024-12-03</lastmod>
+    <lastmod>2024-12-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://autoescolaaptos.com.br/bairros/borda-do-campo</loc>
-    <lastmod>2024-12-03</lastmod>
+    <lastmod>2024-12-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://autoescolaaptos.com.br/bairros/rio-pequeno</loc>
-    <lastmod>2024-12-03</lastmod>
+    <lastmod>2024-12-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://autoescolaaptos.com.br/obrigado</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.1</priority>
+  </url>
+  <url>
+    <loc>https://autoescolaaptos.com.br/parceiros/preciso-de-um-tecnico</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://autoescolaaptos.com.br/parceiros/mestre-dos-servicos</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://autoescolaaptos.com.br/parceiros/ping-solucoes</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 </urlset>
