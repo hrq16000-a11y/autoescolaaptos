@@ -11,6 +11,7 @@ import {
   Instagram,
 } from "lucide-react";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import ContactForm from "./ContactForm";
 
 const Contact = () => {
   const { trackWhatsAppClick, trackPhoneClick } = useAnalytics();
@@ -65,39 +66,51 @@ const Contact = () => {
           </p>
         </motion.div>
 
-        {/* Contact Cards */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {contactInfo.map((item, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <Card className="p-6 h-full hover:shadow-medium transition-all duration-300 hover:-translate-y-1">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <item.icon className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="font-heading font-bold mb-2">{item.title}</h3>
-                {item.link ? (
-                  <a
-                    href={item.link}
-                    className="text-foreground hover:text-primary transition-colors font-medium block"
-                  >
-                    {item.content}
-                  </a>
-                ) : (
-                  <p className="text-foreground font-medium">{item.content}</p>
-                )}
-                {item.subtitle && (
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {item.subtitle}
-                  </p>
-                )}
-              </Card>
-            </motion.div>
-          ))}
+        {/* Contact Form + Info Grid */}
+        <div className="grid lg:grid-cols-2 gap-8 mb-12">
+          {/* Contact Form */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            <ContactForm />
+          </motion.div>
+
+          {/* Contact Cards */}
+          <div className="grid sm:grid-cols-2 gap-4">
+            {contactInfo.map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Card className="p-5 h-full hover:shadow-medium transition-all duration-300 hover:-translate-y-1">
+                  <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mb-3">
+                    <item.icon className="w-5 h-5 text-primary" />
+                  </div>
+                  <h3 className="font-heading font-bold mb-1 text-sm">{item.title}</h3>
+                  {item.link ? (
+                    <a
+                      href={item.link}
+                      className="text-foreground hover:text-primary transition-colors font-medium block text-sm"
+                    >
+                      {item.content}
+                    </a>
+                  ) : (
+                    <p className="text-foreground font-medium text-sm">{item.content}</p>
+                  )}
+                  {item.subtitle && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {item.subtitle}
+                    </p>
+                  )}
+                </Card>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         {/* CTA Section */}
