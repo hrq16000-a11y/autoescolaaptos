@@ -92,50 +92,6 @@ const Differentials = () => {
           ))}
         </div>
 
-        {/* Promotion Banner */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-16"
-        >
-          <Card className="p-8 md:p-12 bg-gradient-to-br from-primary to-primary/90 text-primary-foreground border-0 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-            
-            <div className="relative z-10 text-center max-w-2xl mx-auto">
-              <div className="inline-block px-4 py-2 bg-accent text-accent-foreground rounded-full text-sm font-bold mb-4">
-                PROMOÇÃO ESPECIAL
-              </div>
-              <h3 className="text-3xl md:text-4xl font-heading font-black mb-4">
-                Cartão Exclusivo APTOS
-              </h3>
-              <p className="text-lg md:text-xl mb-6 text-primary-foreground/90">
-                Descontos especiais para primeira habilitação de carro ou moto. Grátis e sem vínculo de matrícula!
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a
-                  href="https://forms.gle/BEmCcm8opdQoA3N79"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => trackFormOpen('cartao_exclusivo', 'differentials_banner')}
-                  className="inline-flex items-center justify-center px-8 py-4 bg-white text-primary rounded-lg font-bold hover:bg-white/90 transition-colors shadow-lg"
-                >
-                  Solicitar Cartão Exclusivo
-                </a>
-                <a
-                  href="https://api.whatsapp.com/send?phone=5541991453627&text=Olá,%20gostaria%20de%20informações%20sobre%20o%20Cartão%20Exclusivo"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => trackWhatsAppClick('differentials_banner', 'Cartão Exclusivo')}
-                  className="inline-flex items-center justify-center px-8 py-4 bg-primary-foreground/20 backdrop-blur-sm text-white border-2 border-white/30 rounded-lg font-bold hover:bg-primary-foreground/30 transition-colors"
-                >
-                  Falar no WhatsApp
-                </a>
-              </div>
-            </div>
-          </Card>
-        </motion.div>
       </div>
     </section>
   );
