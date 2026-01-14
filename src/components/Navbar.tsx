@@ -21,10 +21,9 @@ const Navbar = () => {
   const navLinks = [
     { href: "#inicio", label: "Início" },
     { href: "#servicos", label: "Serviços" },
-    { href: "#diferenciais", label: "Diferenciais" },
+    { href: "/primeira-habilitacao", label: "Primeira Habilitação", isRoute: true },
     { href: "/perguntas-frequentes", label: "FAQ", isRoute: true },
     { href: "/blog", label: "Blog", isRoute: true },
-    { href: "/bairros", label: "Bairros", isRoute: true },
     { href: "#contato", label: "Contato" },
   ];
 

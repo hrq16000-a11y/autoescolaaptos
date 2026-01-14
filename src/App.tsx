@@ -13,6 +13,12 @@ import Obrigado from "./pages/Obrigado";
 import PrecisoDeTecnico from "./pages/PrecisoDeTecnico";
 import MestreDosServicos from "./pages/MestreDosServicos";
 import PingSolucoes from "./pages/PingSolucoes";
+import PrimeiraHabilitacao from "./pages/PrimeiraHabilitacao";
+import Resolucao1020 from "./pages/Resolucao1020";
+import FormasEstudoTeorico from "./pages/FormasEstudoTeorico";
+import AulasPraticasDirecao from "./pages/AulasPraticasDirecao";
+import ExamesDetran from "./pages/ExamesDetran";
+import PorQueAutoescola from "./pages/PorQueAutoescola";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +40,12 @@ const App = () => (
           <Route path="/parceiros/preciso-de-um-tecnico" element={<PrecisoDeTecnico />} />
           <Route path="/parceiros/mestre-dos-servicos" element={<MestreDosServicos />} />
           <Route path="/parceiros/ping-solucoes" element={<PingSolucoes />} />
+          <Route path="/primeira-habilitacao" element={<PrimeiraHabilitacao />} />
+          <Route path="/resolucao-1020-2025" element={<Resolucao1020 />} />
+          <Route path="/formas-estudo-teorico" element={<FormasEstudoTeorico />} />
+          <Route path="/aulas-praticas-direcao" element={<AulasPraticasDirecao />} />
+          <Route path="/exames-detran" element={<ExamesDetran />} />
+          <Route path="/por-que-autoescola-credenciada" element={<PorQueAutoescola />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
