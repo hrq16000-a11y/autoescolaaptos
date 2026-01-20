@@ -15,7 +15,7 @@ const SEO = ({
   description, 
   canonical, 
   type = "website",
-  image = "/og-image.jpg",
+  image = "/og-image.png",
   jsonLd,
   noIndex = false
 }: SEOProps) => {
