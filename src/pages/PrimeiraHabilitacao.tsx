@@ -266,8 +266,160 @@ const PrimeiraHabilitacao = () => {
           </div>
         </section>
 
-        {/* Etapas do Processo */}
+        {/* Fluxo Visual Comparativo */}
         <section className="py-16 md:py-24">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center max-w-3xl mx-auto mb-12"
+            >
+              <h2 className="text-3xl md:text-4xl font-heading font-black mb-4">
+                Compare as <span className="text-primary">Modalidades</span>
+              </h2>
+              <p className="text-muted-foreground">
+                Conforme regulamentação do DETRAN, existem diferentes caminhos para a formação teórica
+              </p>
+            </motion.div>
+
+            <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+              {/* Formação com CFC */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+              >
+                <Card className="p-8 h-full border-2 border-primary/30 bg-primary/5">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">
+                      <GraduationCap className="w-6 h-6 text-primary-foreground" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-heading font-bold text-primary">Formação Completa CFC</h3>
+                      <span className="text-sm text-muted-foreground">Recomendado</span>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center flex-shrink-0 text-xs text-primary-foreground font-bold">1</div>
+                      <span className="text-sm">Abertura de processo na autoescola</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center flex-shrink-0 text-xs text-primary-foreground font-bold">2</div>
+                      <span className="text-sm">Curso teórico presencial no CFC</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center flex-shrink-0 text-xs text-primary-foreground font-bold">3</div>
+                      <span className="text-sm">Exames médico e psicológico</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center flex-shrink-0 text-xs text-primary-foreground font-bold">4</div>
+                      <span className="text-sm">Prova teórica DETRAN</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center flex-shrink-0 text-xs text-primary-foreground font-bold">5</div>
+                      <span className="text-sm">Aulas práticas com instrutor</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center flex-shrink-0 text-xs text-primary-foreground font-bold">6</div>
+                      <span className="text-sm">Prova prática DETRAN</span>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-6 border-t border-primary/20">
+                    <div className="flex items-center gap-2 text-primary font-semibold mb-2">
+                      <CheckCircle2 className="w-5 h-5" />
+                      Vantagens
+                    </div>
+                    <ul className="text-sm text-muted-foreground space-y-1">
+                      <li>• Acompanhamento completo</li>
+                      <li>• Maior taxa de aprovação</li>
+                      <li>• Suporte administrativo</li>
+                      <li>• Instrutores certificados</li>
+                    </ul>
+                  </div>
+                </Card>
+              </motion.div>
+
+              {/* Formação Híbrida */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+              >
+                <Card className="p-8 h-full border-2 border-secondary/30 bg-secondary/5">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-secondary rounded-xl flex items-center justify-center">
+                      <BookOpen className="w-6 h-6 text-secondary-foreground" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-heading font-bold text-secondary">Formação Híbrida</h3>
+                      <span className="text-sm text-muted-foreground">Quando autorizado pelo DETRAN</span>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-6 h-6 bg-secondary rounded-full flex items-center justify-center flex-shrink-0 text-xs text-secondary-foreground font-bold">1</div>
+                      <span className="text-sm">Abertura de processo na autoescola</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-6 h-6 bg-secondary rounded-full flex items-center justify-center flex-shrink-0 text-xs text-secondary-foreground font-bold">2</div>
+                      <span className="text-sm">Curso teórico via plataforma CNH Brasil</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-6 h-6 bg-secondary rounded-full flex items-center justify-center flex-shrink-0 text-xs text-secondary-foreground font-bold">3</div>
+                      <span className="text-sm">Exames médico e psicológico</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-6 h-6 bg-secondary rounded-full flex items-center justify-center flex-shrink-0 text-xs text-secondary-foreground font-bold">4</div>
+                      <span className="text-sm">Prova teórica DETRAN</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-6 h-6 bg-secondary rounded-full flex items-center justify-center flex-shrink-0 text-xs text-secondary-foreground font-bold">5</div>
+                      <span className="text-sm">Aulas práticas obrigatórias (mínimo 2)</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-6 h-6 bg-secondary rounded-full flex items-center justify-center flex-shrink-0 text-xs text-secondary-foreground font-bold">6</div>
+                      <span className="text-sm">Prova prática DETRAN</span>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-6 border-t border-secondary/20">
+                    <div className="flex items-center gap-2 text-secondary font-semibold mb-2">
+                      <AlertCircle className="w-5 h-5" />
+                      Considerações
+                    </div>
+                    <ul className="text-sm text-muted-foreground space-y-1">
+                      <li>• Requer mais autodisciplina</li>
+                      <li>• Sujeito a regulamentação estadual</li>
+                      <li>• Menor suporte presencial</li>
+                      <li>• Aulas práticas ainda obrigatórias</li>
+                    </ul>
+                  </div>
+                </Card>
+              </motion.div>
+            </div>
+
+            <div className="text-center mt-8">
+              <p className="text-sm text-muted-foreground mb-4">
+                Em ambos os casos, a <strong>Autoescola APTOS</strong> oferece suporte completo para abertura de processo, 
+                aulas práticas e acompanhamento até a aprovação.
+              </p>
+              <Button asChild>
+                <Link to="/formas-estudo-teorico">
+                  Conheça as Formas de Estudo Teórico
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* Etapas do Processo */}
+        <section className="py-16 md:py-24 bg-muted">
           <div className="container mx-auto px-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}

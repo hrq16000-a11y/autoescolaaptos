@@ -72,6 +72,16 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/primeira-habilitacao" className="text-background/70 hover:text-primary transition-colors">
+                  Primeira Habilitação
+                </Link>
+              </li>
+              <li>
+                <Link to="/resolucao-1020-2025" className="text-background/70 hover:text-primary transition-colors">
+                  Resolução 1020/2025
+                </Link>
+              </li>
+              <li>
                 <Link to="/#servicos" className="text-background/70 hover:text-primary transition-colors">
                   Serviços
                 </Link>
@@ -86,14 +96,36 @@ const Footer = () => {
                   Blog
                 </Link>
               </li>
+            </ul>
+          </div>
+
+          {/* CNH e Habilitação */}
+          <div>
+            <h3 className="font-heading font-bold mb-4">CNH e Habilitação</h3>
+            <ul className="space-y-2">
               <li>
-                <Link to="/bairros" className="text-background/70 hover:text-primary transition-colors">
-                  Bairros Atendidos
+                <Link to="/formas-estudo-teorico" className="text-background/70 hover:text-primary transition-colors">
+                  Estudo Teórico
                 </Link>
               </li>
               <li>
-                <Link to="/#contato" className="text-background/70 hover:text-primary transition-colors">
-                  Contato
+                <Link to="/aulas-praticas-direcao" className="text-background/70 hover:text-primary transition-colors">
+                  Aulas Práticas
+                </Link>
+              </li>
+              <li>
+                <Link to="/exames-detran" className="text-background/70 hover:text-primary transition-colors">
+                  Exames do DETRAN
+                </Link>
+              </li>
+              <li>
+                <Link to="/por-que-autoescola-credenciada" className="text-background/70 hover:text-primary transition-colors">
+                  Por que Escolher CFC
+                </Link>
+              </li>
+              <li>
+                <Link to="/bairros" className="text-background/70 hover:text-primary transition-colors">
+                  Bairros Atendidos
                 </Link>
               </li>
             </ul>
