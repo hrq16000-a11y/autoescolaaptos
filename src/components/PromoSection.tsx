@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import promoAniversario from "@/assets/promo-aniversario.png";
@@ -10,7 +11,15 @@ import instructorTeaching from "@/assets/instructor-teaching.jpg";
 import { Button } from "@/components/ui/button";
 
 const PromoSection = () => {
+  const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
+
+  interface Promo {
+    image: string;
+    alt: string;
+    title: string;
+    link?: string;
+  }
 
   const promos = [
     {
@@ -46,6 +55,14 @@ const PromoSection = () => {
       title: "Instrutores Experientes",
     },
   ];
+
+  const handlePromoClick = (promo: Promo, index: number) => {
+    if (promo.link) {
+      navigate(promo.link);
+    } else {
+      openLightbox(index);
+    }
+  };
 
   const openLightbox = (index: number) => setSelectedImage(index);
   const closeLightbox = () => setSelectedImage(null);
@@ -89,7 +106,7 @@ const PromoSection = () => {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
               className="group cursor-pointer"
-              onClick={() => openLightbox(index)}
+              onClick={() => handlePromoClick(promo, index)}
             >
               <div className="relative overflow-hidden rounded-2xl shadow-medium hover:shadow-strong transition-all duration-300">
                 <img
@@ -115,7 +132,7 @@ const PromoSection = () => {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
               className="group cursor-pointer"
-              onClick={() => openLightbox(index + 3)}
+              onClick={() => handlePromoClick(promo, index + 3)}
             >
               <div className="relative overflow-hidden rounded-xl shadow-soft hover:shadow-medium transition-all duration-300">
                 <img
