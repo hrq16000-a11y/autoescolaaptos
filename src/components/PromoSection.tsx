@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
-import promoJaneiro from "@/assets/promo-janeiro.jpeg";
-import promoIndique from "@/assets/promo-indique.jpeg";
+import promoAniversario from "@/assets/promo-aniversario.png";
+import promoIndique from "@/assets/promo-indique-amigo.png";
 import promoDiferenciais from "@/assets/promo-diferenciais.jpeg";
 import cnhSuccess from "@/assets/cnh-success.jpg";
 import classroom from "@/assets/classroom.jpg";
@@ -14,14 +14,16 @@ const PromoSection = () => {
 
   const promos = [
     {
-      image: promoJaneiro,
-      alt: "Promoção de Janeiro - Autoescola APTOS",
-      title: "Promoção de Janeiro",
+      image: promoAniversario,
+      alt: "Promoção de Aniversário - Autoescola APTOS",
+      title: "Promoção de Aniversário",
+      link: "/promocao-aniversario",
     },
     {
       image: promoIndique,
       alt: "Programa Indique e Ganhe - Autoescola APTOS",
       title: "Indique e Ganhe",
+      link: "/promocao-indique-amigo",
     },
     {
       image: promoDiferenciais,

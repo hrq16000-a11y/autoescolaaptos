@@ -19,6 +19,8 @@ import FormasEstudoTeorico from "./pages/FormasEstudoTeorico";
 import AulasPraticasDirecao from "./pages/AulasPraticasDirecao";
 import ExamesDetran from "./pages/ExamesDetran";
 import PorQueAutoescola from "./pages/PorQueAutoescola";
+import PromoAniversario from "./pages/PromoAniversario";
+import PromoIndiqueAmigo from "./pages/PromoIndiqueAmigo";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -46,6 +48,8 @@ const App = () => (
           <Route path="/aulas-praticas-direcao" element={<AulasPraticasDirecao />} />
           <Route path="/exames-detran" element={<ExamesDetran />} />
           <Route path="/por-que-autoescola-credenciada" element={<PorQueAutoescola />} />
+          <Route path="/promocao-aniversario" element={<PromoAniversario />} />
+          <Route path="/promocao-indique-amigo" element={<PromoIndiqueAmigo />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
