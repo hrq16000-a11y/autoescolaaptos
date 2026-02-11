@@ -8,7 +8,7 @@ import { Users, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 const PromoIndiqueAmigo = () => {
-  const whatsappLink = "https://wa.me/5511999999999?text=Olá! Quero saber mais sobre a promoção Indique um Amigo!";
+  const whatsappLink = "https://wa.me/5541991453627?text=Olá! Quero saber mais sobre a promoção Indique um Amigo!";
 
   return (
     <main className="min-h-screen">
