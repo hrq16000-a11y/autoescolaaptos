@@ -44,27 +44,27 @@ const PrimeiraHabilitacao = () => {
     {
       icon: FileCheck,
       title: "Abertura do Processo",
-      description: "Cadastro no DETRAN, documentação e abertura do RENACH"
+      description: "Procure uma autoescola ou use o app CNH do Brasil. Agende biometria no DETRAN-PR pelo site ou app Detran Inteligente"
     },
     {
       icon: BookOpen,
       title: "Formação Teórica",
-      description: "Curso teórico sobre legislação, direção defensiva, primeiros socorros e mais"
+      description: "Sem carga horária mínima! Estude pelo CFC presencial ou 100% online pelo app CNH do Brasil, no seu ritmo"
     },
     {
       icon: GraduationCap,
       title: "Prova Teórica",
-      description: "Exame padronizado conforme diretrizes nacionais do CONTRAN"
+      description: "60 minutos de prova (120 min para dislexia/TDAH/TEA), 30 questões com aprovação em 20 acertos"
     },
     {
       icon: Car,
-      title: "Aulas Práticas",
-      description: "Aulas de direção veicular com instrutores credenciados"
+      title: "Aulas Práticas (mín. 2h)",
+      description: "Apenas 2 horas obrigatórias pela Res. 1020/2025. Recomendamos avaliar se está preparado antes do teste"
     },
     {
       icon: Award,
       title: "Prova Prática",
-      description: "Exame prático de direção conforme critérios do DETRAN"
+      description: "Exame de direção no DETRAN. Sem prazo de 12 meses para concluir — vá no seu ritmo!"
     }
   ];
 
@@ -200,22 +200,31 @@ const PrimeiraHabilitacao = () => {
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
                     <span className="text-muted-foreground">
-                      <strong className="text-foreground">Maior flexibilidade no estudo teórico:</strong> possibilidade 
-                      de uso de plataformas digitais oficiais, quando autorizadas pelo DETRAN
+                      <strong className="text-foreground">Aulas práticas reduzidas para 2 horas mínimas</strong> (antes eram 20h obrigatórias)
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
                     <span className="text-muted-foreground">
-                      <strong className="text-foreground">Padronização nacional:</strong> critérios 
-                      de avaliação unificados em todo o Brasil
+                      <strong className="text-foreground">Sem carga horária mínima teórica:</strong> estude no seu ritmo, presencial ou 100% online pelo app CNH do Brasil
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
                     <span className="text-muted-foreground">
-                      <strong className="text-foreground">Ampliação de modelos:</strong> novas formas 
-                      de formação, sem eliminar o papel do CFC
+                      <strong className="text-foreground">Fim do prazo de 12 meses:</strong> não existe mais obrigatoriedade de finalizar o processo em prazo determinado
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
+                    <span className="text-muted-foreground">
+                      <strong className="text-foreground">Processo digital:</strong> abertura e acompanhamento pelo aplicativo CNH do Brasil ou pela autoescola
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
+                    <span className="text-muted-foreground">
+                      <strong className="text-foreground">Prova teórica atualizada:</strong> 60 min de duração, aprovação com 20/30 acertos
                     </span>
                   </li>
                 </ul>
@@ -231,7 +240,7 @@ const PrimeiraHabilitacao = () => {
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 rounded-full bg-secondary mt-2 flex-shrink-0" />
                     <span className="text-muted-foreground">
-                      <strong className="text-foreground">Exames médico e psicológico</strong>
+                      <strong className="text-foreground">Exames médico e psicológico</strong> (R$ 404 no PR, teto nacional de R$ 180 em análise jurídica)
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
@@ -243,13 +252,13 @@ const PrimeiraHabilitacao = () => {
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 rounded-full bg-secondary mt-2 flex-shrink-0" />
                     <span className="text-muted-foreground">
-                      <strong className="text-foreground">Cumprimento das exigências do DETRAN estadual</strong>
+                      <strong className="text-foreground">Mínimo de 2 horas de aulas práticas</strong> com instrutor credenciado
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 rounded-full bg-secondary mt-2 flex-shrink-0" />
                     <span className="text-muted-foreground">
-                      <strong className="text-foreground">Formação prática supervisionada</strong>
+                      <strong className="text-foreground">Biometria e abertura formal no DETRAN-PR</strong> (agendamento obrigatório)
                     </span>
                   </li>
                 </ul>

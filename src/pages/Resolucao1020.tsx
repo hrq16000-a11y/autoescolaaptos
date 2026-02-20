@@ -38,41 +38,41 @@ const Resolucao1020 = () => {
   const principaisMudancas = [
     {
       icon: Smartphone,
-      title: "Flexibilidade no Estudo Teórico",
-      description: "A resolução permite maior flexibilidade na forma de realizar o curso teórico, incluindo o uso de plataformas digitais oficiais, quando autorizadas pelo DETRAN do Estado."
-    },
-    {
-      icon: Scale,
-      title: "Padronização Nacional",
-      description: "Critérios de avaliação foram padronizados em todo o Brasil, garantindo uniformidade nos exames teóricos e práticos aplicados pelos DETRANs."
+      title: "Aulas Práticas: Apenas 2 Horas",
+      description: "A carga horária mínima de aulas práticas caiu de 20h para apenas 2h para primeira habilitação. As autoescolas do Paraná já estão autorizadas a oferecer o curso na nova modalidade."
     },
     {
       icon: BookOpen,
-      title: "Ampliação de Modelos de Formação",
-      description: "Novas possibilidades de formação foram introduzidas, sem eliminar o papel fundamental dos Centros de Formação de Condutores (CFCs)."
+      title: "Teórico Sem Carga Horária Mínima",
+      description: "Não há mais carga horária mínima obrigatória para o curso teórico. O candidato pode estudar pelo CFC presencial ou 100% online pelo aplicativo CNH do Brasil, no seu ritmo."
+    },
+    {
+      icon: Scale,
+      title: "Fim do Prazo de 12 Meses",
+      description: "Não existe mais a obrigatoriedade de finalizar o processo de obtenção da CNH em 12 meses. Essa mudança já foi implementada no sistema do DETRAN-PR."
     }
   ];
 
   const continuaObrigatorio = [
     {
       title: "Exames Médico e Psicológico",
-      description: "Avaliação aptidão física e mental continua obrigatória para todos os candidatos à CNH."
+      description: "Obrigatórios para todos os candidatos. No PR, o valor atual é R$ 404 (teto nacional de R$ 180 em análise jurídica pela PGE-PR)."
     },
     {
-      title: "Prova Teórica",
-      description: "O exame teórico de legislação de trânsito permanece como requisito indispensável."
+      title: "Prova Teórica (60 min, 20/30 acertos)",
+      description: "Duração aumentou de 50 para 60 minutos (120 min para candidatos com dislexia, TDAH ou TEA). Aprovação com 20 de 30 questões."
     },
     {
-      title: "Aulas Práticas Supervisionadas",
-      description: "A formação prática de direção deve ser realizada sob supervisão de instrutor credenciado."
+      title: "Mínimo de 2 Horas de Aulas Práticas",
+      description: "A formação prática com instrutor credenciado é obrigatória, com mínimo reduzido para 2 horas. Recomendamos avaliar o preparo antes do teste."
     },
     {
       title: "Prova Prática de Direção",
-      description: "O exame prático de direção veicular é obrigatório e segue critérios padronizados."
+      description: "O exame prático segue o procedimento anterior (incluindo baliza) até a publicação do novo Manual Brasileiro de Exames pela Senatran."
     },
     {
-      title: "Regulamentação Estadual",
-      description: "O cumprimento das exigências específicas definidas pelo DETRAN do Estado permanece necessário."
+      title: "Biometria e Abertura no DETRAN-PR",
+      description: "O início formal do processo é pelo agendamento no DETRAN-PR (site ou app Detran Inteligente), não pelo app CNH do Brasil."
     }
   ];
 
@@ -154,17 +154,16 @@ const Resolucao1020 = () => {
                 </h2>
                 <div className="prose prose-lg max-w-none text-muted-foreground">
                   <p>
-                    A <strong className="text-foreground">Resolução CONTRAN 1020/2025</strong> representa 
-                    uma atualização significativa nas diretrizes nacionais para formação de condutores no Brasil. 
-                    Publicada pelo Conselho Nacional de Trânsito (CONTRAN), esta resolução estabelece 
-                    novos parâmetros que buscam modernizar o processo de habilitação, mantendo o 
-                    compromisso com a segurança viária.
+                    A <strong className="text-foreground">Resolução CONTRAN 1020/2025</strong> foi publicada 
+                    no Diário Oficial da União em 10 de dezembro de 2025, modernizando o processo de obtenção 
+                    da CNH em todo o Brasil. No Paraná, o CETRAN (Conselho Estadual de Trânsito) publicou 
+                    resolução específica para normatizar os novos fluxos no âmbito do DETRAN-PR.
                   </p>
                   <p>
-                    É fundamental entender que a resolução estabelece <strong className="text-foreground">
-                    diretrizes nacionais</strong>, mas cada DETRAN estadual possui autonomia para 
-                    regulamentar aspectos específicos dentro de seu território. Por isso, sempre 
-                    consulte as normas do DETRAN do seu Estado.
+                    As principais mudanças incluem: <strong className="text-foreground">redução da carga horária prática para 2 horas</strong>, 
+                    fim da carga horária mínima teórica, possibilidade de estudo 100% online pelo app CNH do Brasil, 
+                    fim do prazo de 12 meses para conclusão e processo digital. O tempo médio para obter a CNH 
+                    caiu para <strong className="text-foreground">2 a 3 meses</strong>, dependendo da agenda do DETRAN e do ritmo do candidato.
                   </p>
                 </div>
               </motion.div>
@@ -262,10 +261,10 @@ const Resolucao1020 = () => {
               className="text-center max-w-3xl mx-auto mb-12"
             >
               <h2 className="text-3xl md:text-4xl font-heading font-black mb-4">
-                Diretriz Nacional x Regulamentação Estadual
+                Diretriz Nacional x <span className="text-secondary">Situação no Paraná</span>
               </h2>
               <p className="text-muted-foreground">
-                Entenda o que é definido nacionalmente e o que depende do seu Estado
+                O que a resolução prevê nacionalmente e como está no DETRAN-PR
               </p>
             </motion.div>
 
@@ -273,24 +272,36 @@ const Resolucao1020 = () => {
               <Card className="p-8 border-2 border-primary/20">
                 <div className="flex items-center gap-3 mb-6">
                   <Scale className="w-8 h-8 text-primary" />
-                  <h3 className="text-xl font-heading font-bold">Diretriz Nacional (CONTRAN)</h3>
+                  <h3 className="text-xl font-heading font-bold">Diretriz Nacional (Res. 1020/2025)</h3>
                 </div>
                 <ul className="space-y-3">
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
-                    <span className="text-muted-foreground">Critérios de avaliação padronizados</span>
+                    <span className="text-muted-foreground">Aulas práticas mínimas de 2 horas</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
-                    <span className="text-muted-foreground">Conteúdo programático do curso teórico</span>
+                    <span className="text-muted-foreground">Sem carga horária mínima teórica</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
-                    <span className="text-muted-foreground">Requisitos mínimos para habilitação</span>
+                    <span className="text-muted-foreground">Fim do prazo de 12 meses para conclusão</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
-                    <span className="text-muted-foreground">Exigência de exames médico e psicológico</span>
+                    <span className="text-muted-foreground">Prova teórica: 60 min, aprovação com 20/30 acertos</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
+                    <span className="text-muted-foreground">Teto de R$ 180 para exames médico + psicológico</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
+                    <span className="text-muted-foreground">Primeiro reteste gratuito</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
+                    <span className="text-muted-foreground">CNH Digital gratuita após aprovação</span>
                   </li>
                 </ul>
               </Card>
@@ -298,24 +309,32 @@ const Resolucao1020 = () => {
               <Card className="p-8 border-2 border-secondary/20">
                 <div className="flex items-center gap-3 mb-6">
                   <Building className="w-8 h-8 text-secondary" />
-                  <h3 className="text-xl font-heading font-bold">Regulamentação Estadual (DETRAN)</h3>
+                  <h3 className="text-xl font-heading font-bold">Situação no Paraná (DETRAN-PR)</h3>
                 </div>
                 <ul className="space-y-3">
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 rounded-full bg-secondary mt-2 flex-shrink-0" />
-                    <span className="text-muted-foreground">Autorização de plataformas digitais</span>
+                    <span className="text-muted-foreground">Exames médico/psicológico: R$ 404 (teto nacional em análise pela PGE-PR)</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 rounded-full bg-secondary mt-2 flex-shrink-0" />
-                    <span className="text-muted-foreground">Modelos de formação permitidos</span>
+                    <span className="text-muted-foreground">Reteste gratuito: ainda não implementado (aguarda parecer jurídico)</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 rounded-full bg-secondary mt-2 flex-shrink-0" />
-                    <span className="text-muted-foreground">Procedimentos administrativos locais</span>
+                    <span className="text-muted-foreground">Questões do exame teórico em sincronização com o Banco Nacional</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 rounded-full bg-secondary mt-2 flex-shrink-0" />
-                    <span className="text-muted-foreground">Taxas e valores específicos</span>
+                    <span className="text-muted-foreground">Teste prático segue procedimento anterior (baliza inclusa)</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 rounded-full bg-secondary mt-2 flex-shrink-0" />
+                    <span className="text-muted-foreground">CNH Digital gratuita em implementação (documento impresso ainda obrigatório)</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 rounded-full bg-secondary mt-2 flex-shrink-0" />
+                    <span className="text-muted-foreground">PPD emitida em ~10 dias úteis após aprovação</span>
                   </li>
                 </ul>
               </Card>
