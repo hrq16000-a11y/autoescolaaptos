@@ -5,9 +5,9 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import promoAniversario from "@/assets/promo-aniversario.png";
 import promoIndique from "@/assets/promo-indique-amigo.png";
 import promoDiferenciais from "@/assets/promo-diferenciais.jpeg";
+import fachadaAptos from "@/assets/fachada-aptos.jpg";
+import carroAptos from "@/assets/carro-aptos.jpg";
 import cnhSuccess from "@/assets/cnh-success.jpg";
-import classroom from "@/assets/classroom.jpg";
-import instructorTeaching from "@/assets/instructor-teaching.jpg";
 import { Button } from "@/components/ui/button";
 
 const PromoSection = () => {
@@ -45,14 +45,14 @@ const PromoSection = () => {
       title: "Aprovação Garantida",
     },
     {
-      image: classroom,
-      alt: "Sala de aula moderna - Autoescola APTOS",
-      title: "Estrutura Moderna",
+      image: fachadaAptos,
+      alt: "Fachada da Autoescola APTOS em São José dos Pinhais",
+      title: "Nossa Sede",
     },
     {
-      image: instructorTeaching,
-      alt: "Instrutores qualificados - Autoescola APTOS",
-      title: "Instrutores Experientes",
+      image: carroAptos,
+      alt: "Veículo de aulas práticas - Autoescola APTOS",
+      title: "Nosso Veículo",
     },
   ];
 
