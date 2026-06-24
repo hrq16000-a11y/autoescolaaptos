@@ -20,8 +20,8 @@ const Navbar = () => {
 
   const navLinks = [
     { href: "#inicio", label: "Início" },
-    { href: "#servicos", label: "Serviços" },
     { href: "/primeira-habilitacao", label: "Primeira Habilitação", isRoute: true },
+    { href: "/simulado-detran-pr", label: "Simulado DETRAN", isRoute: true },
     { href: "/perguntas-frequentes", label: "FAQ", isRoute: true },
     { href: "/blog", label: "Blog", isRoute: true },
     { href: "#contato", label: "Contato" },
