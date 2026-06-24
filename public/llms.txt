@@ -6,6 +6,7 @@
 
 - [Início](/): Visão geral da Autoescola APTOS, serviços, diferenciais e contato.
 - [Primeira Habilitação](/primeira-habilitacao): Processo completo para tirar a 1ª CNH em São José dos Pinhais sob a Resolução 1020/2025.
+- [Simulado DETRAN PR](/simulado-detran-pr): Simulado grátis com 30 questões atualizadas, gabarito e explicações.
 - [Resolução 1020/2025](/resolucao-1020-2025): Mudanças do CONTRAN para a CNH e como o DETRAN-PR aplica.
 - [Formas de Estudo Teórico](/formas-estudo-teorico): Opções de estudo teórico, incluindo o app CNH do Brasil.
 - [Aulas Práticas de Direção](/aulas-praticas-direcao): Aulas com instrutores credenciados pelo DETRAN-PR e veículos novos.
