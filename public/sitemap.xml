@@ -163,20 +163,32 @@
     <priority>0.1</priority>
   </url>
   <url>
-    <loc>https://autoescolaaptos.com.br/preciso-de-tecnico</loc>
-    <lastmod>2024-12-05</lastmod>
+    <loc>https://autoescolaaptos.com.br/promocao-aniversario</loc>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://autoescolaaptos.com.br/promocao-indique-amigo</loc>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://autoescolaaptos.com.br/parceiros/preciso-de-um-tecnico</loc>
+    <lastmod>2026-06-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://autoescolaaptos.com.br/mestre-dos-servicos</loc>
-    <lastmod>2024-12-05</lastmod>
+    <loc>https://autoescolaaptos.com.br/parceiros/mestre-dos-servicos</loc>
+    <lastmod>2026-06-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://autoescolaaptos.com.br/ping-solucoes</loc>
-    <lastmod>2024-12-05</lastmod>
+    <loc>https://autoescolaaptos.com.br/parceiros/ping-solucoes</loc>
+    <lastmod>2026-06-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

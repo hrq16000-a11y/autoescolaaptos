@@ -46,8 +46,8 @@ const FAQ = () => {
   return (
     <>
       <SEO 
-        title="Perguntas Frequentes sobre Autoescola e CNH | Autoescola APTOS"
-        description="Tire suas dúvidas sobre primeira habilitação, renovação de CNH, mudança de categoria e curso de reciclagem. FAQ completo da Autoescola APTOS em São José dos Pinhais."
+        title="Perguntas Frequentes CNH | Autoescola APTOS"
+        description="Dúvidas sobre 1ª habilitação, renovação de CNH, mudança de categoria e reciclagem. FAQ da Autoescola APTOS em São José dos Pinhais."
         canonical="/perguntas-frequentes"
         jsonLd={faqJsonLd}
       />

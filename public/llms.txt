@@ -1,0 +1,24 @@
+# Autoescola APTOS
+
+> Centro de Formação de Condutores em São José dos Pinhais (PR) com +15 anos de experiência: primeira habilitação, renovação de CNH, mudança de categoria e curso de reciclagem. WhatsApp (41) 99145-3627.
+
+## Pages
+
+- [Início](/): Visão geral da Autoescola APTOS, serviços, diferenciais e contato.
+- [Primeira Habilitação](/primeira-habilitacao): Processo completo para tirar a 1ª CNH em São José dos Pinhais sob a Resolução 1020/2025.
+- [Resolução 1020/2025](/resolucao-1020-2025): Mudanças do CONTRAN para a CNH e como o DETRAN-PR aplica.
+- [Formas de Estudo Teórico](/formas-estudo-teorico): Opções de estudo teórico, incluindo o app CNH do Brasil.
+- [Aulas Práticas de Direção](/aulas-praticas-direcao): Aulas com instrutores credenciados pelo DETRAN-PR e veículos novos.
+- [Exames do DETRAN](/exames-detran): Como funcionam os exames teórico e prático do DETRAN-PR.
+- [Por que escolher autoescola credenciada](/por-que-autoescola-credenciada): Vantagens de estudar em CFC credenciado.
+- [Perguntas Frequentes](/perguntas-frequentes): FAQ sobre CNH, prazos, valores e processos.
+- [Blog](/blog): Artigos educativos sobre trânsito, CNH e direção defensiva.
+- [Bairros atendidos](/bairros): Lista de bairros de São José dos Pinhais atendidos.
+- [Promoção de Aniversário](/promocao-aniversario): Aula grátis no mês do aniversário.
+- [Indique um Amigo](/promocao-indique-amigo): Ganhe aula grátis indicando amigos.
+
+## Optional
+
+- [Parceiro: Preciso de um Técnico](/parceiros/preciso-de-um-tecnico)
+- [Parceiro: Mestre dos Serviços](/parceiros/mestre-dos-servicos)
+- [Parceiro: Ping Soluções](/parceiros/ping-solucoes)
