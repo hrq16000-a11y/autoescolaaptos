@@ -25,6 +25,7 @@ import SimuladoDetranPr from "./pages/SimuladoDetranPr";
 import Orcamento from "./pages/Orcamento";
 import AutoescolaSaoJoseDosPinhais from "./pages/AutoescolaSaoJoseDosPinhais";
 import Categoria from "./pages/Categoria";
+import Servico from "./pages/Servico";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
