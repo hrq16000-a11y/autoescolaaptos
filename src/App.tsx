@@ -25,6 +25,7 @@ import SimuladoDetranPr from "./pages/SimuladoDetranPr";
 import Orcamento from "./pages/Orcamento";
 import AutoescolaSaoJoseDosPinhais from "./pages/AutoescolaSaoJoseDosPinhais";
 import Categoria from "./pages/Categoria";
+import Servico from "./pages/Servico";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -59,6 +60,11 @@ const App = () => (
           <Route path="/autoescola-sao-jose-dos-pinhais" element={<AutoescolaSaoJoseDosPinhais />} />
           <Route path="/cnh-sao-jose-dos-pinhais" element={<AutoescolaSaoJoseDosPinhais />} />
           <Route path="/categoria-:slug" element={<Categoria />} />
+          <Route path="/inclusao-categoria" element={<Servico />} />
+          <Route path="/reciclagem-cnh" element={<Servico />} />
+          <Route path="/reteste-pratico" element={<Servico />} />
+          <Route path="/aulas-praticas" element={<Servico />} />
+          <Route path="/mudanca-de-categoria" element={<Servico />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

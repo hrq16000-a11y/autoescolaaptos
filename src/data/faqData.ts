@@ -5,157 +5,454 @@ export interface FAQItem {
 }
 
 export const faqData: FAQItem[] = [
-  // Primeira Habilitação - Resolução 1020/2025
+  // ========================= PRIMEIRA HABILITAÇÃO =========================
   {
     category: "Primeira Habilitação",
     question: "Qual a idade mínima para tirar a primeira habilitação?",
-    answer: "A idade mínima para tirar a primeira habilitação é de 18 anos completos. É necessário também saber ler e escrever e possuir documento de identidade."
+    answer: "A idade mínima é 18 anos completos. É necessário também saber ler e escrever e possuir documento oficial de identidade com foto e CPF."
   },
   {
     category: "Primeira Habilitação",
     question: "Quanto tempo demora para tirar a CNH com a nova resolução?",
-    answer: "Com a nova Resolução CONTRAN 1020/2025, tirar a CNH ficou mais rápido. O processo pode ser concluído em algumas semanas a meses (média de 2 a 3 meses), graças à redução da carga horária prática para apenas 2 horas, fim da carga horária mínima teórica, aulas 100% online e acompanhamento digital do processo. O tempo final ainda depende da disponibilidade de agenda do DETRAN-PR para os exames (médico, psicotécnico, teórico e prático) e do ritmo do candidato. Após aprovação, a emissão da PPD (Permissão para Dirigir) leva cerca de 10 dias úteis."
+    answer: "Com a Resolução CONTRAN 1020/2025 o processo ficou mais ágil — em média de 2 a 4 meses. O tempo final depende da agenda do DETRAN-PR para exames e do ritmo do candidato no curso teórico (que agora é livre, sem carga horária mínima)."
   },
   {
     category: "Primeira Habilitação",
-    question: "Quais documentos preciso para iniciar o processo de habilitação?",
-    answer: "Você precisa de documento de identificação oficial com foto (RG ou CNH vencida), CPF e comprovante de residência atualizado. O processo pode ser iniciado diretamente em uma autoescola credenciada ou pelo aplicativo CNH do Brasil para as aulas teóricas. Após concluir o teórico, é necessário agendar a abertura do processo no DETRAN-PR (pelo site ou aplicativo Detran Inteligente) para biometria, exame médico e psicológico."
+    question: "Quais documentos preciso para iniciar o processo?",
+    answer: "RG ou CNH (se já habilitado), CPF e comprovante de residência atualizado. A APTOS faz a abertura do processo para você no DETRAN-PR, sem você precisar ir até o órgão na primeira etapa."
   },
   {
     category: "Primeira Habilitação",
-    question: "Quantas aulas práticas são obrigatórias pela nova resolução?",
-    answer: "Com a Resolução CONTRAN 1020/2025, a carga horária mínima de aulas práticas caiu de 20 horas para apenas 2 horas para a primeira habilitação. As autoescolas do Paraná já estão autorizadas a oferecer o curso prático na nova modalidade. Recomendamos que o candidato avalie se já se sente preparado antes de agendar o teste prático para evitar reprovações. A Autoescola APTOS oferece aulas adicionais conforme a necessidade do aluno."
+    question: "Quantas aulas práticas são obrigatórias?",
+    answer: "Pela Resolução 1020/2025, o mínimo é apenas 2 horas. Na prática, a APTOS recomenda 10 a 20 aulas para chegar preparado ao exame — o número exato depende do seu desempenho."
   },
   {
     category: "Primeira Habilitação",
-    question: "Como inicio o processo de obtenção da CNH pelo aplicativo?",
-    answer: "O candidato pode usar o aplicativo CNH do Brasil para realizar as aulas teóricas online. Após a conclusão do curso, é necessário encaminhar o certificado pelo próprio aplicativo para a base nacional de dados (RENACH). Em seguida, o candidato deve agendar a abertura do processo no site do DETRAN-PR (agendamento.detran.pr.gov.br) ou pelo aplicativo Detran Inteligente, para biometria e demais exames. Importante: o início formal do processo não se dá pelo aplicativo CNH do Brasil, mas sim pelo agendamento no DETRAN."
+    question: "Como inicio o processo pela APTOS?",
+    answer: "Pelo nosso simulador você responde 3 perguntas (categoria, prazo e experiência) e recebe valor e próximos passos no WhatsApp. A partir dali, abrimos seu processo no DETRAN-PR."
   },
   {
     category: "Primeira Habilitação",
     question: "As novas regras da Resolução 1020/2025 já valem no Paraná?",
-    answer: "Sim! As mudanças da Resolução CONTRAN 1020/2025 já estão valendo em todo o território nacional desde 10 de dezembro de 2025, quando foram publicadas no Diário Oficial da União. No Paraná, o CETRAN (Conselho Estadual de Trânsito) publicou uma resolução para normatizar e readequar todos os fluxos do processo de obtenção de CNH no âmbito do DETRAN-PR. Você pode buscar orientações na Ciretran mais próxima."
+    answer: "Sim. Estão valendo desde 10 de dezembro de 2025 em todo o Brasil. O DETRAN-PR já implementou as principais mudanças: fim do prazo de 12 meses, redução das aulas práticas e curso teórico pelo app CNH do Brasil."
   },
   {
     category: "Primeira Habilitação",
-    question: "Ainda existe prazo máximo para concluir o processo de habilitação?",
-    answer: "Não! Uma das principais mudanças da Resolução 1020/2025 é que não existe mais o prazo obrigatório de 12 meses para concluir o processo de obtenção da CNH. Essa mudança já foi implementada no sistema do DETRAN-PR, dando mais tranquilidade ao candidato para concluir cada etapa no seu ritmo."
+    question: "Ainda existe prazo máximo para concluir o processo?",
+    answer: "Não. O prazo de 12 meses foi extinto. Você conclui no seu ritmo — sem stress nem perda de etapas por demora."
   },
   {
     category: "Primeira Habilitação",
-    question: "O que mudou na prova teórica com a nova resolução?",
-    answer: "O tempo de prova aumentou de 50 para 60 minutos (ou 120 minutos para candidatos com dislexia, TDAH ou transtorno do espectro autista - TEA), e o número mínimo de acertos das 30 questões diminuiu de 21 para 20. Os candidatos que realizaram as aulas pelo aplicativo CNH Brasil devem estar cientes de que as questões utilizadas pelo DETRAN-PR podem divergir do conteúdo ensinado na plataforma durante o período de sincronização com o novo Banco Nacional de Questões."
-  },
-  {
-    category: "Primeira Habilitação",
-    question: "O que é a PPD e quanto tempo leva para receber?",
-    answer: "A PPD (Permissão Para Dirigir) é o documento emitido após a aprovação em todos os exames, que permite ao novo motorista dirigir por 2 anos. Com a nova regulamentação, o candidato aprovado poderá optar por receber a CNH Digital gratuitamente ou pagar a taxa para o documento impresso. Atualmente o documento impresso ainda é obrigatório no final do processo no Paraná, com previsão de mudança nas próximas semanas. O prazo de emissão após aprovação é de aproximadamente 10 dias úteis."
+    question: "Posso começar mesmo trabalhando o dia todo?",
+    answer: "Sim. O curso teórico é 100% online (app CNH do Brasil) e as aulas práticas têm horários flexíveis incluindo manhã, tarde, noite e sábados."
   },
 
-  // Resolução 1020/2025 - Detalhes
+  // ========================= CATEGORIA A =========================
   {
-    category: "Resolução 1020/2025",
-    question: "O que é a Resolução CONTRAN 1020/2025?",
-    answer: "A Resolução CONTRAN 1020/2025 é a norma aprovada pelo Conselho Nacional de Trânsito que modernizou o processo de obtenção da CNH no Brasil. Suas principais mudanças incluem: aulas teóricas livres (sem carga horária mínima), possibilidade de estudo 100% online pelo aplicativo CNH do Brasil, redução das aulas práticas para apenas 2 horas, fim do prazo de 12 meses para concluir o processo, possibilidade futura de instrutores autônomos e abertura e acompanhamento do processo de forma digital."
+    category: "Categoria A",
+    question: "O que dá direito a Categoria A?",
+    answer: "Permite dirigir motos, motonetas, scooters e ciclomotores acima de 50 cilindradas. Idade mínima: 18 anos."
   },
   {
-    category: "Resolução 1020/2025",
-    question: "Qual a diferença entre fazer o teórico pela autoescola e pelo aplicativo CNH do Brasil?",
-    answer: "Pela autoescola (CFC): a abertura do processo e o envio dos dados ao RENACH são feitos pela própria instituição, com acompanhamento personalizado de uma equipe especializada. Pelo aplicativo CNH do Brasil: o candidato estuda no próprio ritmo, de forma 100% online, e ao concluir, encaminha o certificado pelo aplicativo. Em seguida, deve agendar presencialmente no DETRAN-PR a abertura formal do processo. Ambas as formas são válidas; a diferença é no suporte e acompanhamento oferecidos."
+    category: "Categoria A",
+    question: "Quanto custa tirar a CNH A em São José dos Pinhais?",
+    answer: "Depende das taxas atuais do DETRAN-PR e da forma de pagamento. Responda 3 perguntas no nosso simulador e receba o valor exato no WhatsApp."
   },
   {
-    category: "Resolução 1020/2025",
-    question: "Quanto custam os exames médico e psicológico?",
-    answer: "A portaria 927/2025 da Senatran prevê um teto nacional de R$ 180 para a soma dos dois exames (médico e psicológico). No entanto, no Paraná, os valores praticados atualmente são previstos em lei estadual e estão vinculados a contratos vigentes com as clínicas credenciadas (atualmente R$ 404). O DETRAN-PR aguarda orientação jurídica da Procuradoria Geral do Estado (PGE-PR) para avaliar a viabilidade de implementar o teto nacional. Entre em contato com a autoescola para consultar os valores atualizados."
+    category: "Categoria A",
+    question: "Vocês fornecem capacete e equipamento de segurança?",
+    answer: "Sim. Capacete, jaqueta, luvas, joelheira e cotoveleira são fornecidos pela APTOS durante todas as aulas práticas e exame."
   },
   {
-    category: "Resolução 1020/2025",
-    question: "Em caso de reprovação na prova, preciso pagar nova taxa?",
-    answer: "A nova resolução prevê gratuidade para o primeiro reteste. No entanto, no Paraná essa regra ainda não pode ser aplicada por questões jurídicas — aguarda-se orientação da Procuradoria Geral do Estado (PGE-PR) sobre a viabilidade de implementação, assim como ocorre com o teto dos exames médico e psicológico. Consulte a Autoescola APTOS para informações atualizadas sobre valores."
+    category: "Categoria A",
+    question: "Qual moto é usada no exame?",
+    answer: "Usamos motos de baixa cilindrada (até 162cc), no padrão exigido pelo DETRAN-PR. Você treina exatamente no modelo do exame."
   },
   {
-    category: "Resolução 1020/2025",
-    question: "O que mudou no teste prático (exame de direção)?",
-    answer: "A Resolução 1020/2025 prevê um novo Manual Brasileiro de Exames de Direção Veicular, que ainda não foi publicado pela Senatran. Por isso, o teste prático ainda segue o mesmo procedimento anterior à resolução (incluindo baliza). Com a publicação do novo manual, pode ser necessário um período de adequação das pistas e capacitação dos examinadores. A Autoescola APTOS informará os alunos assim que houver atualizações."
+    category: "Categoria A",
+    question: "Nunca andei de moto. Vocês ensinam do zero?",
+    answer: "Sim. Começamos no pátio, com aulas de equilíbrio, troca de marchas e frenagem. Só vamos para o circuito quando você se sentir confiante."
   },
 
-  // Renovação de CNH
+  // ========================= CATEGORIA B =========================
   {
-    category: "Renovação de CNH",
-    question: "Com quanto tempo de antecedência posso renovar minha CNH?",
-    answer: "Você pode iniciar o processo de renovação até 30 dias antes do vencimento da sua CNH. Recomendamos não deixar para última hora para evitar transtornos."
+    category: "Categoria B",
+    question: "O que a Categoria B permite dirigir?",
+    answer: "Carros, SUVs, utilitários e veículos de até 3.500 kg, com lotação de até 8 passageiros (excluindo motorista). É a categoria mais comum."
   },
   {
-    category: "Renovação de CNH",
-    question: "Preciso fazer aulas para renovar a CNH?",
-    answer: "Não, para renovação de CNH não são necessárias aulas teóricas ou práticas. Você precisa apenas passar pelos exames médico e psicológico."
+    category: "Categoria B",
+    question: "Quanto tempo leva para tirar a CNH B?",
+    answer: "Em média 2 a 4 meses, dependendo da sua disponibilidade. Sem prazo máximo no Paraná desde a Resolução 1020/2025."
   },
   {
-    category: "Renovação de CNH",
-    question: "O que acontece se eu dirigir com a CNH vencida?",
-    answer: "Dirigir com CNH vencida é infração gravíssima, com multa de R$ 293,47 e 7 pontos na carteira. O veículo pode ser retido até a apresentação de condutor habilitado."
+    category: "Categoria B",
+    question: "Como funciona o exame teórico do DETRAN-PR para a B?",
+    answer: "São 30 questões em 60 minutos, com aprovação a partir de 20 acertos. Candidatos com dislexia, TDAH ou TEA têm 120 minutos."
   },
   {
-    category: "Renovação de CNH",
-    question: "Quanto tempo demora a renovação da CNH?",
-    answer: "O processo de renovação é rápido. Após passar pelos exames médico e psicológico, a nova CNH fica pronta em até 5 dias úteis."
+    category: "Categoria B",
+    question: "Os carros de aula são manuais ou automáticos?",
+    answer: "Manuais — pois o exame DETRAN-PR exige veículo manual para categoria B. Carros novos, com direção elétrica."
   },
-  
-  // Mudança de Categoria
+  {
+    category: "Categoria B",
+    question: "Quantas aulas práticas a APTOS recomenda?",
+    answer: "Para alunos iniciantes recomendamos no mínimo 10 aulas, podendo chegar a 20 a 25 dependendo do progresso. A primeira aula é diagnóstica."
+  },
+
+  // ========================= CATEGORIA AB =========================
+  {
+    category: "Categoria AB",
+    question: "Vale a pena tirar AB de uma vez?",
+    answer: "Sim. Uma única matrícula, um único curso teórico e economia significativa em relação a tirar A e B separadamente. A maioria dos alunos que querem moto + carro escolhe AB."
+  },
+  {
+    category: "Categoria AB",
+    question: "Os exames práticos da AB são feitos juntos?",
+    answer: "Não. Cada categoria tem seu exame prático no DETRAN-PR (um de moto, um de carro), mas o processo administrativo é único."
+  },
+  {
+    category: "Categoria AB",
+    question: "Posso começar pela moto ou pelo carro?",
+    answer: "Sim, definimos juntos a melhor ordem na matrícula — geralmente alunos preferem começar pelo que têm mais facilidade."
+  },
+  {
+    category: "Categoria AB",
+    question: "Quanto custa a CNH AB em São José dos Pinhais?",
+    answer: "É mais econômico que tirar A e B separadas. O valor depende de taxas DETRAN-PR e forma de pagamento — solicite seu orçamento no simulador."
+  },
+
+  // ========================= INCLUSÃO =========================
+  {
+    category: "Inclusão",
+    question: "O que é inclusão de categoria?",
+    answer: "É adicionar uma categoria nova à sua CNH atual sem perder a que você já tem. Exemplo: você tem B e inclui a A — passa a ter AB."
+  },
+  {
+    category: "Inclusão",
+    question: "Posso incluir a categoria A já tendo a B?",
+    answer: "Sim. É a inclusão mais comum. Aproveita exames médicos válidos e exige apenas o complemento teórico de moto + aulas práticas."
+  },
+  {
+    category: "Inclusão",
+    question: "Quanto tempo demora uma inclusão?",
+    answer: "Em média 30 a 60 dias. Categoria A (moto) costuma ser a mais rápida; C, D e E demoram mais por exigirem mais aulas práticas."
+  },
+  {
+    category: "Inclusão",
+    question: "Precisa refazer exame médico para inclusão?",
+    answer: "Depende. Se sua avaliação anterior estiver válida e a nova categoria não exigir avaliação específica adicional, não precisa. A APTOS confirma antes de você gastar."
+  },
+
+  // ========================= MUDANÇA DE CATEGORIA =========================
   {
     category: "Mudança de Categoria",
-    question: "Como faço para adicionar a categoria A na minha CNH?",
-    answer: "Para adicionar a categoria A (moto), você precisa ter pelo menos 1 ano de habilitação na categoria B, passar por exame médico e psicológico, fazer o curso teórico específico e as aulas práticas de moto conforme as regras atuais da Resolução 1020/2025."
+    question: "Qual a diferença entre inclusão e mudança de categoria?",
+    answer: "Inclusão é adicionar (B+A=AB). Mudança é subir para categoria superior dentro da família profissional (B→C, C→D, D→E)."
   },
   {
     category: "Mudança de Categoria",
-    question: "Posso tirar a CNH categoria AB direto?",
-    answer: "Sim! Na primeira habilitação você pode optar por tirar a categoria AB (carro e moto) simultaneamente. É uma opção mais econômica do que fazer separadamente."
+    question: "Quanto tempo de B preciso para tirar a C?",
+    answer: "1 ano completo de habilitação na categoria B, idade mínima 21 anos e não ter cometido infração gravíssima nos últimos 12 meses."
   },
   {
     category: "Mudança de Categoria",
-    question: "Quanto custa para adicionar uma categoria?",
-    answer: "O valor varia conforme a categoria desejada. Entre em contato conosco pelo WhatsApp (41) 99145-3627 para consultar valores atualizados e condições especiais de pagamento."
-  },
-  
-  // Curso de Reciclagem
-  {
-    category: "Curso de Reciclagem",
-    question: "Quando preciso fazer o curso de reciclagem?",
-    answer: "O curso de reciclagem é obrigatório quando o condutor atinge 20 pontos ou mais na CNH dentro de 12 meses, ou comete infração gravíssima que resulte em suspensão do direito de dirigir."
+    question: "Para a categoria D (ônibus) qual o pré-requisito?",
+    answer: "CNH B há pelo menos 2 anos OU CNH C há pelo menos 1 ano. Idade mínima 21 anos. Exame médico e psicotécnico mais rigorosos."
   },
   {
-    category: "Curso de Reciclagem",
-    question: "Quantas horas tem o curso de reciclagem?",
-    answer: "O curso de reciclagem tem duração de 30 horas/aula teóricas, abordando legislação de trânsito, direção defensiva, primeiros socorros, meio ambiente e cidadania."
+    category: "Mudança de Categoria",
+    question: "Para a E (carreta) preciso de quanto tempo de C?",
+    answer: "1 ano completo de CNH C, sem infração gravíssima nos últimos 12 meses. Idade mínima 21 anos."
   },
   {
-    category: "Curso de Reciclagem",
-    question: "Posso fazer o curso de reciclagem online?",
-    answer: "Sim, oferecemos o curso de reciclagem na modalidade EAD (Ensino a Distância), aprovado pelo DETRAN, permitindo que você faça o curso no conforto da sua casa."
+    category: "Mudança de Categoria",
+    question: "Vocês têm carreta e ônibus para treino?",
+    answer: "Sim. Frota completa com caminhão, ônibus e veículo combinado (carreta) para todas as categorias profissionais."
   },
-  
-  // Sobre a Autoescola
+
+  // ========================= RECICLAGEM =========================
   {
-    category: "Sobre a Autoescola",
+    category: "Reciclagem",
+    question: "Quando preciso fazer o Curso de Reciclagem?",
+    answer: "Quando atinge 20 pontos ou mais na CNH em 12 meses, ou comete infração gravíssima com suspensão automática (embriaguez, racha, excesso de velocidade acima de 50%)."
+  },
+  {
+    category: "Reciclagem",
+    question: "Quantas horas tem o curso?",
+    answer: "30 horas/aula, abordando legislação, direção defensiva, primeiros socorros, meio ambiente, cidadania e relacionamento interpessoal no trânsito."
+  },
+  {
+    category: "Reciclagem",
+    question: "Posso fazer 100% online?",
+    answer: "Sim. A APTOS oferece o curso na modalidade EAD aprovada pelo DETRAN-PR. Você estuda pelo celular ou computador, no seu ritmo."
+  },
+  {
+    category: "Reciclagem",
+    question: "Posso dirigir enquanto faço o curso?",
+    answer: "Não. Sua CNH está suspensa — dirigir é infração gravíssima (R$ 880,41 + 7 pontos + apreensão). Conclua o curso o quanto antes para regularizar."
+  },
+  {
+    category: "Reciclagem",
+    question: "Se eu reprovar na prova final, posso refazer?",
+    answer: "Sim. A plataforma EAD permite refazer a avaliação até atingir os 70% mínimos. Sem custo adicional."
+  },
+
+  // ========================= RETESTE =========================
+  {
+    category: "Reteste",
+    question: "Reprovei no exame prático. Quando posso refazer?",
+    answer: "O reteste pode ser agendado a partir de 15 dias após a reprovação, conforme regra do DETRAN-PR."
+  },
+  {
+    category: "Reteste",
+    question: "Posso fazer o reteste em outra autoescola?",
+    answer: "Sim! Muitos alunos vêm para a APTOS após reprovar em outra escola. Atendemos reteste para qualquer aluno em processo ativo no DETRAN-PR."
+  },
+  {
+    category: "Reteste",
+    question: "Quantas aulas preciso antes do reteste?",
+    answer: "Depende da causa da reprovação. Erros pontuais (baliza, rampa): 1 a 2 aulas. Insegurança geral: 4 a 5 aulas. Avaliamos seu caso na primeira aula."
+  },
+  {
+    category: "Reteste",
+    question: "O reteste é grátis?",
+    answer: "A Resolução 1020/2025 prevê gratuidade em algumas situações, mas no Paraná essa regra ainda aguarda regulamentação pela PGE-PR. Consulte o valor atual com a APTOS."
+  },
+  {
+    category: "Reteste",
+    question: "Quais erros mais reprovam no exame prático?",
+    answer: "Baliza, rampa de estacionamento, não dar seta, frear bruscamente, não usar retrovisor antes de mudar de faixa, ultrapassar velocidade no circuito interno e nervosismo geral."
+  },
+
+  // ========================= AULAS PRÁTICAS =========================
+  {
+    category: "Aulas Práticas",
+    question: "Os carros da APTOS são novos?",
+    answer: "Sim. Frota nova com direção elétrica, ar condicionado e em ótimo estado. Mesmo padrão usado no exame DETRAN-PR."
+  },
+  {
+    category: "Aulas Práticas",
+    question: "Posso pagar aulas avulsas?",
+    answer: "Sim. Pacotes flexíveis: avulsa, 5 aulas, 10 aulas, 20 aulas ou combo com simulado de circuito DETRAN-PR."
+  },
+  {
+    category: "Aulas Práticas",
+    question: "Tenho CNH mas não dirijo há anos. Posso fazer aulas?",
+    answer: "Sim. Atendemos motoristas habilitados que querem retomar a direção depois de muito tempo parados. Aulas de reciclagem voluntária."
+  },
+  {
+    category: "Aulas Práticas",
+    question: "As aulas são em pista ou em rua?",
+    answer: "Começamos no pátio (para iniciantes), passamos para ruas tranquilas, depois tráfego intenso e finalizamos com simulado no circuito DETRAN-PR."
+  },
+  {
+    category: "Aulas Práticas",
+    question: "Quanto tempo dura cada aula?",
+    answer: "50 minutos cada aula, padrão DETRAN-PR. Você pode agendar uma ou várias aulas seguidas no mesmo dia."
+  },
+  {
+    category: "Aulas Práticas",
+    question: "Como funciona a aula de baliza?",
+    answer: "Treinamos a técnica passo a passo com referências visuais reais (cones, ângulos). A maioria dos alunos domina em 2 a 3 aulas focadas."
+  },
+
+  // ========================= EXAMES =========================
+  {
+    category: "Exames",
+    question: "Quais exames preciso fazer para tirar a CNH?",
+    answer: "Exame médico, exame psicotécnico, exame teórico (no DETRAN-PR) e exame prático de direção (no DETRAN-PR)."
+  },
+  {
+    category: "Exames",
+    question: "Como é o exame médico para CNH?",
+    answer: "Avaliação de visão, audição, equilíbrio, condições neurológicas e cardiológicas. Feito em clínica credenciada pelo DETRAN-PR. Validade: 10 anos (até 49 anos) ou 5 anos (50+)."
+  },
+  {
+    category: "Exames",
+    question: "Como é o exame psicotécnico?",
+    answer: "Avaliação psicológica em clínica credenciada, com testes de atenção, raciocínio, personalidade e capacidade para a função de condutor. Duração aproximada: 1 a 2 horas."
+  },
+  {
+    category: "Exames",
+    question: "Quantas questões tem a prova teórica?",
+    answer: "30 questões em 60 minutos. Aprovação a partir de 20 acertos (≈67%). Quem tem dislexia, TDAH ou TEA tem 120 minutos."
+  },
+  {
+    category: "Exames",
+    question: "Como é o exame prático no DETRAN-PR?",
+    answer: "Circuito pré-definido com baliza, rampa, sinalizações e direção em via pública. Examinador do DETRAN-PR avalia em tempo real. Faltas eliminatórias reprovam imediatamente."
+  },
+  {
+    category: "Exames",
+    question: "Posso usar o carro da APTOS no exame?",
+    answer: "Sim. Alunos APTOS usam nossos veículos. Mesmo aluno externo (de outra escola) pode contratar o carro para o reteste."
+  },
+
+  // ========================= TAXAS =========================
+  {
+    category: "Taxas",
+    question: "Quanto custa o processo de primeira habilitação no DETRAN-PR?",
+    answer: "Há taxas de abertura de processo (RENACH), exames médico e psicotécnico (~R$ 404 no PR), prova teórica e prova prática. A APTOS te informa o valor total no orçamento."
+  },
+  {
+    category: "Taxas",
+    question: "Quanto custam os exames médico e psicotécnico em SJP?",
+    answer: "Atualmente em torno de R$ 404 somando os dois (valor previsto em lei estadual). A Resolução 1020/2025 prevê teto nacional de R$ 180, mas isso ainda aguarda regulamentação no Paraná."
+  },
+  {
+    category: "Taxas",
+    question: "Há custo extra para usar o app CNH do Brasil?",
+    answer: "O app é gratuito. Mas o curso teórico via autoescola dá direito a suporte personalizado, simulados específicos e acompanhamento do processo — vantagens que muitos alunos preferem."
+  },
+  {
+    category: "Taxas",
+    question: "Posso parcelar o valor da CNH na APTOS?",
+    answer: "Sim, em até 12x no cartão de crédito. Também aceitamos PIX (com desconto), boleto e dinheiro à vista."
+  },
+
+  // ========================= PRAZO =========================
+  {
+    category: "Prazo",
+    question: "Existe prazo máximo para terminar o processo?",
+    answer: "Não. A Resolução 1020/2025 acabou com o prazo de 12 meses. Você termina no seu ritmo."
+  },
+  {
+    category: "Prazo",
+    question: "Quanto tempo demora cada etapa?",
+    answer: "Matrícula e exames: 1 a 2 semanas. Curso teórico: 2 a 4 semanas (no seu ritmo). Aulas práticas: 4 a 8 semanas. Exames DETRAN: depende de agenda. Total médio: 2 a 4 meses."
+  },
+  {
+    category: "Prazo",
+    question: "Tem como acelerar o processo?",
+    answer: "Sim. Concentrando aulas teóricas, agendando exames sequenciais e mantendo disponibilidade contínua, alunos APTOS já concluíram em 6 semanas. Pergunte sobre nosso processo turbinado."
+  },
+  {
+    category: "Prazo",
+    question: "E se eu pausar o processo no meio?",
+    answer: "Sem problema. Como não há mais prazo de 12 meses, você pode pausar e retomar depois sem perder o que já fez."
+  },
+
+  // ========================= DOCUMENTAÇÃO =========================
+  {
+    category: "Documentação",
+    question: "Quais documentos levar na matrícula?",
+    answer: "RG, CPF e comprovante de residência atualizado (últimos 90 dias). Se já é habilitado: CNH original. Estrangeiros: RNE/CRNM."
+  },
+  {
+    category: "Documentação",
+    question: "Sou menor de 18 anos. Posso me matricular antes?",
+    answer: "Sim. Você pode iniciar exames e curso teórico aos 17 anos e 6 meses, mas só recebe a PPD após completar 18 anos."
+  },
+  {
+    category: "Documentação",
+    question: "Estrangeiro pode tirar CNH brasileira?",
+    answer: "Sim, com Carteira de Registro Nacional Migratório (CRNM) válida e CPF. O processo é o mesmo dos brasileiros."
+  },
+  {
+    category: "Documentação",
+    question: "Preciso ter conta no Detran Inteligente?",
+    answer: "Sim, recomendamos. É pelo app/site Detran Inteligente que você acompanha seu processo, agenda exames e emite documentos."
+  },
+
+  // ========================= PAGAMENTO =========================
+  {
+    category: "Pagamento",
+    question: "Quais formas de pagamento a APTOS aceita?",
+    answer: "Dinheiro, PIX (com desconto), cartão de débito, cartão de crédito (até 12x), boleto bancário e transferência."
+  },
+  {
+    category: "Pagamento",
+    question: "Tem desconto à vista?",
+    answer: "Sim. Pagamento à vista no PIX ou dinheiro tem desconto especial. Consulte no orçamento."
+  },
+  {
+    category: "Pagamento",
+    question: "Posso pagar em partes ao longo do processo?",
+    answer: "Sim. Algumas etapas (aulas práticas, taxas DETRAN) podem ser pagas conforme avançam. Falamos sobre isso no atendimento."
+  },
+  {
+    category: "Pagamento",
+    question: "O que está incluso no valor?",
+    answer: "Depende do pacote: matrícula no DETRAN, curso teórico, simulados, número de aulas práticas contratadas e acompanhamento. Taxas DETRAN, médico e psicotécnico geralmente são pagos à parte (mas você sabe antes)."
+  },
+
+  // ========================= DETRAN-PR =========================
+  {
+    category: "DETRAN-PR",
+    question: "Onde fica o DETRAN-PR em São José dos Pinhais?",
+    answer: "A unidade DETRAN-PR em São José dos Pinhais fica na Rua Joaquim Nabuco, próxima ao centro. Nossa autoescola fica a poucos minutos para facilitar a logística."
+  },
+  {
+    category: "DETRAN-PR",
+    question: "Como agendar exames no DETRAN-PR?",
+    answer: "Pelo site agendamento.detran.pr.gov.br ou pelo app Detran Inteligente. A APTOS faz esse agendamento para você como parte do serviço."
+  },
+  {
+    category: "DETRAN-PR",
+    question: "O que é a PPD e a CNH definitiva?",
+    answer: "PPD (Permissão Para Dirigir) é emitida após aprovação em todos os exames e vale 2 anos. Se nesse período você não cometer infração grave/gravíssima, recebe a CNH definitiva sem novos exames."
+  },
+  {
+    category: "DETRAN-PR",
+    question: "Posso receber a CNH Digital?",
+    answer: "Sim. Pelo app Carteira Digital de Trânsito (CDT) você acessa sua CNH no celular. A Resolução 1020/2025 prevê que ela seja gratuita; o impresso continua disponível mediante taxa."
+  },
+  {
+    category: "DETRAN-PR",
+    question: "Como acompanho meu processo?",
+    answer: "Pelo app Detran Inteligente (Paraná) com seu CPF. A APTOS também atualiza você por WhatsApp a cada etapa."
+  },
+
+  // ========================= SÃO JOSÉ DOS PINHAIS =========================
+  {
+    category: "São José dos Pinhais",
+    question: "A APTOS atende quais bairros de São José dos Pinhais?",
+    answer: "Atendemos toda a cidade: Centro, Afonso Pena, Cidade Jardim, Guatupê, Costeira, São Marcos, Borda do Campo, Rio Pequeno e demais. Nossa sede fica próxima ao DETRAN-PR."
+  },
+  {
+    category: "São José dos Pinhais",
+    question: "É melhor tirar CNH em São José dos Pinhais ou em Curitiba?",
+    answer: "Para moradores de SJP, fazer aqui é mais prático: trânsito menos congestionado para treinar, exames no DETRAN-PR local (Joaquim Nabuco) e instrutores que conhecem cada rua do circuito."
+  },
+  {
+    category: "São José dos Pinhais",
+    question: "Vocês atendem moradores de Curitiba?",
+    answer: "Sim, atendemos alunos da Grande Curitiba que preferem fazer o processo em São José dos Pinhais — geralmente por preço mais competitivo e atendimento mais próximo."
+  },
+  {
+    category: "São José dos Pinhais",
+    question: "Qual o melhor horário para começar?",
+    answer: "Qualquer momento — não há ‘temporada ideal’. Mas no segundo semestre a procura é maior; quem matricula entre janeiro e junho pega menos fila nos exames."
+  },
+
+  // ========================= APTOS =========================
+  {
+    category: "APTOS",
     question: "Onde fica a Autoescola APTOS?",
-    answer: "A Autoescola APTOS está localizada em São José dos Pinhais, com fácil acesso para moradores de todos os bairros da cidade. Entre em contato para mais informações sobre nossa localização."
+    answer: "Em São José dos Pinhais, próximo ao DETRAN-PR e com fácil acesso para todos os bairros. Confira nossa página de bairros para detalhes."
   },
   {
-    category: "Sobre a Autoescola",
-    question: "Quais formas de pagamento a autoescola aceita?",
-    answer: "Aceitamos pagamento em dinheiro, cartão de débito, cartão de crédito (parcelamento em até 12x), PIX e boleto bancário. Consulte condições especiais para pagamento à vista."
+    category: "APTOS",
+    question: "Há quanto tempo a APTOS atua?",
+    answer: "Mais de 15 anos formando motoristas em São José dos Pinhais. Mais de 5.000 alunos aprovados no DETRAN-PR."
   },
   {
-    category: "Sobre a Autoescola",
-    question: "A autoescola oferece aulas aos sábados?",
-    answer: "Sim! Oferecemos aulas teóricas e práticas aos sábados para melhor atender nossos alunos que trabalham durante a semana."
+    category: "APTOS",
+    question: "Qual é o horário de atendimento?",
+    answer: "Segunda a sexta das 8h às 18h e sábado das 8h às 12h. Aulas práticas têm agenda estendida, incluindo noite, conforme instrutor."
   },
   {
-    category: "Sobre a Autoescola",
-    question: "Qual o horário de funcionamento da Autoescola APTOS?",
-    answer: "Funcionamos de segunda a sexta das 8h às 18h e aos sábados das 8h às 12h. Para aulas práticas, temos horários flexíveis conforme disponibilidade dos instrutores."
-  }
+    category: "APTOS",
+    question: "A APTOS oferece aulas aos sábados?",
+    answer: "Sim. Aulas práticas aos sábados de manhã (e tarde sob demanda). Ideal para quem trabalha durante a semana."
+  },
+  {
+    category: "APTOS",
+    question: "Qual a taxa de aprovação da APTOS?",
+    answer: "Cerca de 95% dos nossos alunos são aprovados no DETRAN-PR — acima da média do estado. Isso por causa da nossa metodologia de simulado em circuito real."
+  },
 ];
 
 export const faqCategories = [...new Set(faqData.map(item => item.category))];
