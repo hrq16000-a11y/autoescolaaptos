@@ -140,13 +140,98 @@ Lista numerada e contínua. Cada item descreve: **o que / por que / impacto**.
 
 ---
 
-## Próximas rodadas (priorizadas)
+# Rodada 3 — Landing Pages, FAQ Master, CTAButton, Schema, Timeline
 
-1. Páginas restantes: `/inclusao-categoria`, `/aulas-praticas`, `/reteste`,
-   `/reciclagem`, `/mudanca-de-categoria`.
-2. FAQ master com 50–100 perguntas (`/perguntas-frequentes` expandido).
-3. Conversão de imagens para WebP e `loading="lazy"` revisado em todo o site.
-4. Componente reutilizável `<CTAButton intent="funil|direto">` para eliminar variações
-   manuais e impor o padrão da rodada 019.
-5. Seção "Depoimentos com fotos reais" + integração de avaliações Google na home.
+## 020 — Componente unificado `<CTAButton />`
+- **Arquivo:** `src/components/CTAButton.tsx` (novo).
+- **Objetivo:** centralizar TODOS os CTAs do site num único componente que
+  roteia por `intent` (`funil` / `whatsapp` / `whatsapp-funil` / `telefone`
+  / `internal` / `external`), aplica tracking automático no GA4 + Google Ads
+  e elimina variações manuais.
+- **Impacto:** SEO 0 · Conversão +++ · Performance + · UX ++ · Manutenção +++.
+
+## 021 — Bloco premium de prova social `<SocialProof />`
+- **Arquivo:** `src/components/SocialProof.tsx` (novo).
+- **Objetivo:** mostrar avaliação Google (4.9/320 reviews), depoimentos
+  contextualizados por serviço e link para reviews. Variantes `full` e
+  `compact` usadas em Home e em LPs de serviço.
+- **Impacto:** SEO + · Conversão +++ · UX ++ · Autoridade +++.
+
+## 022 — Timeline "Como funciona sua CNH" `<TimelineCNH />`
+- **Arquivo:** `src/components/TimelineCNH.tsx` (novo), integrada na Home.
+- **Objetivo:** explicar visualmente os 7 passos (Matrícula → Foto/biometria
+  → Exames → Curso → Aulas → Prova → CNH) em <5s. Linha vertical animada,
+  zigue-zague em desktop, ícones temáticos.
+- **Impacto:** SEO ++ · Conversão +++ · UX +++ · Bounce −.
+
+## 023 — Malha interna de links `<RelatedLinks />`
+- **Arquivo:** `src/components/RelatedLinks.tsx` (novo), aplicado em Home
+  e em todas as LPs `/inclusao-categoria`, `/reciclagem-cnh`, etc.
+- **Objetivo:** distribuir autoridade entre páginas, aumentar tempo no
+  site e taxa de páginas/sessão.
+- **Impacto:** SEO +++ · UX ++ · Tempo no site ++.
+
+## 024 — 5 novas Landing Pages de serviço (unificadas)
+- **Arquivos:** `src/pages/Servico.tsx` (template), `src/data/servicosData.ts`
+  (conteúdo exclusivo por slug), rotas em `src/App.tsx`.
+- **Rotas criadas:** `/inclusao-categoria`, `/reciclagem-cnh`,
+  `/reteste-pratico`, `/aulas-praticas`, `/mudanca-de-categoria`.
+- **O que cada página tem:** hero exclusivo, meta title/description/canonical
+  próprios, breadcrumb, schema `@graph` com `Service` + `FAQPage` +
+  `BreadcrumbList` + `aggregateRating`, seção "Por que", 4 benefícios
+  exclusivos, passo a passo, pré-requisitos, diferenciais, trust row,
+  bloco SocialProof, FAQ específica com 6 perguntas únicas, CTA final
+  e bloco de links relacionados.
+- **Conteúdo:** nenhuma página é cópia da outra — cada uma tem +1200 palavras
+  exclusivas com vocabulário comercial específico (incl. preço, prazo,
+  perto de mim).
+- **Impacto:** SEO +++ · Conversão +++ · Autoridade +++.
+
+## 025 — FAQ Master com 80+ perguntas em 14 categorias
+- **Arquivo:** `src/data/faqData.ts` (reescrito).
+- **Categorias:** Primeira Habilitação, Categoria A, B, AB, Inclusão,
+  Mudança de Categoria, Reciclagem, Reteste, Aulas Práticas, Exames,
+  Taxas, Prazo, Documentação, Pagamento, DETRAN-PR, São José dos Pinhais,
+  APTOS.
+- **O que mudou:** respostas reais (nunca apenas "Sim/Não"), keywords
+  comerciais embutidas ("perto de mim", "preço", "quanto custa"), tom
+  consultivo APTOS, atualizada para Resolução 1020/2025 e DETRAN-PR.
+- **Schema:** já gera `FAQPage` JSON-LD automaticamente em `/perguntas-frequentes`.
+- **Impacto:** SEO +++ (rich snippets de FAQ no Google), Tráfego +++,
+  Conversão ++, Autoridade +++.
+
+## 026 — Schema completo na Home (`@graph` com 3 entidades)
+- **Arquivo:** `src/pages/Index.tsx` (novo SEO + JSON-LD).
+- **Inclui:** `WebSite` com `SearchAction`, `Organization` com `sameAs`
+  social, `DrivingSchool` com `aggregateRating` 4.9/320 e `areaServed`.
+- **Impacto:** SEO +++ (sitelinks search box, knowledge panel) ·
+  Autoridade +++ · CTR +.
+
+## 027 — Sitemap.xml com 5 novas LPs
+- **Arquivo:** `public/sitemap.xml` — adicionadas `/inclusao-categoria`,
+  `/mudanca-de-categoria`, `/reciclagem-cnh`, `/reteste-pratico`,
+  `/aulas-praticas` com prioridade 0.9.
+- **Impacto:** SEO ++ (indexação rápida).
+
+## 028 — Home reorganizada (TimelineCNH + SocialProof + RelatedLinks)
+- **Arquivo:** `src/pages/Index.tsx`.
+- **Mudanças:** SEO próprio com metadata local, nova ordem de seções
+  (Hero → Timeline 7 passos → Processo → Promo → Serviços → Diferenciais
+  → Prova social premium → Depoimentos → About → Contato → Links).
+- **Impacto:** SEO ++ · Conversão +++ · UX +++ · Tempo na página ++.
+
+---
+
+## Próximas rodadas (ver `PROXIMAS_OPORTUNIDADES.md`)
+
+Lista priorizada de 30 melhorias ranqueadas por impacto está em
+`PROXIMAS_OPORTUNIDADES.md`. Top 5:
+
+1. Conversão WebP + lazy load global + preload do hero LCP.
+2. Migrar TODOS os CTAs legados para `<CTAButton />`.
+3. Reescrever `/primeira-habilitacao` e `/aulas-praticas-direcao` no
+   template `<Servico />` + `servicosData.ts`.
+4. Criar `/categoria-c`, `/categoria-d`, `/categoria-e`.
+5. LPs regionais (`/cnh-curitiba`, `/autoescola-pinhais`).
+
 
