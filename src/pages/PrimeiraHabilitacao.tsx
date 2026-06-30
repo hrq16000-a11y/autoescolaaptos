@@ -94,8 +94,8 @@ const PrimeiraHabilitacao = () => {
   return (
     <>
       <SEO
-        title="Primeira Habilitação CNH | Resolução 1020/2025 | Autoescola APTOS"
-        description="Tire sua primeira CNH com a Autoescola APTOS. Formação completa conforme Resolução CONTRAN 1020/2025. CFC credenciado pelo DETRAN-PR em São José dos Pinhais."
+        title="Primeira Habilitação em Curitiba | CNH Categoria A e B | APTOS"
+        description="Primeira habilitação em Curitiba e São José dos Pinhais pela Res. 1020/2025: teórico 100% online no app CNH do Brasil, só 2h de prática obrigatória, sem prazo de 12 meses."
         canonical="/primeira-habilitacao"
         jsonLd={jsonLd}
       />

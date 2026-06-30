@@ -79,8 +79,8 @@ const Resolucao1020 = () => {
   return (
     <>
       <SEO
-        title="Resolução CONTRAN 1020/2025 | O que Mudou na CNH | Autoescola APTOS"
-        description="Entenda as mudanças da Resolução CONTRAN 1020/2025 para obtenção da CNH. Guia completo sobre o que é nacional e o que depende do DETRAN estadual."
+        title="Resolução 1020 2025 CNH | O que Mudou na Habilitação | APTOS"
+        description="Resolução 1020 2025 CNH: fim das 20h teóricas, só 2h de prática, sem prazo de 12 meses, app CNH do Brasil. O que vale no DETRAN-PR hoje (exames, taxas e reteste)."
         canonical="/resolucao-1020-2025"
         jsonLd={jsonLd}
       />

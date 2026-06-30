@@ -88,8 +88,8 @@ const ExamesDetran = () => {
   return (
     <>
       <SEO
-        title="Exames do DETRAN | Prova Teórica e Prática | Autoescola APTOS"
-        description="Tudo sobre os exames do DETRAN para CNH: prova teórica padronizada nacionalmente e prova prática de direção. Prepare-se com a Autoescola APTOS."
+        title="Exame DETRAN PR | Prova Teórica e Prática da CNH | APTOS"
+        description="Tudo sobre o exame DETRAN PR: prova teórica de 60 min (20/30 acertos pela Res. 1020/2025), prova prática de direção, faltas eliminatórias e como se preparar."
         canonical="/exames-detran"
         jsonLd={jsonLd}
       />

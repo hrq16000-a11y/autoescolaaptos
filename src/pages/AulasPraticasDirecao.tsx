@@ -82,8 +82,8 @@ const AulasPraticasDirecao = () => {
   return (
     <>
       <SEO
-        title="Aulas Práticas de Direção | Autoescola APTOS"
-        description="Aulas práticas de direção com instrutores credenciados pelo DETRAN-PR. Veículos novos, horários flexíveis e metodologia focada na sua aprovação."
+        title="Aulas Práticas de Direção em Curitiba | DETRAN-PR | APTOS"
+        description="Aulas práticas de direção em Curitiba e São José dos Pinhais com instrutores credenciados pelo DETRAN-PR. Veículos novos, horários flexíveis e foco na aprovação."
         canonical="/aulas-praticas-direcao"
         jsonLd={jsonLd}
       />
