@@ -22,17 +22,24 @@ import {
 const Resolucao1020 = () => {
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": "Resolução CONTRAN 1020/2025 - O que Mudou na CNH",
-    "description": "Guia completo sobre a Resolução CONTRAN 1020/2025 e as mudanças no processo de habilitação. Saiba o que é diretriz nacional e o que depende do DETRAN estadual.",
-    "author": {
-      "@type": "Organization",
-      "name": "Autoescola APTOS"
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "Autoescola APTOS"
-    }
+    "@graph": [
+      {
+        "@type": "Article",
+        "headline": "Resolução 1020 2025 CNH - O que Mudou na Habilitação",
+        "description": "Guia completo sobre a Resolução CONTRAN 1020/2025 e o que vale no DETRAN-PR hoje.",
+        "author": { "@type": "Organization", "name": "Autoescola APTOS" },
+        "publisher": { "@type": "Organization", "name": "Autoescola APTOS" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "O que mudou com a Resolução 1020 2025 da CNH?", "acceptedAnswer": { "@type": "Answer", "text": "Acabou a carga horária mínima do teórico (estudo pelo app CNH do Brasil), a prática caiu para 2 horas obrigatórias e o prazo de 12 meses para concluir o processo foi extinto." } },
+          { "@type": "Question", "name": "A Resolução 1020/2025 já vale no Paraná?", "acceptedAnswer": { "@type": "Answer", "text": "Sim. O DETRAN-PR já implementou as principais mudanças (sem prazo de 12 meses, 2h de prática, teórico online). Pontos como reteste gratuito e gratuidade da CNH digital ainda dependem de ajustes técnicos." } },
+          { "@type": "Question", "name": "Preciso fazer aulas teóricas presenciais?", "acceptedAnswer": { "@type": "Answer", "text": "Não. O curso teórico pode ser feito 100% online pelo aplicativo CNH do Brasil, no seu ritmo, sem carga horária mínima." } },
+          { "@type": "Question", "name": "Quanto custam os exames médico e psicológico no PR?", "acceptedAnswer": { "@type": "Answer", "text": "Atualmente R$ 404 no Paraná. O teto nacional de R$ 180 previsto na resolução está em análise jurídica pela PGE-PR." } }
+        ]
+      }
+    ]
   };
 
   const principaisMudancas = [
