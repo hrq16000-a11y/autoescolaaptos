@@ -156,21 +156,45 @@ const Hero = () => {
             transition={{ delay: 0.4 }}
             className="text-xl md:text-2xl text-white/90 mb-8 font-medium"
           >
-            Autoescola APTOS - Mais de 15 anos formando condutores qualificados
-            em São José dos Pinhais
+            Autoescola APTOS — referência em São José dos Pinhais. Carros novos, curso online e atendimento rápido para tirar sua CNH sem complicação.
           </motion.p>
+
+          {/* Trust pills */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="flex flex-wrap gap-2 mb-8"
+          >
+            {[
+              "🚗 Carros novos",
+              "🎮 Simulador / direção elétrica",
+              "📍 Próximo ao DETRAN",
+              "💻 Curso 100% online",
+              "⚡ Atendimento rápido",
+              "✅ Processo simplificado",
+              "⭐ 4,9 no Google",
+            ].map((item) => (
+              <span
+                key={item}
+                className="bg-white/10 backdrop-blur-sm border border-white/20 text-white text-xs md:text-sm font-semibold px-3 py-1.5 rounded-full"
+              >
+                {item}
+              </span>
+            ))}
+          </motion.div>
 
           {/* Benefits List */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.55 }}
             className="space-y-3 mb-10"
           >
             {[
-              "Instrutores credenciados pelo Detran PR",
-              "Promoções especiais e facilidade de pagamento",
-              "Aulas práticas e teóricas de qualidade",
+              "Instrutores credenciados pelo DETRAN-PR",
+              "Promoções especiais e parcelamento facilitado",
+              "Aulas práticas em carros novos com direção elétrica",
             ].map((item, index) => (
               <div key={index} className="flex items-center space-x-3">
                 <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
@@ -191,12 +215,9 @@ const Hero = () => {
               className="text-lg h-14 px-8 shadow-glow hover:scale-105 transition-transform"
               asChild
             >
-              <a
-                href="/orcamento"
-                onClick={() => trackEnrollmentClick()}
-              >
+              <a href="/orcamento" onClick={() => trackEnrollmentClick()}>
                 <MessageCircle className="w-5 h-5 mr-2" />
-                Solicitar Orçamento
+                Simular meu Orçamento
               </a>
             </Button>
             <Button
