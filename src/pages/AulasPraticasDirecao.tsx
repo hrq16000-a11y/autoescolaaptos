@@ -24,13 +24,23 @@ import {
 const AulasPraticasDirecao = () => {
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Service",
-    "name": "Aulas Práticas de Direção - Autoescola APTOS",
-    "description": "Aulas práticas de direção veicular com instrutores credenciados pelo DETRAN-PR. Veículos novos e adaptados para aprendizado seguro.",
-    "provider": {
-      "@type": "DrivingSchool",
-      "name": "Autoescola APTOS"
-    }
+    "@graph": [
+      {
+        "@type": "Service",
+        "name": "Aulas Práticas de Direção - Autoescola APTOS",
+        "description": "Aulas práticas de direção em Curitiba e São José dos Pinhais com instrutores credenciados pelo DETRAN-PR.",
+        "provider": { "@type": "DrivingSchool", "name": "Autoescola APTOS" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "Quantas aulas práticas preciso fazer?", "acceptedAnswer": { "@type": "Answer", "text": "Pela Resolução 1020/2025, são obrigatórias apenas 2 horas de aula prática. Recomendamos avaliar seu preparo e fazer aulas adicionais até se sentir seguro para o exame." } },
+          { "@type": "Question", "name": "Quanto custa a hora de aula prática em Curitiba?", "acceptedAnswer": { "@type": "Answer", "text": "O valor depende da categoria e do pacote contratado. Fale no WhatsApp (41) 99145-3627 para o preço atualizado das aulas avulsas ou pacotes." } },
+          { "@type": "Question", "name": "Posso fazer aulas em horários flexíveis?", "acceptedAnswer": { "@type": "Answer", "text": "Sim. A APTOS oferece aulas em diversos horários (manhã, tarde e noite) para se adaptar à sua rotina de trabalho ou estudo." } },
+          { "@type": "Question", "name": "Os instrutores são credenciados pelo DETRAN-PR?", "acceptedAnswer": { "@type": "Answer", "text": "Sim. Todos os nossos instrutores são credenciados pelo DETRAN-PR e contam com anos de experiência em formação de condutores." } }
+        ]
+      }
+    ]
   };
 
   const diferenciais = [
