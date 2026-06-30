@@ -9,15 +9,13 @@ import { whatsappLink } from "@/lib/whatsapp";
 import { useAnalytics } from "@/hooks/useAnalytics";
 
 type Categoria = "Carro" | "Moto" | "Carro + Moto" | "Inclusão";
-type Tipo = "Primeira Habilitação" | "Inclusão de Categoria" | "Renovação / Reciclagem";
+type Prazo = "Hoje" | "Esta semana" | "Este mês" | "Ainda pesquisando";
 type Experiencia = "Nunca dirigi" | "Pouca experiência" | "Já dirijo";
-type Prazo = "Esta semana" | "Este mês" | "Próximo mês" | "Ainda pesquisando";
 
 interface Respostas {
   categoria?: Categoria;
-  tipo?: Tipo;
-  experiencia?: Experiencia;
   prazo?: Prazo;
+  experiencia?: Experiencia;
 }
 
 const Orcamento = () => {
@@ -25,7 +23,7 @@ const Orcamento = () => {
   const [step, setStep] = useState(0);
   const [resp, setResp] = useState<Respostas>({});
 
-  const totalSteps = 4;
+  const totalSteps = 3;
 
   const next = (patch: Partial<Respostas>) => {
     const novo = { ...resp, ...patch };
@@ -40,76 +38,74 @@ const Orcamento = () => {
     return (
       `Olá! Quero um orçamento personalizado da Autoescola APTOS.\n\n` +
       `• Categoria desejada: ${r.categoria}\n` +
-      `• Tipo de processo: ${r.tipo}\n` +
-      `• Experiência ao volante: ${r.experiencia}\n` +
-      `• Quero iniciar: ${r.prazo}\n\n` +
+      `• Quero iniciar: ${r.prazo}\n` +
+      `• Experiência ao volante: ${r.experiencia}\n\n` +
       `Pode me enviar valores e formas de pagamento, por favor?`
     );
   };
 
   const finalUrl = whatsappLink(buildMessage(resp), "funil");
+  const progress = Math.min(step, totalSteps) / totalSteps;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <SEO
         title="Solicitar Orçamento de CNH | Autoescola APTOS São José dos Pinhais"
-        description="Receba em minutos um orçamento personalizado para tirar sua CNH (A, B ou AB) ou fazer inclusão de categoria na Autoescola APTOS. Responda 4 perguntas rápidas."
-        canonical="https://autoescolaaptos.com.br/orcamento"
+        description="Receba em minutos um orçamento personalizado para tirar sua CNH (A, B ou AB) ou inclusão de categoria na Autoescola APTOS. Responda 3 perguntas rápidas."
+        canonical="/orcamento"
       />
       <Navbar />
 
       <main className="flex-1 pt-28 pb-16">
         <div className="container mx-auto px-4 max-w-3xl">
-          {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-4 text-sm font-semibold">
               <ShieldCheck className="w-4 h-4" />
               Atendimento humano em poucos minutos
             </div>
             <h1 className="text-3xl md:text-5xl font-heading font-black mb-3">
-              Monte seu <span className="text-primary">orçamento</span> em 4 passos
+              Monte seu <span className="text-primary">orçamento</span> em 3 passos
             </h1>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               Responda rapidamente e enviamos pelo WhatsApp o valor exato para o seu caso, sem enrolação.
             </p>
           </div>
 
-          {/* Progress */}
           <div className="mb-8">
             <div className="flex justify-between text-xs font-medium text-muted-foreground mb-2">
               <span>Etapa {Math.min(step + 1, totalSteps)} de {totalSteps}</span>
-              <span>{Math.round((Math.min(step, totalSteps) / totalSteps) * 100)}%</span>
+              <span>{Math.round(progress * 100)}%</span>
             </div>
             <div className="h-2 bg-muted rounded-full overflow-hidden">
               <motion.div
                 className="h-full bg-primary"
                 initial={{ width: 0 }}
-                animate={{ width: `${(Math.min(step, totalSteps) / totalSteps) * 100}%` }}
+                animate={{ width: `${progress * 100}%` }}
                 transition={{ type: "spring", stiffness: 120, damping: 20 }}
               />
             </div>
           </div>
 
-          {/* Card */}
-          <div className="bg-card border border-border rounded-2xl shadow-large p-6 md:p-10 min-h-[360px]">
+          <div className="bg-card border border-border rounded-2xl shadow-large p-6 md:p-10 min-h-[340px]">
             <AnimatePresence mode="wait">
               {step === 0 && (
-                <Step key="0" title="O que você quer tirar?">
+                <Step key="0" title="Qual habilitação você quer?">
                   <OptionGrid>
                     <Option icon={Car} label="Carro" onClick={() => next({ categoria: "Carro" })} />
                     <Option icon={Bike} label="Moto" onClick={() => next({ categoria: "Moto" })} />
                     <Option icon={Car} label="Carro + Moto" onClick={() => next({ categoria: "Carro + Moto" })} />
-                    <Option icon={RefreshCw} label="Inclusão" onClick={() => next({ categoria: "Inclusão" })} />
+                    <Option icon={RefreshCw} label="Inclusão de Categoria" onClick={() => next({ categoria: "Inclusão" })} />
                   </OptionGrid>
                 </Step>
               )}
 
               {step === 1 && (
-                <Step key="1" title="Qual é o seu caso?">
-                  <OptionGrid cols={1}>
-                    <Option label="Primeira Habilitação" onClick={() => next({ tipo: "Primeira Habilitação" })} />
-                    <Option label="Inclusão de Categoria" onClick={() => next({ tipo: "Inclusão de Categoria" })} />
-                    <Option label="Renovação / Reciclagem" onClick={() => next({ tipo: "Renovação / Reciclagem" })} />
+                <Step key="1" title="Quando pretende começar?">
+                  <OptionGrid>
+                    <Option label="Hoje" onClick={() => next({ prazo: "Hoje" })} />
+                    <Option label="Esta semana" onClick={() => next({ prazo: "Esta semana" })} />
+                    <Option label="Este mês" onClick={() => next({ prazo: "Este mês" })} />
+                    <Option label="Ainda pesquisando" onClick={() => next({ prazo: "Ainda pesquisando" })} />
                   </OptionGrid>
                 </Step>
               )}
@@ -117,25 +113,14 @@ const Orcamento = () => {
               {step === 2 && (
                 <Step key="2" title="Você já dirigiu antes?">
                   <OptionGrid cols={1}>
-                    <Option label="Nunca dirigi" onClick={() => next({ experiencia: "Nunca dirigi" })} />
-                    <Option label="Pouca experiência" onClick={() => next({ experiencia: "Pouca experiência" })} />
+                    <Option label="Nunca" onClick={() => next({ experiencia: "Nunca dirigi" })} />
+                    <Option label="Pouco" onClick={() => next({ experiencia: "Pouca experiência" })} />
                     <Option label="Já dirijo" onClick={() => next({ experiencia: "Já dirijo" })} />
                   </OptionGrid>
                 </Step>
               )}
 
-              {step === 3 && (
-                <Step key="3" title="Quando pretende começar?">
-                  <OptionGrid>
-                    <Option label="Esta semana" onClick={() => next({ prazo: "Esta semana" })} />
-                    <Option label="Este mês" onClick={() => next({ prazo: "Este mês" })} />
-                    <Option label="Próximo mês" onClick={() => next({ prazo: "Próximo mês" })} />
-                    <Option label="Ainda pesquisando" onClick={() => next({ prazo: "Ainda pesquisando" })} />
-                  </OptionGrid>
-                </Step>
-              )}
-
-              {step >= 4 && (
+              {step >= 3 && (
                 <motion.div
                   key="final"
                   initial={{ opacity: 0, y: 16 }}
@@ -155,16 +140,11 @@ const Orcamento = () => {
 
                   <div className="bg-muted/40 rounded-xl p-4 text-left mb-8 max-w-md mx-auto text-sm">
                     <div className="flex justify-between py-1"><span className="text-muted-foreground">Categoria</span><strong>{resp.categoria}</strong></div>
-                    <div className="flex justify-between py-1"><span className="text-muted-foreground">Tipo</span><strong>{resp.tipo}</strong></div>
-                    <div className="flex justify-between py-1"><span className="text-muted-foreground">Experiência</span><strong>{resp.experiencia}</strong></div>
                     <div className="flex justify-between py-1"><span className="text-muted-foreground">Início</span><strong>{resp.prazo}</strong></div>
+                    <div className="flex justify-between py-1"><span className="text-muted-foreground">Experiência</span><strong>{resp.experiencia}</strong></div>
                   </div>
 
-                  <Button
-                    size="lg"
-                    className="text-lg h-14 px-8 shadow-glow"
-                    asChild
-                  >
+                  <Button size="lg" className="text-lg h-14 px-8 shadow-glow" asChild>
                     <a
                       href={finalUrl}
                       target="_blank"
@@ -182,7 +162,7 @@ const Orcamento = () => {
               )}
             </AnimatePresence>
 
-            {step > 0 && step < 4 && (
+            {step > 0 && step < 3 && (
               <button
                 onClick={back}
                 className="mt-8 inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors"
@@ -193,7 +173,6 @@ const Orcamento = () => {
             )}
           </div>
 
-          {/* Trust row */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
             <TrustItem icon={Award} title="+15 anos" subtitle="formando condutores" />
             <TrustItem icon={CheckCircle2} title="95% aprovação" subtitle="em provas do DETRAN-PR" />
@@ -206,8 +185,6 @@ const Orcamento = () => {
     </div>
   );
 };
-
-// --- Local UI helpers ---
 
 const Step = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <motion.div

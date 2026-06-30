@@ -9,6 +9,7 @@ import About from "@/components/About";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+import MobileStickyBar from "@/components/MobileStickyBar";
 import { useScrollTracking } from "@/hooks/useScrollTracking";
 
 const Index = () => {
@@ -28,6 +29,7 @@ const Index = () => {
       <Contact />
       <Footer />
       <FloatingWhatsApp />
+      <MobileStickyBar />
     </main>
   );
 };
