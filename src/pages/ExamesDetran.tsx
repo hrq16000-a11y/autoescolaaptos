@@ -24,13 +24,23 @@ import {
 const ExamesDetran = () => {
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": "Exames do DETRAN - Prova Teórica e Prática para CNH",
-    "description": "Guia completo sobre os exames do DETRAN: prova teórica padronizada e prova prática de direção. Saiba como se preparar e o que esperar.",
-    "author": {
-      "@type": "Organization",
-      "name": "Autoescola APTOS"
-    }
+    "@graph": [
+      {
+        "@type": "Article",
+        "headline": "Exame DETRAN PR - Prova Teórica e Prática para CNH",
+        "description": "Guia completo sobre o exame DETRAN PR: prova teórica e prova prática de direção.",
+        "author": { "@type": "Organization", "name": "Autoescola APTOS" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "Quantas questões tem o exame teórico do DETRAN PR?", "acceptedAnswer": { "@type": "Answer", "text": "30 questões em 60 minutos (120 min para candidatos com dislexia, TDAH ou TEA). A aprovação exige 20 acertos, conforme Resolução CONTRAN 1020/2025." } },
+          { "@type": "Question", "name": "Quanto tempo dura a prova prática do DETRAN?", "acceptedAnswer": { "@type": "Answer", "text": "Em média 20 a 30 minutos por candidato, incluindo a baliza e o percurso em via pública avaliado pelo examinador." } },
+          { "@type": "Question", "name": "Se eu for reprovado, quando posso refazer o exame?", "acceptedAnswer": { "@type": "Answer", "text": "No DETRAN-PR é necessário aguardar o reagendamento e pagar nova taxa. A previsão de reteste gratuito da Res. 1020/2025 ainda depende de implementação técnica no estado." } },
+          { "@type": "Question", "name": "Quais são as faltas eliminatórias?", "acceptedAnswer": { "@type": "Answer", "text": "Desobedecer sinalização de parada, avançar sobre meio-fio, não usar cinto de segurança ou perder o controle do veículo, entre outras." } }
+        ]
+      }
+    ]
   };
 
   const topicosProvaTeórica = [
@@ -88,8 +98,8 @@ const ExamesDetran = () => {
   return (
     <>
       <SEO
-        title="Exames do DETRAN | Prova Teórica e Prática | Autoescola APTOS"
-        description="Tudo sobre os exames do DETRAN para CNH: prova teórica padronizada nacionalmente e prova prática de direção. Prepare-se com a Autoescola APTOS."
+        title="Exame DETRAN PR | Prova Teórica e Prática da CNH | APTOS"
+        description="Tudo sobre o exame DETRAN PR: prova teórica de 60 min (20/30 acertos pela Res. 1020/2025), prova prática de direção, faltas eliminatórias e como se preparar."
         canonical="/exames-detran"
         jsonLd={jsonLd}
       />
