@@ -52,7 +52,7 @@ const Orcamento = () => {
       <SEO
         title="Solicitar Orçamento de CNH | Autoescola APTOS São José dos Pinhais"
         description="Receba em minutos um orçamento personalizado para tirar sua CNH (A, B ou AB) ou inclusão de categoria na Autoescola APTOS. Responda 3 perguntas rápidas."
-        canonical="https://autoescolaaptos.com.br/orcamento"
+        canonical="/orcamento"
       />
       <Navbar />
 
