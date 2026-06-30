@@ -11,7 +11,8 @@ import RelatedLinks from "@/components/RelatedLinks";
 import { SERVICOS } from "@/data/servicosData";
 
 const Servico = () => {
-  const { slug } = useParams<{ slug: string }>();
+  const location = useLocation();
+  const slug = location.pathname.replace(/^\//, "");
   const data = slug ? SERVICOS[slug] : undefined;
   if (!data) return <Navigate to="/" replace />;
 
