@@ -192,13 +192,11 @@ const Hero = () => {
               asChild
             >
               <a
-                href="https://api.whatsapp.com/send?phone=5541991453627&text=Olá,%20gostaria%20de%20fazer%20minha%20matrícula%20na%20Autoescola%20APTOS"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/orcamento"
                 onClick={() => trackEnrollmentClick()}
               >
                 <MessageCircle className="w-5 h-5 mr-2" />
-                Fazer Matrícula Agora
+                Solicitar Orçamento
               </a>
             </Button>
             <Button

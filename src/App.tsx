@@ -22,6 +22,7 @@ import PorQueAutoescola from "./pages/PorQueAutoescola";
 import PromoAniversario from "./pages/PromoAniversario";
 import PromoIndiqueAmigo from "./pages/PromoIndiqueAmigo";
 import SimuladoDetranPr from "./pages/SimuladoDetranPr";
+import Orcamento from "./pages/Orcamento";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -52,6 +53,7 @@ const App = () => (
           <Route path="/promocao-aniversario" element={<PromoAniversario />} />
           <Route path="/promocao-indique-amigo" element={<PromoIndiqueAmigo />} />
           <Route path="/simulado-detran-pr" element={<SimuladoDetranPr />} />
+          <Route path="/orcamento" element={<Orcamento />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
