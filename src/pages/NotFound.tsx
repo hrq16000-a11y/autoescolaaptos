@@ -23,13 +23,34 @@ const NotFound = () => {
 
   useEffect(() => {
     console.warn("404:", location.pathname);
-    if (typeof window !== "undefined" && (window as unknown as { dataLayer?: unknown[] }).dataLayer) {
-      (window as unknown as { dataLayer: unknown[] }).dataLayer.push({
-        event: "page_not_found",
-        path: location.pathname,
-      });
+    if (typeof window !== "undefined") {
+      // Push GA/GTM event
+      const w = window as unknown as { dataLayer?: unknown[] };
+      if (w.dataLayer) {
+        w.dataLayer.push({ event: "page_not_found", path: location.pathname });
+      }
+      // Persist to local diagnostic log (used by /diagnostico-seo)
+      try {
+        const KEY = "aptos_404_log";
+        const raw = localStorage.getItem(KEY);
+        const log: Array<{ path: string; ref: string; ts: number; count: number }> = raw ? JSON.parse(raw) : [];
+        const path = location.pathname + location.search;
+        const existing = log.find((e) => e.path === path);
+        if (existing) {
+          existing.count += 1;
+          existing.ts = Date.now();
+          existing.ref = document.referrer || existing.ref;
+        } else {
+          log.push({ path, ref: document.referrer || "(direto)", ts: Date.now(), count: 1 });
+        }
+        // Keep last 200 entries
+        const trimmed = log.slice(-200);
+        localStorage.setItem(KEY, JSON.stringify(trimmed));
+      } catch {
+        /* ignore storage errors */
+      }
     }
-  }, [location.pathname]);
+  }, [location.pathname, location.search]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
