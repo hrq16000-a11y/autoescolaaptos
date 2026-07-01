@@ -78,7 +78,7 @@ const CalculadoraCnh = () => {
       { icon: Car, title: "Aulas práticas", dur: dur(2, 6), desc: "Carros novos com direção elétrica." },
       { icon: CreditCard, title: "Prova prática + emissão da CNH", dur: dur(2, 3), desc: "Você recebe a PPD em ~10 dias úteis." },
     ];
-    if (objetivo === "adicao" || objetivo === "mudanca") {
+    if (objetivo === "adicao") {
       // remove teórico, encurta médico
       return [
         base[0],
@@ -94,10 +94,9 @@ const CalculadoraCnh = () => {
 
   const handleResult = () => {
     track("simulador_jornada_result", { objetivo, disponibilidade, ritmo });
-    const svcMap: Record<Objetivo, "primeira" | "inclusao" | "mudanca"> = {
+    const svcMap: Record<Objetivo, "primeira" | "inclusao"> = {
       primeira: "primeira",
       adicao: "inclusao",
-      mudanca: "mudanca",
     };
     if (objetivo) addSignal({ type: "service", value: svcMap[objetivo] });
     if (ritmo === "intensivo") addSignal({ type: "urgency", value: "semana" });
