@@ -35,13 +35,13 @@ export const SERVICOS: Record<string, ServicoData> = {
     badge: "Inclusão de Categoria",
     icon: Plus,
     h1: "Inclusão de Categoria na CNH em São José dos Pinhais",
-    metaTitle: "Inclusão de Categoria CNH em São José dos Pinhais | APTOS",
+    metaTitle: "Inclusão de Categoria CNH (A ou B) em São José dos Pinhais | APTOS",
     metaDescription:
-      "Inclua a categoria A, C, D ou E na sua CNH com a Autoescola APTOS em São José dos Pinhais. Processo rápido, instrutores credenciados e aprovação acima da média.",
+      "Inclua a categoria A (moto) ou B (carro) na sua CNH com a Autoescola APTOS em São José dos Pinhais. Processo rápido, instrutores credenciados e alta aprovação.",
     heroSubtitle:
-      "Já tem CNH e quer adicionar uma nova categoria? Faça a inclusão (A, C, D ou E) com quem mais aprova em São José dos Pinhais. Curso teórico 100% online e aulas práticas com veículos novos.",
+      "Já tem CNH e quer adicionar uma nova categoria? Faça a inclusão (A ou B) com quem mais aprova em São José dos Pinhais. Curso teórico 100% online e aulas práticas com veículos novos.",
     porQue:
-      "A inclusão é o caminho mais rápido para quem já é habilitado em uma categoria e quer dirigir motos, caminhões, ônibus ou carretas. Você reaproveita seu histórico no DETRAN e só faz o complemento necessário.",
+      "A inclusão é o caminho mais rápido para quem já é habilitado e quer pilotar moto (A) ou dirigir carro (B). Você reaproveita seu histórico no DETRAN-PR e só faz o complemento necessário.",
     beneficios: [
       {
         title: "Processo mais curto que primeira habilitação",
@@ -53,7 +53,7 @@ export const SERVICOS: Record<string, ServicoData> = {
       },
       {
         title: "Aulas práticas com veículos compatíveis",
-        desc: "Motos para categoria A, caminhões e carretas para C/D/E, sempre em ótimo estado.",
+        desc: "Motos (manual e automática) para a categoria A e carros manuais para a categoria B.",
       },
       {
         title: "Acompanhamento do processo pelo WhatsApp",
@@ -67,7 +67,7 @@ export const SERVICOS: Record<string, ServicoData> = {
       },
       {
         title: "Exames médico e psicotécnico (se necessários)",
-        desc: "Renovações se sua avaliação anterior estiver vencida ou se a categoria nova exigir.",
+        desc: "Renovações se sua avaliação anterior estiver vencida ou se a nova categoria exigir.",
       },
       {
         title: "Curso teórico complementar",
@@ -88,18 +88,17 @@ export const SERVICOS: Record<string, ServicoData> = {
     ],
     diferenciais: [
       "+15 anos de tradição em São José dos Pinhais",
-      "Frota nova com veículos específicos de cada categoria",
-      "Instrutores especializados em categorias profissionais (C, D, E)",
+      "Frota nova: carro manual e motos manual/automática",
+      "Instrutores credenciados pelo DETRAN-PR",
       "95% de aprovação no DETRAN-PR",
     ],
     publicoAlvo:
-      "Condutores já habilitados que precisam adicionar uma nova categoria — seja para uso pessoal (moto) ou profissional (caminhão, ônibus, carreta).",
+      "Condutores já habilitados na A que querem incluir a B (carro), ou habilitados na B que querem incluir a A (moto) — passando a ter CNH AB.",
     duracao: "Em média 30 a 60 dias, dependendo da categoria e disponibilidade do aluno.",
     preRequisitos: [
       "Estar habilitado em outra categoria há pelo menos 1 ano (regra geral)",
-      "Idade mínima: 18 anos (A/B), 21 anos (C/D/E)",
-      "Para D e E é exigida CNH B há 2 anos ou C há 1 ano",
-      "Não ter cometido infração gravíssima nos últimos 12 meses (para C, D, E)",
+      "Idade mínima: 18 anos completos",
+      "Não ter cometido infração gravíssima nos últimos 12 meses",
     ],
     serviceType: "Inclusão de Categoria de CNH",
     ctaPrincipal: "Quero incluir uma categoria",
@@ -107,23 +106,23 @@ export const SERVICOS: Record<string, ServicoData> = {
     faqs: [
       {
         q: "Quanto tempo leva para incluir uma categoria?",
-        a: "Em média 30 a 60 dias, dependendo da categoria e da disponibilidade do aluno. A categoria A (moto) costuma ser a mais rápida; C, D e E levam um pouco mais porque exigem mais aulas práticas e exame específico.",
+        a: "Em média 30 a 60 dias, dependendo da categoria e da disponibilidade do aluno. A categoria A (moto) costuma ser a mais rápida.",
       },
       {
         q: "Preciso refazer o curso teórico inteiro?",
-        a: "Não. Para inclusão você faz apenas o complemento teórico relativo à nova categoria, focado no que ainda não foi abordado na sua habilitação atual. Tudo online pelo app CNH do Brasil.",
+        a: "Não. Para inclusão você faz apenas o complemento teórico da nova categoria, focado no que ainda não foi abordado. Tudo online pelo app CNH do Brasil.",
       },
       {
         q: "Quantas aulas práticas preciso fazer?",
-        a: "Com a Resolução CONTRAN 1020/2025, o mínimo é de 2 horas. Mas a APTOS recomenda treinar até estar confortável — especialmente para categorias profissionais (C, D, E), onde o veículo é maior.",
+        a: "Com a Resolução CONTRAN 1020/2025, o mínimo é de 2 horas. Mas a APTOS recomenda treinar até estar confortável — a maioria dos alunos faz de 5 a 15 aulas.",
       },
       {
         q: "Posso incluir a categoria A já tendo a B?",
         a: "Sim! É uma das inclusões mais procuradas. Você reaproveita seus exames médicos (se válidos) e faz só o complemento teórico de moto + as aulas práticas.",
       },
       {
-        q: "Qual a diferença entre inclusão e mudança de categoria?",
-        a: "Inclusão é adicionar uma nova categoria mantendo a que você já tem (ex.: B → AB). Mudança de categoria é trocar para uma categoria superior (ex.: B → C, quando você passa a dirigir caminhões e perde o veículo de passeio mais leve).",
+        q: "Vocês oferecem inclusão para C, D ou E?",
+        a: "Não. A APTOS trabalha exclusivamente com as categorias A (moto) e B (carro). Para categorias profissionais (C, D, E) recomendamos procurar um CFC especializado em transporte de cargas e passageiros.",
       },
       {
         q: "Atendem alunos de quais bairros de São José dos Pinhais?",
