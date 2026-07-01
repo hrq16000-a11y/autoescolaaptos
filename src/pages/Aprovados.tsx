@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
  */
 type Aprovado = {
   nome: string;
-  categoria: "A" | "B" | "AB" | "D";
+  categoria: "A" | "B" | "AB";
   data: string;
   depoimento: string;
   inicial: string;
@@ -26,19 +26,18 @@ const APROVADOS: Aprovado[] = [
   { nome: "Carlos M.", categoria: "AB", data: "Jun/2026", inicial: "C", depoimento: "Tirei carro e moto direto, valeu cada centavo." },
   { nome: "Diego R.", categoria: "A", data: "Mai/2026", inicial: "D", depoimento: "Moto na primeira tentativa." },
   { nome: "Patrícia S.", categoria: "B", data: "Mai/2026", inicial: "P", depoimento: "Curso online flexível, perfeito para minha rotina." },
-  { nome: "Renata C.", categoria: "D", data: "Abr/2026", inicial: "R", depoimento: "Mudança de categoria rápida com apoio do despachante." },
+  { nome: "Renata C.", categoria: "AB", data: "Abr/2026", inicial: "R", depoimento: "Inclusão da moto rápida, com apoio do despachante." },
   { nome: "Felipe T.", categoria: "B", data: "Abr/2026", inicial: "F", depoimento: "Reteste e aprovação em uma semana." },
   { nome: "Mariana A.", categoria: "AB", data: "Mar/2026", inicial: "M", depoimento: "Atendimento 10. Tudo explicado passo a passo." },
   { nome: "Lucas P.", categoria: "B", data: "Mar/2026", inicial: "L", depoimento: "Carros novos, instrutores top." },
 ];
 
-const CATS: ("Todas" | "A" | "B" | "AB" | "D")[] = ["Todas", "A", "B", "AB", "D"];
+const CATS: ("Todas" | "A" | "B" | "AB")[] = ["Todas", "A", "B", "AB"];
 
 const corCategoria: Record<string, string> = {
   A: "bg-orange-500/15 text-orange-600",
   B: "bg-blue-500/15 text-blue-600",
   AB: "bg-primary/15 text-primary",
-  D: "bg-green-500/15 text-green-600",
 };
 
 const Aprovados = () => {
