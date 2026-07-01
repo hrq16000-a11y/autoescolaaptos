@@ -39,7 +39,7 @@ const colunas: Coluna[] = [
     beneficios: [
       { label: "Permite dirigir carro até 3.500kg", ok: true },
       { label: "Permite pilotar moto", ok: false },
-      { label: "Aulas em carro novo automático", ok: true },
+      { label: "Aulas em carro novo manual", ok: true },
       { label: "Mais procurada do Brasil", ok: true },
     ],
   },
