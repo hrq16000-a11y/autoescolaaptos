@@ -67,13 +67,27 @@ const FunnelModal = ({ open, onOpenChange, source = "global" }: FunnelModalProps
   const finalUrl = whatsappLink(message, "funil");
 
   const submit = () => {
-    trackEvent("whatsapp_funil", {
+    const leadPayload = {
       source,
       categoria: answers.categoria,
       servico: answers.servico,
       carga: answers.carga,
       nome: answers.nome,
-    });
+    };
+    trackEvent("whatsapp_funil", leadPayload);
+
+    // Padrão GA4 / Meta Pixel — plataformas reconhecem como conversão de Lead.
+    if (typeof window !== "undefined") {
+      const w = window as unknown as { dataLayer?: unknown[] };
+      w.dataLayer?.push({
+        event: "generate_lead",
+        currency: "BRL",
+        value: 0,
+        lead_source: "funnel_modal",
+        ...leadPayload,
+      });
+    }
+
     // Persist lead score signals
     import("@/lib/leadScore").then(({ addSignal }) => {
       addSignal({ type: "funnel_complete" });
