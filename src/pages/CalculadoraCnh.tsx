@@ -95,8 +95,13 @@ const CalculadoraCnh = () => {
 
   const handleResult = () => {
     track("simulador_jornada_result", { objetivo, disponibilidade, ritmo });
-    if (objetivo) addSignal({ type: "category", value: objetivo });
-    if (ritmo === "intensivo") addSignal({ type: "urgency", value: "alta" });
+    const svcMap: Record<Objetivo, "primeira" | "inclusao" | "mudanca"> = {
+      primeira: "primeira",
+      adicao: "inclusao",
+      mudanca: "mudanca",
+    };
+    if (objetivo) addSignal({ type: "service", value: svcMap[objetivo] });
+    if (ritmo === "intensivo") addSignal({ type: "urgency", value: "semana" });
   };
 
   const openFunnel = () => {
