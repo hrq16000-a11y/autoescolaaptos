@@ -4,7 +4,6 @@ import {
   RotateCcw,
   Car,
   Bike,
-  GraduationCap,
   type LucideIcon,
 } from "lucide-react";
 
