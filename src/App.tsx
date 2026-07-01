@@ -85,7 +85,7 @@ const AppRoutes = () => {
         <Route path="/reciclagem-cnh" element={<Servico />} />
         <Route path="/reteste-pratico" element={<Servico />} />
         <Route path="/aulas-praticas" element={<Servico />} />
-        <Route path="/mudanca-de-categoria" element={<Servico />} />
+        <Route path="/mudanca-de-categoria" element={<Navigate to="/inclusao-categoria" replace />} />
         <Route path="/calculadora-cnh" element={<CalculadoraCnh />} />
         <Route path="/comparador" element={<Comparador />} />
         <Route path="/aprovados" element={<Aprovados />} />
