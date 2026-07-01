@@ -13,6 +13,7 @@ Disallow: /home
 Disallow: /index.html
 Disallow: /obrigado
 Disallow: /diagnostico-seo
+Disallow: /admin/
 Disallow: /*?utm_
 Disallow: /*?fbclid=
 Disallow: /*?gclid=
@@ -24,6 +25,7 @@ Disallow: /modelo1/
 Disallow: /1/
 Disallow: /obrigado
 Disallow: /diagnostico-seo
+Disallow: /admin/
 
 User-agent: Twitterbot
 Allow: /
@@ -51,5 +53,6 @@ Disallow: /modelo1/
 Disallow: /1/
 Disallow: /obrigado
 Disallow: /diagnostico-seo
+Disallow: /admin/
 
 Sitemap: https://autoescolaaptos.com.br/sitemap.xml
