@@ -195,10 +195,17 @@ const DiagnosticoSeo = () => {
                   Testa {LEGACY_ROUTES.length} legadas + {OFFICIAL_ROUTES.length} oficiais no domínio atual.
                 </p>
               </div>
-              <Button onClick={runChecks} disabled={running}>
-                <RefreshCw className={`w-4 h-4 mr-2 ${running ? "animate-spin" : ""}`} />
-                {running ? "Rodando..." : "Executar verificação"}
-              </Button>
+              <div className="flex gap-2">
+                {results.length > 0 && (
+                  <Button variant="outline" size="sm" onClick={exportChecksCsv}>
+                    <Download className="w-4 h-4 mr-2" /> CSV
+                  </Button>
+                )}
+                <Button onClick={runChecks} disabled={running}>
+                  <RefreshCw className={`w-4 h-4 mr-2 ${running ? "animate-spin" : ""}`} />
+                  {running ? "Rodando..." : "Executar verificação"}
+                </Button>
+              </div>
             </div>
 
             {results.length > 0 && (
@@ -254,9 +261,12 @@ const DiagnosticoSeo = () => {
                   {log.length} URLs únicas · {totalHits} acessos totais registrados via <code>NotFound.tsx</code>.
                 </p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Button variant="outline" size="sm" onClick={loadLog}>
                   <RefreshCw className="w-4 h-4 mr-2" /> Recarregar
+                </Button>
+                <Button variant="outline" size="sm" onClick={exportLogCsv} disabled={log.length === 0}>
+                  <Download className="w-4 h-4 mr-2" /> CSV
                 </Button>
                 <Button variant="outline" size="sm" onClick={clearLog}>
                   <Trash2 className="w-4 h-4 mr-2" /> Limpar log
