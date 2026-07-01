@@ -21,7 +21,7 @@ const MOCK_REVIEWS: Review[] = [
   { author_name: "Carlos M.", rating: 5, relative_time_description: "há 1 mês", category: "Categoria AB", text: "Fiz a AB direto. Carros novos, instrutores pacientes e perto do Detran." },
   { author_name: "Patrícia S.", rating: 5, relative_time_description: "há 3 semanas", category: "Reciclagem", text: "Curso de reciclagem 100% online com o app CNH do Brasil, super prático." },
   { author_name: "Diego R.", rating: 4, relative_time_description: "há 2 meses", category: "Categoria A", text: "Aulas de moto bem estruturadas, instrutor experiente. Aprovado!" },
-  { author_name: "Renata C.", rating: 5, relative_time_description: "há 1 semana", category: "Mudança de Categoria", text: "Migrei da B para D rápido, com toda orientação do despachante interno." },
+  { author_name: "Renata C.", rating: 5, relative_time_description: "há 1 semana", category: "Inclusão de Categoria", text: "Incluí a moto na minha CNH B rápido, com toda orientação do despachante interno." },
   { author_name: "Felipe T.", rating: 5, relative_time_description: "há 4 dias", category: "Reteste", text: "Reteste agendado em menos de uma semana, passei tranquilo." },
 ];
 
