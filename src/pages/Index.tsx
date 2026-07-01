@@ -6,6 +6,7 @@ import PromoSection from "@/components/PromoSection";
 import Services from "@/components/Services";
 import Differentials from "@/components/Differentials";
 import SocialProof from "@/components/SocialProof";
+import GoogleReviews from "@/components/GoogleReviews";
 import Testimonials from "@/components/Testimonials";
 import About from "@/components/About";
 import Contact from "@/components/Contact";
@@ -95,6 +96,7 @@ const Index = () => {
       <Services />
       <Differentials />
       <SocialProof />
+      <GoogleReviews />
       <Testimonials />
       <About />
       <Contact />

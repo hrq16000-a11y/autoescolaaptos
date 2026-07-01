@@ -149,7 +149,27 @@ const Orcamento = () => {
                       href={finalUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={() => trackEvent("funnel_complete", resp as Record<string, unknown>)}
+                      onClick={() => {
+                        trackEvent("funnel_complete", resp as Record<string, unknown>);
+                        import("@/lib/leadScore").then(({ addSignal }) => {
+                          addSignal({ type: "funnel_complete" });
+                          if (resp.categoria) addSignal({ type: "category", value: (resp.categoria as "A"|"B"|"AB") });
+                          if (resp.prazo) {
+                            const map: Record<string, "hoje"|"semana"|"mes"|"futuro"> = {
+                              "hoje": "hoje", "semana": "semana", "mes": "mes", "futuro": "futuro",
+                            };
+                            const u = map[resp.prazo as string] ?? "futuro";
+                            addSignal({ type: "urgency", value: u });
+                          }
+                          if (resp.experiencia) {
+                            const m: Record<string, "nenhuma"|"ppd"|"ja_dirigiu"> = {
+                              "nunca": "nenhuma", "ppd": "ppd", "ja_dirigiu": "ja_dirigiu",
+                            };
+                            const e = m[resp.experiencia as string] ?? "nenhuma";
+                            addSignal({ type: "experience", value: e });
+                          }
+                        });
+                      }}
                     >
                       <MessageCircle className="w-5 h-5 mr-2" />
                       Receber meu orçamento agora
