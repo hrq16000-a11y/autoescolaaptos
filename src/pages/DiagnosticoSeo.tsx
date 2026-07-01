@@ -252,6 +252,38 @@ const DiagnosticoSeo = () => {
             </div>
           </Card>
 
+          {/* Legacy redirect mapping — single source of truth */}
+          <Card className="p-6 mb-8">
+            <h2 className="text-xl font-bold mb-1">Mapeamento de redirects legados</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              {LEGACY_REDIRECTS.length} regras aplicadas em <code>src/lib/legacyRedirects.ts</code>. Editar aqui atualiza o roteador e este dashboard simultaneamente.
+            </p>
+            <div className="border rounded-lg overflow-hidden">
+              <table className="w-full text-sm">
+                <thead className="bg-muted">
+                  <tr>
+                    <th className="text-left p-2">De</th>
+                    <th className="text-left p-2 w-8"></th>
+                    <th className="text-left p-2">Para</th>
+                    <th className="text-left p-2 w-20">Código</th>
+                    <th className="text-left p-2">Motivo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {LEGACY_REDIRECTS.map((r) => (
+                    <tr key={r.from} className="border-t">
+                      <td className="p-2 font-mono text-xs">{r.from}</td>
+                      <td className="p-2 text-muted-foreground"><ArrowRight className="w-3 h-3" /></td>
+                      <td className="p-2 font-mono text-xs text-primary">{r.to}</td>
+                      <td className="p-2"><Badge variant="secondary">{r.code}</Badge></td>
+                      <td className="p-2 text-xs text-muted-foreground">{r.reason}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+
           {/* 404 Log */}
           <Card className="p-6">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
