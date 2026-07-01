@@ -9,6 +9,7 @@ import SocialProof from "@/components/SocialProof";
 import GoogleReviews from "@/components/GoogleReviews";
 import Testimonials from "@/components/Testimonials";
 import HomeFAQ from "@/components/HomeFAQ";
+import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import About from "@/components/About";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
@@ -96,6 +97,7 @@ const Index = () => {
       <PromoSection />
       <Services />
       <Differentials />
+      <TestimonialsCarousel />
       <SocialProof />
       <GoogleReviews />
       <Testimonials />
