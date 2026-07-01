@@ -5,7 +5,8 @@ import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, XCircle, AlertTriangle, RefreshCw, Trash2, ExternalLink } from "lucide-react";
+import { CheckCircle2, XCircle, AlertTriangle, RefreshCw, Trash2, ExternalLink, Download, ArrowRight } from "lucide-react";
+import { LEGACY_REDIRECTS } from "@/lib/legacyRedirects";
 
 const LEGACY_ROUTES = [
   "/site",
