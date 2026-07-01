@@ -164,7 +164,7 @@ const HabilitacaoPCD = () => {
                   variant="outline"
                   showIcon={false}
                 >
-                  <Phone className="w-5 h-5 mr-2" aria-hidden /> (41) 3383-3627
+                  <Phone className="w-5 h-5 mr-2" aria-hidden /> WhatsApp (41) 3383-3627
                 </CTAButton>
               </div>
               <ul className="mt-6 grid grid-cols-2 gap-2 text-sm">

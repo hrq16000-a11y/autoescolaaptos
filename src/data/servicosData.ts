@@ -3,8 +3,6 @@ import {
   RefreshCw,
   RotateCcw,
   Car,
-  Bike,
-  GraduationCap,
   type LucideIcon,
 } from "lucide-react";
 
@@ -35,13 +33,13 @@ export const SERVICOS: Record<string, ServicoData> = {
     badge: "Inclusão de Categoria",
     icon: Plus,
     h1: "Inclusão de Categoria na CNH em São José dos Pinhais",
-    metaTitle: "Inclusão de Categoria CNH em São José dos Pinhais | APTOS",
+    metaTitle: "Inclusão de Categoria CNH (A ou B) em São José dos Pinhais | APTOS",
     metaDescription:
-      "Inclua a categoria A, C, D ou E na sua CNH com a Autoescola APTOS em São José dos Pinhais. Processo rápido, instrutores credenciados e aprovação acima da média.",
+      "Inclua a categoria A (moto) ou B (carro) na sua CNH com a Autoescola APTOS em São José dos Pinhais. Processo rápido, instrutores credenciados e alta aprovação.",
     heroSubtitle:
-      "Já tem CNH e quer adicionar uma nova categoria? Faça a inclusão (A, C, D ou E) com quem mais aprova em São José dos Pinhais. Curso teórico 100% online e aulas práticas com veículos novos.",
+      "Já tem CNH e quer adicionar uma nova categoria? Faça a inclusão (A ou B) com quem mais aprova em São José dos Pinhais. Curso teórico 100% online e aulas práticas com veículos novos.",
     porQue:
-      "A inclusão é o caminho mais rápido para quem já é habilitado em uma categoria e quer dirigir motos, caminhões, ônibus ou carretas. Você reaproveita seu histórico no DETRAN e só faz o complemento necessário.",
+      "A inclusão é o caminho mais rápido para quem já é habilitado e quer pilotar moto (A) ou dirigir carro (B). Você reaproveita seu histórico no DETRAN-PR e só faz o complemento necessário.",
     beneficios: [
       {
         title: "Processo mais curto que primeira habilitação",
@@ -53,7 +51,7 @@ export const SERVICOS: Record<string, ServicoData> = {
       },
       {
         title: "Aulas práticas com veículos compatíveis",
-        desc: "Motos para categoria A, caminhões e carretas para C/D/E, sempre em ótimo estado.",
+        desc: "Motos (manual e automática) para a categoria A e carros manuais para a categoria B.",
       },
       {
         title: "Acompanhamento do processo pelo WhatsApp",
@@ -67,7 +65,7 @@ export const SERVICOS: Record<string, ServicoData> = {
       },
       {
         title: "Exames médico e psicotécnico (se necessários)",
-        desc: "Renovações se sua avaliação anterior estiver vencida ou se a categoria nova exigir.",
+        desc: "Renovações se sua avaliação anterior estiver vencida ou se a nova categoria exigir.",
       },
       {
         title: "Curso teórico complementar",
@@ -88,18 +86,17 @@ export const SERVICOS: Record<string, ServicoData> = {
     ],
     diferenciais: [
       "+15 anos de tradição em São José dos Pinhais",
-      "Frota nova com veículos específicos de cada categoria",
-      "Instrutores especializados em categorias profissionais (C, D, E)",
+      "Frota nova: carro manual e motos manual/automática",
+      "Instrutores credenciados pelo DETRAN-PR",
       "95% de aprovação no DETRAN-PR",
     ],
     publicoAlvo:
-      "Condutores já habilitados que precisam adicionar uma nova categoria — seja para uso pessoal (moto) ou profissional (caminhão, ônibus, carreta).",
+      "Condutores já habilitados na A que querem incluir a B (carro), ou habilitados na B que querem incluir a A (moto) — passando a ter CNH AB.",
     duracao: "Em média 30 a 60 dias, dependendo da categoria e disponibilidade do aluno.",
     preRequisitos: [
       "Estar habilitado em outra categoria há pelo menos 1 ano (regra geral)",
-      "Idade mínima: 18 anos (A/B), 21 anos (C/D/E)",
-      "Para D e E é exigida CNH B há 2 anos ou C há 1 ano",
-      "Não ter cometido infração gravíssima nos últimos 12 meses (para C, D, E)",
+      "Idade mínima: 18 anos completos",
+      "Não ter cometido infração gravíssima nos últimos 12 meses",
     ],
     serviceType: "Inclusão de Categoria de CNH",
     ctaPrincipal: "Quero incluir uma categoria",
@@ -107,23 +104,23 @@ export const SERVICOS: Record<string, ServicoData> = {
     faqs: [
       {
         q: "Quanto tempo leva para incluir uma categoria?",
-        a: "Em média 30 a 60 dias, dependendo da categoria e da disponibilidade do aluno. A categoria A (moto) costuma ser a mais rápida; C, D e E levam um pouco mais porque exigem mais aulas práticas e exame específico.",
+        a: "Em média 30 a 60 dias, dependendo da categoria e da disponibilidade do aluno. A categoria A (moto) costuma ser a mais rápida.",
       },
       {
         q: "Preciso refazer o curso teórico inteiro?",
-        a: "Não. Para inclusão você faz apenas o complemento teórico relativo à nova categoria, focado no que ainda não foi abordado na sua habilitação atual. Tudo online pelo app CNH do Brasil.",
+        a: "Não. Para inclusão você faz apenas o complemento teórico da nova categoria, focado no que ainda não foi abordado. Tudo online pelo app CNH do Brasil.",
       },
       {
         q: "Quantas aulas práticas preciso fazer?",
-        a: "Com a Resolução CONTRAN 1020/2025, o mínimo é de 2 horas. Mas a APTOS recomenda treinar até estar confortável — especialmente para categorias profissionais (C, D, E), onde o veículo é maior.",
+        a: "Com a Resolução CONTRAN 1020/2025, o mínimo é de 2 horas. Mas a APTOS recomenda treinar até estar confortável — a maioria dos alunos faz de 5 a 15 aulas.",
       },
       {
         q: "Posso incluir a categoria A já tendo a B?",
         a: "Sim! É uma das inclusões mais procuradas. Você reaproveita seus exames médicos (se válidos) e faz só o complemento teórico de moto + as aulas práticas.",
       },
       {
-        q: "Qual a diferença entre inclusão e mudança de categoria?",
-        a: "Inclusão é adicionar uma nova categoria mantendo a que você já tem (ex.: B → AB). Mudança de categoria é trocar para uma categoria superior (ex.: B → C, quando você passa a dirigir caminhões e perde o veículo de passeio mais leve).",
+        q: "Vocês oferecem inclusão para C, D ou E?",
+        a: "Não. A APTOS trabalha exclusivamente com as categorias A (moto) e B (carro). Para categorias profissionais (C, D, E) recomendamos procurar um CFC especializado em transporte de cargas e passageiros.",
       },
       {
         q: "Atendem alunos de quais bairros de São José dos Pinhais?",
@@ -419,109 +416,6 @@ export const SERVICOS: Record<string, ServicoData> = {
       {
         q: "Sou muito inseguro, vocês têm paciência com iniciante?",
         a: "Esse é o nosso diferencial. Nossos instrutores são selecionados pela didática e paciência. Começamos no pátio, sem pressão, e só vamos para a rua quando você se sentir pronto.",
-      },
-    ],
-  },
-
-  "mudanca-de-categoria": {
-    slug: "mudanca-de-categoria",
-    badge: "Mudança de Categoria",
-    icon: GraduationCap,
-    h1: "Mudança de Categoria de CNH em São José dos Pinhais",
-    metaTitle: "Mudança de Categoria CNH em São José dos Pinhais | APTOS",
-    metaDescription:
-      "Suba sua CNH para uma categoria superior (B→C, C→D, D→E) com a Autoescola APTOS em São José dos Pinhais. Caminhões, ônibus e carretas com instrutor especializado.",
-    heroSubtitle:
-      "Quer subir de categoria para abrir oportunidades profissionais? A APTOS é referência em mudança de categoria em São José dos Pinhais — caminhões, ônibus e carretas com instrutores especializados.",
-    porQue:
-      "Categorias superiores (C, D, E) abrem caminho para o transporte de cargas, passageiros e veículos articulados — onde o mercado paga melhor. O processo é mais técnico que a primeira habilitação e exige instrutor especializado.",
-    beneficios: [
-      {
-        title: "Veículos compatíveis para cada categoria",
-        desc: "Caminhão para C, ônibus para D, carreta para E — sempre dentro do padrão do exame DETRAN-PR.",
-      },
-      {
-        title: "Instrutores com experiência profissional",
-        desc: "Equipe formada por motoristas profissionais aposentados ou ainda atuantes em transporte de carga/passageiros.",
-      },
-      {
-        title: "Curso teórico complementar online",
-        desc: "Foco na legislação específica de cada categoria, transporte de cargas perigosas, ergonomia e responsabilidades.",
-      },
-      {
-        title: "Preparação para o mercado",
-        desc: "Mais do que passar na prova: você sai apto para trabalhar no segmento.",
-      },
-    ],
-    passos: [
-      {
-        title: "Solicite seu orçamento de mudança",
-        desc: "No simulador você informa categoria atual e desejada e recebe valor exato.",
-      },
-      {
-        title: "Validação de pré-requisitos",
-        desc: "Verificamos tempo de habilitação, pontuação e validade dos exames médicos.",
-      },
-      {
-        title: "Exame médico e psicotécnico (se necessário)",
-        desc: "Categorias C, D e E exigem exames específicos e mais rigorosos.",
-      },
-      {
-        title: "Curso teórico complementar",
-        desc: "Online, focado na categoria desejada.",
-      },
-      {
-        title: "Aulas práticas no veículo da categoria",
-        desc: "Caminhão, ônibus ou carreta — treino até você se sentir confiante.",
-      },
-      {
-        title: "Exame prático e atualização da CNH",
-        desc: "Após aprovação, sua nova CNH sai em até 10 dias úteis.",
-      },
-    ],
-    diferenciais: [
-      "Frota completa: caminhões, ônibus e carretas",
-      "Instrutores com vivência real no transporte profissional",
-      "Acompanhamento de documentação junto ao DETRAN-PR",
-      "Pacotes para empresas (treinamento de frotas)",
-    ],
-    publicoAlvo:
-      "Motoristas profissionais ou aspirantes que querem dirigir caminhões (C), ônibus (D) ou carretas/articulados (E). Também atende empresas que precisam habilitar suas equipes.",
-    duracao: "Em média 45 a 90 dias, dependendo da categoria e da disponibilidade.",
-    preRequisitos: [
-      "Categoria C: ter CNH B há pelo menos 1 ano, idade mínima 21 anos",
-      "Categoria D: ter CNH B há 2 anos ou C há 1 ano, idade mínima 21 anos",
-      "Categoria E: ter CNH C há pelo menos 1 ano, idade mínima 21 anos",
-      "Não ter cometido infração gravíssima nos últimos 12 meses",
-      "Não ter sido reincidente em médias nos últimos 12 meses",
-    ],
-    serviceType: "Mudança de Categoria de CNH",
-    ctaPrincipal: "Quero subir de categoria",
-    ctaSecundario: "Falar com especialista",
-    faqs: [
-      {
-        q: "Qual a diferença entre inclusão e mudança de categoria?",
-        a: "Inclusão adiciona uma nova categoria mantendo a que você tem (ex.: B + A = AB). Mudança troca para uma categoria superior dentro da mesma família profissional (B → C → D → E). Para dirigir tanto carro quanto caminhão, geralmente é mudança/atualização.",
-      },
-      {
-        q: "Quanto tempo de habilitação preciso ter?",
-        a: "Para C: 1 ano de B. Para D: 2 anos de B ou 1 ano de C. Para E: 1 ano de C. Importante: não pode ter cometido infração gravíssima nos últimos 12 meses.",
-      },
-      {
-        q: "Quanto custa subir de categoria?",
-        a: "Depende da categoria-alvo e da necessidade de exames novos. C é a mais acessível, E a mais cara (por causa do veículo). Use nosso simulador para receber o valor exato.",
-      },
-      {
-        q: "Posso fazer C, D e E sequencialmente?",
-        a: "Sim, é o caminho mais comum para motoristas profissionais. Respeitando os prazos mínimos de cada etapa.",
-      },
-      {
-        q: "Vocês têm carreta para treino da categoria E?",
-        a: "Sim. Temos veículo combinado (caminhão-trator + semirreboque) no padrão do exame DETRAN-PR. Treino na pista da APTOS antes de ir para o circuito oficial.",
-      },
-      {
-        q: "Sou motorista profissional. Preciso fazer EAR também?",
-        a: "Sim, condutores que transportam cargas, passageiros, escolares ou veículos de emergência precisam do Curso de Atualização da Atividade Remunerada (EAR). A APTOS oferece esse curso também, na modalidade online.",
       },
     ],
   },

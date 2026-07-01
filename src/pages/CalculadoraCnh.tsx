@@ -18,7 +18,7 @@ import {
   Timer,
   GraduationCap,
   Plus,
-  Repeat,
+  
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -32,14 +32,13 @@ import { addSignal } from "@/lib/leadScore";
 import { useFunnelModal } from "@/hooks/useFunnelModal";
 import { cn } from "@/lib/utils";
 
-type Objetivo = "primeira" | "adicao" | "mudanca";
+type Objetivo = "primeira" | "adicao";
 type Disponibilidade = "manha" | "tarde" | "noite" | "sabados";
 type Ritmo = "normal" | "intensivo";
 
 const OBJETIVOS: { id: Objetivo; label: string; desc: string; icon: typeof GraduationCap }[] = [
   { id: "primeira", label: "1ª Habilitação", desc: "Ainda não tenho CNH", icon: GraduationCap },
   { id: "adicao", label: "Adição de categoria", desc: "Já tenho CNH, quero incluir A ou B", icon: Plus },
-  { id: "mudanca", label: "Mudança de categoria", desc: "Trocar B → C/D/E", icon: Repeat },
 ];
 
 const DISPONIBILIDADES: { id: Disponibilidade; label: string; icon: typeof Sun }[] = [
@@ -79,7 +78,7 @@ const CalculadoraCnh = () => {
       { icon: Car, title: "Aulas práticas", dur: dur(2, 6), desc: "Carros novos com direção elétrica." },
       { icon: CreditCard, title: "Prova prática + emissão da CNH", dur: dur(2, 3), desc: "Você recebe a PPD em ~10 dias úteis." },
     ];
-    if (objetivo === "adicao" || objetivo === "mudanca") {
+    if (objetivo === "adicao") {
       // remove teórico, encurta médico
       return [
         base[0],
@@ -95,10 +94,9 @@ const CalculadoraCnh = () => {
 
   const handleResult = () => {
     track("simulador_jornada_result", { objetivo, disponibilidade, ritmo });
-    const svcMap: Record<Objetivo, "primeira" | "inclusao" | "mudanca"> = {
+    const svcMap: Record<Objetivo, "primeira" | "inclusao"> = {
       primeira: "primeira",
       adicao: "inclusao",
-      mudanca: "mudanca",
     };
     if (objetivo) addSignal({ type: "service", value: svcMap[objetivo] });
     if (ritmo === "intensivo") addSignal({ type: "urgency", value: "semana" });

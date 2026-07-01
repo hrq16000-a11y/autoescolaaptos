@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { MapPin, Phone, Mail, MessageCircle, Facebook, Instagram } from "lucide-react";
+import { MapPin, MessageCircle, Facebook, Instagram } from "lucide-react";
+import { whatsappLink } from "@/lib/whatsapp";
 import logo from "@/assets/logo.jpeg";
 
 const Footer = () => {
@@ -169,30 +170,25 @@ const Footer = () => {
                 </span>
               </li>
               <li className="flex items-start space-x-3">
-                <Phone className="w-5 h-5 text-primary flex-shrink-0" />
+                <MessageCircle className="w-5 h-5 text-primary flex-shrink-0" />
                 <div className="text-background/70 text-sm">
                   <a
-                    href="tel:4133833627"
+                    href={whatsappLink("Olá! Vim pelo site da Autoescola APTOS.", "funil")}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="hover:text-primary transition-colors block"
                   >
-                    (41) 3383-3627
+                    WhatsApp (41) 3383-3627
                   </a>
                   <a
-                    href="tel:41991453627"
+                    href={whatsappLink("Olá! Vim pelo site da Autoescola APTOS.", "direto")}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="hover:text-primary transition-colors block"
                   >
-                    (41) 99145-3627
+                    WhatsApp (41) 99145-3627
                   </a>
                 </div>
-              </li>
-              <li className="flex items-start space-x-3">
-                <Mail className="w-5 h-5 text-primary flex-shrink-0" />
-                <a
-                  href="mailto:contato@autoescolaaptos.com.br"
-                  className="text-background/70 text-sm hover:text-primary transition-colors"
-                >
-                  contato@autoescolaaptos.com.br
-                </a>
               </li>
             </ul>
           </div>
@@ -244,21 +240,27 @@ const Footer = () => {
               className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm"
             >
               <a
-                href="mailto:contato@autoescolaaptos.com.br?subject=Política%20de%20Privacidade"
+                href={whatsappLink("Olá! Gostaria de solicitar a Política de Privacidade da Autoescola APTOS.", "direto")}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-background/60 hover:text-primary transition-colors"
               >
                 Política de Privacidade
               </a>
               <span className="text-background/30" aria-hidden="true">|</span>
               <a
-                href="mailto:contato@autoescolaaptos.com.br?subject=Termos%20de%20Uso"
+                href={whatsappLink("Olá! Gostaria de solicitar os Termos de Uso da Autoescola APTOS.", "direto")}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-background/60 hover:text-primary transition-colors"
               >
                 Termos de Uso
               </a>
               <span className="text-background/30" aria-hidden="true">|</span>
               <a
-                href="mailto:contato@autoescolaaptos.com.br?subject=LGPD"
+                href={whatsappLink("Olá! Gostaria de solicitar informações sobre LGPD da Autoescola APTOS.", "direto")}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-background/60 hover:text-primary transition-colors"
               >
                 LGPD

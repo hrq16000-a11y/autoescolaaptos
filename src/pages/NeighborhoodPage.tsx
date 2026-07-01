@@ -49,7 +49,7 @@ const NeighborhoodPage = () => {
   const services = [
     { name: "Primeira Habilitação", link: "/#servicos" },
     { name: "Renovação de CNH", link: "/#servicos" },
-    { name: "Mudança de Categoria", link: "/#servicos" },
+    { name: "Inclusão de Categoria (A/B)", link: "/inclusao-categoria" },
     { name: "Curso de Reciclagem", link: "/#servicos" }
   ];
 
@@ -119,7 +119,7 @@ const NeighborhoodPage = () => {
                   </a>
                 </Button>
                 <Button variant="outline" size="lg" asChild>
-                  <a href="tel:4133833627">
+                  <a href="https://api.whatsapp.com/send?phone=554133833627&amp;text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20Autoescola%20APTOS." target="_blank" rel="noopener noreferrer">
                     <Phone className="w-5 h-5 mr-2" />
                     (41) 3383-3627
                   </a>

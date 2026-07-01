@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { Link } from "react-router-dom";
-import { MessageCircle, Phone, ArrowRight } from "lucide-react";
+import { MessageCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { whatsappLink, type WhatsAppKind } from "@/lib/whatsapp";
@@ -14,7 +14,7 @@ import { useFunnelModal } from "@/hooks/useFunnelModal";
  *  - "funil"     → leva ao /orcamento (lead qualificado).
  *  - "whatsapp"  → abre WhatsApp DIRETO (decidido).
  *  - "whatsapp-funil" → abre WhatsApp do FUNIL (pré-qualificado).
- *  - "telefone"  → tel: (41) 3383-3627.
+ *  - "telefone"  → WhatsApp FUNIL (fixo (41) 3383-3627 é WhatsApp de triagem).
  *  - "internal"  → navegação interna (precisa de `to`).
  *  - "external"  → link externo (precisa de `href`).
  *
@@ -95,9 +95,7 @@ const CTAButton = forwardRef<HTMLButtonElement, CTAButtonProps>(
       className
     );
 
-    const icon = !showIcon ? null : intent === "telefone" ? (
-      <Phone className="w-5 h-5 mr-2" aria-hidden />
-    ) : intent === "internal" || intent === "external" ? (
+    const icon = !showIcon ? null : intent === "internal" || intent === "external" ? (
       <ArrowRight className="w-5 h-5 ml-2" aria-hidden />
     ) : (
       <MessageCircle className="w-5 h-5 mr-2" aria-hidden />
@@ -163,9 +161,12 @@ const CTAButton = forwardRef<HTMLButtonElement, CTAButtonProps>(
     }
 
     if (intent === "telefone") {
+      // Ambos os telefones da autoescola são WhatsApp. O fixo é o número de triagem/funil.
       return (
         <Button ref={ref} size={size} variant={variant} className={baseClasses} onClick={handleClick} asChild>
-          <a href="tel:+554133833627">{content}</a>
+          <a href={whatsappLink(message, "funil")} target="_blank" rel="noopener noreferrer">
+            {content}
+          </a>
         </Button>
       );
     }

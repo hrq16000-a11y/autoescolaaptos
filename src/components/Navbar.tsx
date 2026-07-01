@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Phone, MessageCircle } from "lucide-react";
+import { Menu, X, MessageCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { whatsappLink } from "@/lib/whatsapp";
 import logo from "@/assets/logo.jpeg";
 
 const Navbar = () => {
@@ -88,8 +89,12 @@ const Navbar = () => {
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center space-x-3">
             <Button variant="outline" size="sm" asChild>
-              <a href="tel:4133833627">
-                <Phone className="w-4 h-4 mr-2" />
+              <a
+                href={whatsappLink("Olá! Vim pelo site da Autoescola APTOS.", "funil")}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <MessageCircle className="w-4 h-4 mr-2" />
                 (41) 3383-3627
               </a>
             </Button>
@@ -149,8 +154,12 @@ const Navbar = () => {
               ))}
               <div className="pt-4 space-y-3">
                 <Button variant="outline" className="w-full" asChild>
-                  <a href="tel:4133833627">
-                    <Phone className="w-4 h-4 mr-2" />
+                  <a
+                    href={whatsappLink("Olá! Vim pelo site da Autoescola APTOS.", "funil")}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2" />
                     (41) 3383-3627
                   </a>
                 </Button>

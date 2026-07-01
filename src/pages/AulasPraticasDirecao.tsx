@@ -306,7 +306,7 @@ const AulasPraticasDirecao = () => {
                 <ul className="space-y-2 mb-6">
                   <li className="flex items-center gap-2 text-sm text-muted-foreground">
                     <CheckCircle2 className="w-4 h-4 text-primary" />
-                    Veículos com câmbio manual e automático
+                    Carro manual (padrão do exame DETRAN-PR)
                   </li>
                   <li className="flex items-center gap-2 text-sm text-muted-foreground">
                     <CheckCircle2 className="w-4 h-4 text-primary" />

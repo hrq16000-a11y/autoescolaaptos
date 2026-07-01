@@ -137,39 +137,17 @@ export const faqData: FAQItem[] = [
   {
     category: "Inclusão",
     question: "Quanto tempo demora uma inclusão?",
-    answer: "Em média 30 a 60 dias. Categoria A (moto) costuma ser a mais rápida; C, D e E demoram mais por exigirem mais aulas práticas."
+    answer: "Em média 30 a 60 dias. Categoria A (moto) costuma ser a mais rápida; a categoria B (carro) leva um pouco mais por exigir mais aulas práticas."
   },
   {
     category: "Inclusão",
     question: "Precisa refazer exame médico para inclusão?",
     answer: "Depende. Se sua avaliação anterior estiver válida e a nova categoria não exigir avaliação específica adicional, não precisa. A APTOS confirma antes de você gastar."
   },
-
-  // ========================= MUDANÇA DE CATEGORIA =========================
   {
-    category: "Mudança de Categoria",
-    question: "Qual a diferença entre inclusão e mudança de categoria?",
-    answer: "Inclusão é adicionar (B+A=AB). Mudança é subir para categoria superior dentro da família profissional (B→C, C→D, D→E)."
-  },
-  {
-    category: "Mudança de Categoria",
-    question: "Quanto tempo de B preciso para tirar a C?",
-    answer: "1 ano completo de habilitação na categoria B, idade mínima 21 anos e não ter cometido infração gravíssima nos últimos 12 meses."
-  },
-  {
-    category: "Mudança de Categoria",
-    question: "Para a categoria D (ônibus) qual o pré-requisito?",
-    answer: "CNH B há pelo menos 2 anos OU CNH C há pelo menos 1 ano. Idade mínima 21 anos. Exame médico e psicotécnico mais rigorosos."
-  },
-  {
-    category: "Mudança de Categoria",
-    question: "Para a E (carreta) preciso de quanto tempo de C?",
-    answer: "1 ano completo de CNH C, sem infração gravíssima nos últimos 12 meses. Idade mínima 21 anos."
-  },
-  {
-    category: "Mudança de Categoria",
-    question: "Vocês têm carreta e ônibus para treino?",
-    answer: "Sim. Frota completa com caminhão, ônibus e veículo combinado (carreta) para todas as categorias profissionais."
+    category: "Inclusão",
+    question: "Vocês oferecem C, D ou E?",
+    answer: "Não. A APTOS trabalha apenas com as categorias A (moto) e B (carro). Para categorias profissionais (C, D, E), recomendamos procurar um CFC especializado em transporte de cargas e passageiros."
   },
 
   // ========================= RECICLAGEM =========================
