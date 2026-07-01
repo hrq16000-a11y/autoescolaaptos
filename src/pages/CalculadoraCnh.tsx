@@ -32,14 +32,13 @@ import { addSignal } from "@/lib/leadScore";
 import { useFunnelModal } from "@/hooks/useFunnelModal";
 import { cn } from "@/lib/utils";
 
-type Objetivo = "primeira" | "adicao" | "mudanca";
+type Objetivo = "primeira" | "adicao";
 type Disponibilidade = "manha" | "tarde" | "noite" | "sabados";
 type Ritmo = "normal" | "intensivo";
 
 const OBJETIVOS: { id: Objetivo; label: string; desc: string; icon: typeof GraduationCap }[] = [
   { id: "primeira", label: "1ª Habilitação", desc: "Ainda não tenho CNH", icon: GraduationCap },
   { id: "adicao", label: "Adição de categoria", desc: "Já tenho CNH, quero incluir A ou B", icon: Plus },
-  { id: "mudanca", label: "Mudança de categoria", desc: "Trocar B → C/D/E", icon: Repeat },
 ];
 
 const DISPONIBILIDADES: { id: Disponibilidade; label: string; icon: typeof Sun }[] = [
