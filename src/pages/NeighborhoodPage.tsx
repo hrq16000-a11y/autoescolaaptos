@@ -49,7 +49,7 @@ const NeighborhoodPage = () => {
   const services = [
     { name: "Primeira Habilitação", link: "/#servicos" },
     { name: "Renovação de CNH", link: "/#servicos" },
-    { name: "Mudança de Categoria", link: "/#servicos" },
+    { name: "Inclusão de Categoria (A/B)", link: "/inclusao-categoria" },
     { name: "Curso de Reciclagem", link: "/#servicos" }
   ];
 
