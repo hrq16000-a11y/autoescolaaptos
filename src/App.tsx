@@ -37,6 +37,7 @@ const CalculadoraCnh = lazy(() => import("./pages/CalculadoraCnh"));
 const Comparador = lazy(() => import("./pages/Comparador"));
 const Aprovados = lazy(() => import("./pages/Aprovados"));
 const DiagnosticoSeo = lazy(() => import("./pages/DiagnosticoSeo"));
+const HabilitacaoPCD = lazy(() => import("./pages/HabilitacaoPCD"));
 
 const queryClient = new QueryClient();
 
@@ -87,6 +88,9 @@ const AppRoutes = () => {
         <Route path="/comparador" element={<Comparador />} />
         <Route path="/aprovados" element={<Aprovados />} />
         <Route path="/diagnostico-seo" element={<DiagnosticoSeo />} />
+        <Route path="/pcd" element={<HabilitacaoPCD />} />
+        <Route path="/habilitacao-pcd" element={<Navigate to="/pcd" replace />} />
+        <Route path="/autoescola-pcd" element={<Navigate to="/pcd" replace />} />
         {/* Legacy URL redirects — mapa central em src/lib/legacyRedirects.ts */}
         {LEGACY_REDIRECTS.map((r) => (
           <Route key={r.from} path={r.from} element={<Navigate to={r.to} replace />} />

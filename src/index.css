@@ -111,6 +111,22 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading font-bold;
   }
+
+  /* Global keyboard focus ring — a11y (WCAG 2.4.7).
+     Applies only for keyboard navigation, not mouse clicks. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background rounded-sm;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  summary:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
 }
 
 @layer utilities {

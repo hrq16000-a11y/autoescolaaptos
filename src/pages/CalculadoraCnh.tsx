@@ -1,159 +1,354 @@
 import { useMemo, useState } from "react";
-import { Calculator, CheckCircle2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Calculator,
+  CheckCircle2,
+  ArrowLeft,
+  ArrowRight,
+  Stethoscope,
+  BookOpen,
+  Car,
+  ShieldCheck,
+  CreditCard,
+  Sun,
+  Sunset,
+  Moon,
+  CalendarDays,
+  Rocket,
+  Timer,
+  GraduationCap,
+  Plus,
+  Repeat,
+} from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import MobileStickyBar from "@/components/MobileStickyBar";
 import SEO from "@/components/SEO";
-import CTAButton from "@/components/CTAButton";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
 import { track } from "@/lib/analytics";
 import { addSignal } from "@/lib/leadScore";
+import { useFunnelModal } from "@/hooks/useFunnelModal";
+import { cn } from "@/lib/utils";
 
-type Categoria = "A" | "B" | "AB";
-type Pagamento = "avista" | "parcelado_3" | "parcelado_6" | "parcelado_10";
+type Objetivo = "primeira" | "adicao" | "mudanca";
+type Disponibilidade = "manha" | "tarde" | "noite" | "sabados";
+type Ritmo = "normal" | "intensivo";
 
-const BASE: Record<Categoria, number> = { A: 1890, B: 2490, AB: 3290 };
-const TAXA_DETRAN = 404;
-const AULA_EXTRA = 110;
-const INCLUSAO_ADD = 1690;
+const OBJETIVOS: { id: Objetivo; label: string; desc: string; icon: typeof GraduationCap }[] = [
+  { id: "primeira", label: "1ª Habilitação", desc: "Ainda não tenho CNH", icon: GraduationCap },
+  { id: "adicao", label: "Adição de categoria", desc: "Já tenho CNH, quero incluir A ou B", icon: Plus },
+  { id: "mudanca", label: "Mudança de categoria", desc: "Trocar B → C/D/E", icon: Repeat },
+];
 
-const PAG_MULT: Record<Pagamento, { mult: number; label: string }> = {
-  avista: { mult: 0.92, label: "À vista (8% desc.)" },
-  parcelado_3: { mult: 1.0, label: "3x sem juros" },
-  parcelado_6: { mult: 1.04, label: "6x" },
-  parcelado_10: { mult: 1.09, label: "10x" },
-};
+const DISPONIBILIDADES: { id: Disponibilidade; label: string; icon: typeof Sun }[] = [
+  { id: "manha", label: "Manhã", icon: Sun },
+  { id: "tarde", label: "Tarde", icon: Sunset },
+  { id: "noite", label: "Noite", icon: Moon },
+  { id: "sabados", label: "Sábados", icon: CalendarDays },
+];
+
+const RITMOS: { id: Ritmo; label: string; desc: string; icon: typeof Timer }[] = [
+  { id: "normal", label: "Modo normal", desc: "No meu ritmo, sem pressão", icon: Timer },
+  { id: "intensivo", label: "Modo intensivo", desc: "Quero minha CNH o quanto antes", icon: Rocket },
+];
 
 const CalculadoraCnh = () => {
-  const [categoria, setCategoria] = useState<Categoria>("B");
-  const [pagamento, setPagamento] = useState<Pagamento>("avista");
-  const [aulasExtras, setAulasExtras] = useState(0);
-  const [inclusao, setInclusao] = useState(false);
+  const [step, setStep] = useState(0);
+  const [objetivo, setObjetivo] = useState<Objetivo | null>(null);
+  const [disponibilidade, setDisponibilidade] = useState<Disponibilidade | null>(null);
+  const [ritmo, setRitmo] = useState<Ritmo | null>(null);
+  const funnel = useFunnelModal();
 
-  const total = useMemo(() => {
-    const base = inclusao ? INCLUSAO_ADD + BASE.A : BASE[categoria];
-    const aulas = aulasExtras * AULA_EXTRA;
-    const subtotal = base + aulas + TAXA_DETRAN;
-    return Math.round(subtotal * PAG_MULT[pagamento].mult);
-  }, [categoria, pagamento, aulasExtras, inclusao]);
+  const totalSteps = 4; // 0,1,2,3(resultado)
+  const progress = ((step + 1) / totalSteps) * 100;
 
-  const handleSimulate = () => {
-    track("calculadora_simulate", { categoria, pagamento, aulasExtras, inclusao, total });
-    addSignal({ type: "category", value: categoria });
+  const timeline = useMemo(() => {
+    if (!objetivo || !ritmo) return [] as { icon: typeof Stethoscope; title: string; dur: string; desc: string }[];
+    const mult = ritmo === "intensivo" ? 0.6 : 1;
+    const dur = (min: number, max: number) => {
+      const a = Math.max(1, Math.round(min * mult));
+      const b = Math.max(a, Math.round(max * mult));
+      return a === b ? `${a} sem.` : `${a}–${b} sem.`;
+    };
+    const base = [
+      { icon: Stethoscope, title: "Exames médico e psicotécnico", dur: dur(1, 1), desc: "Clínica credenciada DETRAN-PR." },
+      { icon: BookOpen, title: "Curso teórico (CNH do Brasil)", dur: dur(1, 3), desc: "100% online, no seu ritmo." },
+      { icon: ShieldCheck, title: "Prova teórica no DETRAN", dur: dur(1, 2), desc: "Agendamento assim que você concluir." },
+      { icon: Car, title: "Aulas práticas", dur: dur(2, 6), desc: "Carros novos com direção elétrica." },
+      { icon: CreditCard, title: "Prova prática + emissão da CNH", dur: dur(2, 3), desc: "Você recebe a PPD em ~10 dias úteis." },
+    ];
+    if (objetivo === "adicao" || objetivo === "mudanca") {
+      // remove teórico, encurta médico
+      return [
+        base[0],
+        { icon: Car, title: "Aulas práticas na nova categoria", dur: dur(2, 5), desc: "Foco total na prática." },
+        base[3] && base[4],
+      ].filter(Boolean) as typeof base;
+    }
+    return base;
+  }, [objetivo, ritmo]);
+
+  const next = () => setStep((s) => Math.min(totalSteps - 1, s + 1));
+  const back = () => setStep((s) => Math.max(0, s - 1));
+
+  const handleResult = () => {
+    track("simulador_jornada_result", { objetivo, disponibilidade, ritmo });
+    if (objetivo) addSignal({ type: "category", value: objetivo });
+    if (ritmo === "intensivo") addSignal({ type: "urgency", value: "alta" });
   };
 
-  const message = `Olá! Simulei na calculadora:%0A• Categoria: ${categoria}${inclusao ? " (inclusão)" : ""}%0A• Pagamento: ${PAG_MULT[pagamento].label}%0A• Aulas extras: ${aulasExtras}%0A• Estimativa: R$ ${total.toLocaleString("pt-BR")}%0AQuero uma proposta oficial.`;
+  const openFunnel = () => {
+    handleResult();
+    funnel.open(`simulador_jornada_${objetivo ?? "na"}_${ritmo ?? "na"}`);
+  };
 
   return (
     <div className="min-h-screen bg-background">
       <SEO
-        title="Calculadora de CNH em São José dos Pinhais — Simule o valor"
-        description="Simule em segundos o valor da sua CNH na Autoescola APTOS: categoria A, B ou AB, aulas extras e formas de pagamento. Receba proposta no WhatsApp."
-        canonical="https://autoescolaaptos.com.br/calculadora-cnh"
+        title="Simulador de Jornada CNH — Autoescola APTOS em São José dos Pinhais"
+        description="Descubra em 3 passos o caminho da sua CNH: exames, curso, aulas práticas e prova. Sem cadastro. Receba um orçamento personalizado no WhatsApp."
+        canonical="/calculadora-cnh"
       />
       <Navbar />
       <main className="pt-24 pb-20">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <div className="text-center mb-10">
+        <div className="container mx-auto px-4 max-w-3xl">
+          <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 text-primary mb-4">
-              <Calculator className="w-8 h-8" />
+              <Calculator className="w-8 h-8" aria-hidden />
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-3">Calculadora de CNH</h1>
-            <p className="text-lg text-muted-foreground">
-              Simulação rápida e transparente. Sem cadastro, sem pegadinha.
+            <h1 className="text-3xl md:text-5xl font-bold mb-2">Simulador de Jornada CNH</h1>
+            <p className="text-base md:text-lg text-muted-foreground">
+              3 perguntas rápidas e mostramos sua linha do tempo até a habilitação.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 bg-card border border-border rounded-2xl p-6 md:p-8 shadow-md">
-            <div className="space-y-6">
-              <div>
-                <Label className="mb-2 block">Categoria desejada</Label>
-                <div className="grid grid-cols-3 gap-2">
-                  {(["A", "B", "AB"] as Categoria[]).map((c) => (
-                    <Button
-                      key={c}
-                      variant={categoria === c ? "default" : "outline"}
-                      onClick={() => setCategoria(c)}
-                      data-intent="select_categoria"
-                    >
-                      {c}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <Label className="mb-2 block">Forma de pagamento</Label>
-                <div className="grid grid-cols-2 gap-2">
-                  {(Object.keys(PAG_MULT) as Pagamento[]).map((p) => (
-                    <Button
-                      key={p}
-                      size="sm"
-                      variant={pagamento === p ? "default" : "outline"}
-                      onClick={() => setPagamento(p)}
-                      data-intent="select_pagamento"
-                    >
-                      {PAG_MULT[p].label}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <Label className="mb-2 block">Aulas práticas extras (R$ {AULA_EXTRA} cada)</Label>
-                <Input
-                  type="number"
-                  min={0}
-                  max={30}
-                  value={aulasExtras}
-                  onChange={(e) => setAulasExtras(Math.max(0, Math.min(30, Number(e.target.value) || 0)))}
-                />
-                <p className="text-xs text-muted-foreground mt-1">
-                  Resolução 1020/2025: mínimo de 2h. Aulas extras conforme necessidade.
-                </p>
-              </div>
-
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={inclusao}
-                  onChange={(e) => setInclusao(e.target.checked)}
-                  className="w-5 h-5 accent-primary"
-                />
-                <span className="text-sm">Adicionar inclusão de categoria (+ R$ {INCLUSAO_ADD})</span>
-              </label>
+          <div className="mb-6">
+            <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
+              <span>Passo {Math.min(step + 1, totalSteps)} de {totalSteps}</span>
+              <span>{Math.round(progress)}%</span>
             </div>
+            <Progress value={progress} aria-label={`Progresso: ${Math.round(progress)}%`} />
+          </div>
 
-            <div className="bg-primary/5 rounded-xl p-6 flex flex-col">
-              <p className="text-sm uppercase tracking-wide text-muted-foreground mb-2">Estimativa total</p>
-              <p className="text-5xl font-bold text-primary mb-4">
-                R$ {total.toLocaleString("pt-BR")}
-              </p>
-              <ul className="space-y-2 text-sm text-muted-foreground mb-6">
-                <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-primary mt-0.5" /> Taxas Detran-PR ({`R$ ${TAXA_DETRAN}`}) inclusas</li>
-                <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-primary mt-0.5" /> Material teórico via app CNH do Brasil</li>
-                <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-primary mt-0.5" /> Sem prazo para concluir (Res. 1020/2025)</li>
-                <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-primary mt-0.5" /> Valores podem variar conforme aprovação</li>
-              </ul>
-              <div onClick={handleSimulate} className="mt-auto">
-                <CTAButton
-                  intent="whatsapp-funil"
-                  message={message}
-                  trackingSource="calculadora_cnh"
-                  trackingLabel="solicitar_proposta"
-                  fullWidth
+          <div className="bg-card border border-border rounded-2xl p-5 md:p-8 shadow-md min-h-[420px] flex flex-col">
+            <AnimatePresence mode="wait">
+              {step === 0 && (
+                <motion.section
+                  key="step-0"
+                  initial={{ opacity: 0, x: 24 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -24 }}
+                  transition={{ duration: 0.25 }}
+                  aria-labelledby="q1"
                 >
-                  Solicitar proposta oficial
-                </CTAButton>
-              </div>
+                  <h2 id="q1" className="text-xl md:text-2xl font-bold mb-4">
+                    1. O que você precisa hoje?
+                  </h2>
+                  <div className="grid gap-3">
+                    {OBJETIVOS.map((o) => {
+                      const Icon = o.icon;
+                      const active = objetivo === o.id;
+                      return (
+                        <button
+                          key={o.id}
+                          onClick={() => setObjetivo(o.id)}
+                          aria-pressed={active}
+                          className={cn(
+                            "flex items-center gap-4 p-4 rounded-xl border-2 text-left transition-all min-h-[64px]",
+                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                            active
+                              ? "border-primary bg-primary/5 shadow-glow"
+                              : "border-border hover:border-primary/40"
+                          )}
+                        >
+                          <div className={cn("w-11 h-11 rounded-lg flex items-center justify-center shrink-0", active ? "bg-primary text-primary-foreground" : "bg-muted text-primary")}>
+                            <Icon className="w-5 h-5" aria-hidden />
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-semibold">{o.label}</p>
+                            <p className="text-sm text-muted-foreground">{o.desc}</p>
+                          </div>
+                          {active && <CheckCircle2 className="w-5 h-5 text-primary" aria-hidden />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </motion.section>
+              )}
+
+              {step === 1 && (
+                <motion.section
+                  key="step-1"
+                  initial={{ opacity: 0, x: 24 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -24 }}
+                  transition={{ duration: 0.25 }}
+                  aria-labelledby="q2"
+                >
+                  <h2 id="q2" className="text-xl md:text-2xl font-bold mb-2">
+                    2. Qual sua melhor disponibilidade?
+                  </h2>
+                  <p className="text-sm text-muted-foreground mb-4">Encaixamos suas aulas no turno que funciona pra você.</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {DISPONIBILIDADES.map((d) => {
+                      const Icon = d.icon;
+                      const active = disponibilidade === d.id;
+                      return (
+                        <button
+                          key={d.id}
+                          onClick={() => setDisponibilidade(d.id)}
+                          aria-pressed={active}
+                          className={cn(
+                            "flex flex-col items-center justify-center gap-2 p-5 rounded-xl border-2 transition-all min-h-[110px]",
+                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                            active ? "border-primary bg-primary/5 shadow-glow" : "border-border hover:border-primary/40"
+                          )}
+                        >
+                          <Icon className={cn("w-7 h-7", active ? "text-primary" : "text-muted-foreground")} aria-hidden />
+                          <span className="font-semibold">{d.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </motion.section>
+              )}
+
+              {step === 2 && (
+                <motion.section
+                  key="step-2"
+                  initial={{ opacity: 0, x: 24 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -24 }}
+                  transition={{ duration: 0.25 }}
+                  aria-labelledby="q3"
+                >
+                  <h2 id="q3" className="text-xl md:text-2xl font-bold mb-4">
+                    3. Você tem pressa?
+                  </h2>
+                  <div className="grid gap-3">
+                    {RITMOS.map((r) => {
+                      const Icon = r.icon;
+                      const active = ritmo === r.id;
+                      return (
+                        <button
+                          key={r.id}
+                          onClick={() => setRitmo(r.id)}
+                          aria-pressed={active}
+                          className={cn(
+                            "flex items-center gap-4 p-4 rounded-xl border-2 text-left transition-all min-h-[64px]",
+                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                            active ? "border-primary bg-primary/5 shadow-glow" : "border-border hover:border-primary/40"
+                          )}
+                        >
+                          <div className={cn("w-11 h-11 rounded-lg flex items-center justify-center shrink-0", active ? "bg-primary text-primary-foreground" : "bg-muted text-primary")}>
+                            <Icon className="w-5 h-5" aria-hidden />
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-semibold">{r.label}</p>
+                            <p className="text-sm text-muted-foreground">{r.desc}</p>
+                          </div>
+                          {active && <CheckCircle2 className="w-5 h-5 text-primary" aria-hidden />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </motion.section>
+              )}
+
+              {step === 3 && (
+                <motion.section
+                  key="step-3"
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -16 }}
+                  transition={{ duration: 0.3 }}
+                  aria-labelledby="resultado"
+                >
+                  <div className="text-center mb-6">
+                    <span className="inline-block bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-2">
+                      Sua jornada
+                    </span>
+                    <h2 id="resultado" className="text-2xl md:text-3xl font-bold">
+                      Veja como seu caminho até a CNH deve fluir
+                    </h2>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Estimativa com base no perfil que você marcou. Podemos acelerar mais no atendimento.
+                    </p>
+                  </div>
+
+                  <ol className="relative pl-6 border-l-2 border-primary/30 space-y-5" aria-label="Etapas estimadas">
+                    {timeline.map((step, i) => {
+                      const Icon = step.icon;
+                      return (
+                        <motion.li
+                          key={step.title}
+                          initial={{ opacity: 0, x: -12 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: i * 0.08 }}
+                          className="relative"
+                        >
+                          <span className="absolute -left-[34px] top-0 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center ring-4 ring-background shadow-md">
+                            <Icon className="w-4 h-4" aria-hidden />
+                          </span>
+                          <div className="flex items-baseline justify-between gap-3">
+                            <h3 className="font-bold">{step.title}</h3>
+                            <span className="text-xs font-semibold text-primary shrink-0">{step.dur}</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground">{step.desc}</p>
+                        </motion.li>
+                      );
+                    })}
+                  </ol>
+
+                  <div className="mt-8 bg-primary/5 border border-primary/20 rounded-xl p-5 text-center">
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Pronto para transformar essa jornada em um plano com valores reais?
+                    </p>
+                    <Button
+                      size="lg"
+                      onClick={openFunnel}
+                      className="h-14 px-8 shadow-glow font-semibold w-full sm:w-auto focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      data-intent="funil"
+                    >
+                      Ver orçamento para este perfil
+                      <ArrowRight className="w-5 h-5 ml-2" aria-hidden />
+                    </Button>
+                  </div>
+                </motion.section>
+              )}
+            </AnimatePresence>
+
+            <div className="mt-auto pt-6 flex items-center justify-between">
+              <Button
+                variant="ghost"
+                onClick={back}
+                disabled={step === 0}
+                className="focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                aria-label="Voltar etapa"
+              >
+                <ArrowLeft className="w-4 h-4 mr-1" aria-hidden /> Voltar
+              </Button>
+              {step < 3 && (
+                <Button
+                  onClick={next}
+                  disabled={
+                    (step === 0 && !objetivo) ||
+                    (step === 1 && !disponibilidade) ||
+                    (step === 2 && !ritmo)
+                  }
+                  className="focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  {step === 2 ? "Ver minha jornada" : "Próximo"}
+                  <ArrowRight className="w-4 h-4 ml-1" aria-hidden />
+                </Button>
+              )}
             </div>
           </div>
 
           <p className="text-xs text-center text-muted-foreground mt-6">
-            * Valores meramente ilustrativos. Confirme com a autoescola a proposta válida do mês.
+            * Estimativas baseadas em prazos médios do DETRAN-PR e na Resolução CONTRAN 1020/2025.
           </p>
         </div>
       </main>
