@@ -154,8 +154,12 @@ const Navbar = () => {
               ))}
               <div className="pt-4 space-y-3">
                 <Button variant="outline" className="w-full" asChild>
-                  <a href="tel:4133833627">
-                    <Phone className="w-4 h-4 mr-2" />
+                  <a
+                    href={whatsappLink("Olá! Vim pelo site da Autoescola APTOS.", "funil")}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2" />
                     (41) 3383-3627
                   </a>
                 </Button>
