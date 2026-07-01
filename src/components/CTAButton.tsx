@@ -117,10 +117,29 @@ const CTAButton = forwardRef<HTMLButtonElement, CTAButtonProps>(
       );
 
     // Resolve destination
+    // "funil" abre o FunnelModal (multi-etapas). Se `to` for passado explicitamente,
+    // navega para essa rota (ex.: manter link direto para /orcamento em algum caso).
     if (intent === "funil") {
+      if (to) {
+        return (
+          <Button ref={ref} size={size} variant={variant} className={baseClasses} onClick={handleClick} asChild>
+            <Link to={to}>{content}</Link>
+          </Button>
+        );
+      }
       return (
-        <Button ref={ref} size={size} variant={variant} className={baseClasses} onClick={handleClick} asChild>
-          <Link to={to || "/orcamento"}>{content}</Link>
+        <Button
+          ref={ref}
+          size={size}
+          variant={variant}
+          className={baseClasses}
+          onClick={() => {
+            handleClick();
+            funnel.open(trackingSource);
+          }}
+          data-intent="funil"
+        >
+          {content}
         </Button>
       );
     }
