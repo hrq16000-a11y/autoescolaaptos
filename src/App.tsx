@@ -32,6 +32,8 @@ import Aprovados from "./pages/Aprovados";
 import NotFound from "./pages/NotFound";
 import DiagnosticoSeo from "./pages/DiagnosticoSeo";
 import { useEngagementTracking } from "./hooks/useEngagementTracking";
+import { FunnelProvider } from "./hooks/useFunnelModal";
+import { LEGACY_REDIRECTS } from "./lib/legacyRedirects";
 
 const queryClient = new QueryClient();
 
