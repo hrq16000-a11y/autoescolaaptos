@@ -97,6 +97,7 @@ const Index = () => {
       <PromoSection />
       <Services />
       <Differentials />
+      <TestimonialsCarousel />
       <SocialProof />
       <GoogleReviews />
       <Testimonials />
