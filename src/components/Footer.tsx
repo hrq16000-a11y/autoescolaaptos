@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { MapPin, Phone, Mail, MessageCircle, Facebook, Instagram } from "lucide-react";
+import { MapPin, MessageCircle, Facebook, Instagram } from "lucide-react";
+import { whatsappLink } from "@/lib/whatsapp";
 import logo from "@/assets/logo.jpeg";
 
 const Footer = () => {
