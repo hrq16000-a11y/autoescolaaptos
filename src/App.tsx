@@ -32,6 +32,8 @@ import Aprovados from "./pages/Aprovados";
 import NotFound from "./pages/NotFound";
 import DiagnosticoSeo from "./pages/DiagnosticoSeo";
 import { useEngagementTracking } from "./hooks/useEngagementTracking";
+import { FunnelProvider } from "./hooks/useFunnelModal";
+import { LEGACY_REDIRECTS } from "./lib/legacyRedirects";
 
 const queryClient = new QueryClient();
 
@@ -71,17 +73,10 @@ const AppRoutes = () => {
       <Route path="/comparador" element={<Comparador />} />
       <Route path="/aprovados" element={<Aprovados />} />
       <Route path="/diagnostico-seo" element={<DiagnosticoSeo />} />
-      {/* Legacy URL redirects (301-equivalent via replace) — evita 404 em URLs indexadas por versões antigas do site */}
-      <Route path="/site" element={<Navigate to="/" replace />} />
-      <Route path="/site/*" element={<Navigate to="/" replace />} />
-      <Route path="/site/contato" element={<Navigate to="/#contato" replace />} />
-      <Route path="/modelo1" element={<Navigate to="/" replace />} />
-      <Route path="/modelo1/*" element={<Navigate to="/" replace />} />
-      <Route path="/1" element={<Navigate to="/" replace />} />
-      <Route path="/1/*" element={<Navigate to="/" replace />} />
-      <Route path="/index.html" element={<Navigate to="/" replace />} />
-      <Route path="/home" element={<Navigate to="/" replace />} />
-      <Route path="/contato" element={<Navigate to="/#contato" replace />} />
+      {/* Legacy URL redirects — mapa central em src/lib/legacyRedirects.ts */}
+      {LEGACY_REDIRECTS.map((r) => (
+        <Route key={r.from} path={r.from} element={<Navigate to={r.to} replace />} />
+      ))}
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>
@@ -94,7 +89,9 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AppRoutes />
+        <FunnelProvider>
+          <AppRoutes />
+        </FunnelProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

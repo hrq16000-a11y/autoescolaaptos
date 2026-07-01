@@ -5,7 +5,8 @@ import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, XCircle, AlertTriangle, RefreshCw, Trash2, ExternalLink } from "lucide-react";
+import { CheckCircle2, XCircle, AlertTriangle, RefreshCw, Trash2, ExternalLink, Download, ArrowRight } from "lucide-react";
+import { LEGACY_REDIRECTS } from "@/lib/legacyRedirects";
 
 const LEGACY_ROUTES = [
   "/site",
@@ -112,6 +113,60 @@ const DiagnosticoSeo = () => {
   const sortedLog = [...log].sort((a, b) => b.count - a.count || b.ts - a.ts);
   const totalHits = log.reduce((s, e) => s + e.count, 0);
 
+  const downloadCsv = (filename: string, rows: (string | number)[][]) => {
+    const escape = (v: string | number) => {
+      const s = String(v ?? "");
+      return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+    const csv = rows.map((r) => r.map(escape).join(",")).join("\n");
+    const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const exportLogCsv = () => {
+    const rows: (string | number)[][] = [
+      ["URL", "Hits", "Referrer", "Último acesso (ISO)", "Status verificado", "Destino redirect", "Sugestão"],
+    ];
+    for (const e of sortedLog) {
+      const legacy = LEGACY_REDIRECTS.find(
+        (r) => r.from === e.path || (r.from.endsWith("/*") && e.path.startsWith(r.from.slice(0, -2)))
+      );
+      const check = results.find((r) => r.path === e.path);
+      rows.push([
+        e.path,
+        e.count,
+        e.ref,
+        new Date(e.ts).toISOString(),
+        check ? String(check.status) : "não testado",
+        legacy ? legacy.to : "(sem mapeamento)",
+        legacy ? "noindex + robots.txt bloqueia" : "avaliar — criar página ou redirect",
+      ]);
+    }
+    downloadCsv(`aptos-404-log-${new Date().toISOString().slice(0, 10)}.csv`, rows);
+  };
+
+  const exportChecksCsv = () => {
+    const rows: (string | number)[][] = [["Rota", "Status HTTP", "OK?", "Categoria", "Destino final", "Motivo", "Nota"]];
+    for (const r of results) {
+      const legacy = LEGACY_REDIRECTS.find((l) => l.from === r.path);
+      rows.push([
+        r.path,
+        r.status,
+        r.ok ? "sim" : "não",
+        legacy ? "legada" : "oficial",
+        legacy ? legacy.to : r.path,
+        legacy ? legacy.reason : "rota ativa",
+        r.note,
+      ]);
+    }
+    downloadCsv(`aptos-verificacao-rotas-${new Date().toISOString().slice(0, 10)}.csv`, rows);
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <SEO
@@ -140,10 +195,17 @@ const DiagnosticoSeo = () => {
                   Testa {LEGACY_ROUTES.length} legadas + {OFFICIAL_ROUTES.length} oficiais no domínio atual.
                 </p>
               </div>
-              <Button onClick={runChecks} disabled={running}>
-                <RefreshCw className={`w-4 h-4 mr-2 ${running ? "animate-spin" : ""}`} />
-                {running ? "Rodando..." : "Executar verificação"}
-              </Button>
+              <div className="flex gap-2">
+                {results.length > 0 && (
+                  <Button variant="outline" size="sm" onClick={exportChecksCsv}>
+                    <Download className="w-4 h-4 mr-2" /> CSV
+                  </Button>
+                )}
+                <Button onClick={runChecks} disabled={running}>
+                  <RefreshCw className={`w-4 h-4 mr-2 ${running ? "animate-spin" : ""}`} />
+                  {running ? "Rodando..." : "Executar verificação"}
+                </Button>
+              </div>
             </div>
 
             {results.length > 0 && (
@@ -190,6 +252,38 @@ const DiagnosticoSeo = () => {
             </div>
           </Card>
 
+          {/* Legacy redirect mapping — single source of truth */}
+          <Card className="p-6 mb-8">
+            <h2 className="text-xl font-bold mb-1">Mapeamento de redirects legados</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              {LEGACY_REDIRECTS.length} regras aplicadas em <code>src/lib/legacyRedirects.ts</code>. Editar aqui atualiza o roteador e este dashboard simultaneamente.
+            </p>
+            <div className="border rounded-lg overflow-hidden">
+              <table className="w-full text-sm">
+                <thead className="bg-muted">
+                  <tr>
+                    <th className="text-left p-2">De</th>
+                    <th className="text-left p-2 w-8"></th>
+                    <th className="text-left p-2">Para</th>
+                    <th className="text-left p-2 w-20">Código</th>
+                    <th className="text-left p-2">Motivo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {LEGACY_REDIRECTS.map((r) => (
+                    <tr key={r.from} className="border-t">
+                      <td className="p-2 font-mono text-xs">{r.from}</td>
+                      <td className="p-2 text-muted-foreground"><ArrowRight className="w-3 h-3" /></td>
+                      <td className="p-2 font-mono text-xs text-primary">{r.to}</td>
+                      <td className="p-2"><Badge variant="secondary">{r.code}</Badge></td>
+                      <td className="p-2 text-xs text-muted-foreground">{r.reason}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+
           {/* 404 Log */}
           <Card className="p-6">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -199,9 +293,12 @@ const DiagnosticoSeo = () => {
                   {log.length} URLs únicas · {totalHits} acessos totais registrados via <code>NotFound.tsx</code>.
                 </p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Button variant="outline" size="sm" onClick={loadLog}>
                   <RefreshCw className="w-4 h-4 mr-2" /> Recarregar
+                </Button>
+                <Button variant="outline" size="sm" onClick={exportLogCsv} disabled={log.length === 0}>
+                  <Download className="w-4 h-4 mr-2" /> CSV
                 </Button>
                 <Button variant="outline" size="sm" onClick={clearLog}>
                   <Trash2 className="w-4 h-4 mr-2" /> Limpar log

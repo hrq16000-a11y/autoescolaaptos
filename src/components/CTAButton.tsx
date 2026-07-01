@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { whatsappLink, type WhatsAppKind } from "@/lib/whatsapp";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { useFunnelModal } from "@/hooks/useFunnelModal";
 
 /**
  * <CTAButton /> — Centralized CTA component for the entire site.
@@ -63,12 +64,17 @@ const CTAButton = forwardRef<HTMLButtonElement, CTAButtonProps>(
     ref
   ) => {
     const { trackWhatsAppClick, trackPhoneClick, trackEvent } = useAnalytics();
+    const funnel = useFunnelModal();
 
     const handleClick = () => {
       const label = trackingLabel || intent;
       switch (intent) {
         case "whatsapp":
+          trackEvent("whatsapp_direto", { source: trackingSource, label });
+          trackWhatsAppClick(trackingSource, service);
+          break;
         case "whatsapp-funil":
+          trackEvent("whatsapp_funil_direct", { source: trackingSource, label });
           trackWhatsAppClick(trackingSource, service);
           break;
         case "telefone":
@@ -111,10 +117,29 @@ const CTAButton = forwardRef<HTMLButtonElement, CTAButtonProps>(
       );
 
     // Resolve destination
+    // "funil" abre o FunnelModal (multi-etapas). Se `to` for passado explicitamente,
+    // navega para essa rota (ex.: manter link direto para /orcamento em algum caso).
     if (intent === "funil") {
+      if (to) {
+        return (
+          <Button ref={ref} size={size} variant={variant} className={baseClasses} onClick={handleClick} asChild>
+            <Link to={to}>{content}</Link>
+          </Button>
+        );
+      }
       return (
-        <Button ref={ref} size={size} variant={variant} className={baseClasses} onClick={handleClick} asChild>
-          <Link to={to || "/orcamento"}>{content}</Link>
+        <Button
+          ref={ref}
+          size={size}
+          variant={variant}
+          className={baseClasses}
+          onClick={() => {
+            handleClick();
+            funnel.open(trackingSource);
+          }}
+          data-intent="funil"
+        >
+          {content}
         </Button>
       );
     }
