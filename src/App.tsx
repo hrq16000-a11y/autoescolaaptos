@@ -30,6 +30,7 @@ import CalculadoraCnh from "./pages/CalculadoraCnh";
 import Comparador from "./pages/Comparador";
 import Aprovados from "./pages/Aprovados";
 import NotFound from "./pages/NotFound";
+import DiagnosticoSeo from "./pages/DiagnosticoSeo";
 import { useEngagementTracking } from "./hooks/useEngagementTracking";
 
 const queryClient = new QueryClient();
@@ -69,6 +70,7 @@ const AppRoutes = () => {
       <Route path="/calculadora-cnh" element={<CalculadoraCnh />} />
       <Route path="/comparador" element={<Comparador />} />
       <Route path="/aprovados" element={<Aprovados />} />
+      <Route path="/diagnostico-seo" element={<DiagnosticoSeo />} />
       {/* Legacy URL redirects (301-equivalent via replace) — evita 404 em URLs indexadas por versões antigas do site */}
       <Route path="/site" element={<Navigate to="/" replace />} />
       <Route path="/site/*" element={<Navigate to="/" replace />} />
