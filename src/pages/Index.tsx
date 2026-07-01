@@ -108,6 +108,7 @@ const Index = () => {
       <RelatedLinks title="Explore a APTOS" links={homeRelated} />
       <Footer />
       <FloatingWhatsApp />
+      <SmartAssistant />
       <MobileStickyBar />
     </main>
   );
