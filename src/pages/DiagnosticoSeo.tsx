@@ -110,6 +110,9 @@ const DiagnosticoSeo = () => {
     setLog([]);
   };
 
+  const sortedLog = [...log].sort((a, b) => b.count - a.count || b.ts - a.ts);
+  const totalHits = log.reduce((s, e) => s + e.count, 0);
+
   const downloadCsv = (filename: string, rows: (string | number)[][]) => {
     const escape = (v: string | number) => {
       const s = String(v ?? "");
@@ -127,10 +130,12 @@ const DiagnosticoSeo = () => {
 
   const exportLogCsv = () => {
     const rows: (string | number)[][] = [
-      ["URL", "Hits", "Referrer", "Último acesso", "Status verificado", "Destino redirect", "Sugestão de indexação"],
+      ["URL", "Hits", "Referrer", "Último acesso (ISO)", "Status verificado", "Destino redirect", "Sugestão"],
     ];
     for (const e of sortedLog) {
-      const legacy = LEGACY_REDIRECTS.find((r) => r.from === e.path || (r.from.endsWith("/*") && e.path.startsWith(r.from.slice(0, -2))));
+      const legacy = LEGACY_REDIRECTS.find(
+        (r) => r.from === e.path || (r.from.endsWith("/*") && e.path.startsWith(r.from.slice(0, -2)))
+      );
       const check = results.find((r) => r.path === e.path);
       rows.push([
         e.path,
@@ -161,9 +166,6 @@ const DiagnosticoSeo = () => {
     }
     downloadCsv(`aptos-verificacao-rotas-${new Date().toISOString().slice(0, 10)}.csv`, rows);
   };
-
-  const sortedLog = [...log].sort((a, b) => b.count - a.count || b.ts - a.ts);
-  const totalHits = log.reduce((s, e) => s + e.count, 0);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
