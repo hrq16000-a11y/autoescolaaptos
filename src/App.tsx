@@ -39,6 +39,7 @@ const Comparador = lazy(() => import("./pages/Comparador"));
 const Aprovados = lazy(() => import("./pages/Aprovados"));
 const DiagnosticoSeo = lazy(() => import("./pages/DiagnosticoSeo"));
 const HabilitacaoPCD = lazy(() => import("./pages/HabilitacaoPCD"));
+const GrowthDashboard = lazy(() => import("./pages/admin/GrowthDashboard"));
 
 const queryClient = new QueryClient();
 
@@ -92,6 +93,7 @@ const AppRoutes = () => {
         <Route path="/pcd" element={<HabilitacaoPCD />} />
         <Route path="/habilitacao-pcd" element={<Navigate to="/pcd" replace />} />
         <Route path="/autoescola-pcd" element={<Navigate to="/pcd" replace />} />
+        <Route path="/admin/growth" element={<GrowthDashboard />} />
         {/* Legacy URL redirects — mapa central em src/lib/legacyRedirects.ts */}
         {LEGACY_REDIRECTS.map((r) => (
           <Route key={r.from} path={r.from} element={<Navigate to={r.to} replace />} />

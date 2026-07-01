@@ -14,6 +14,7 @@ import About from "@/components/About";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+import SmartAssistant from "@/components/SmartAssistant";
 import MobileStickyBar from "@/components/MobileStickyBar";
 import RelatedLinks from "@/components/RelatedLinks";
 import SEO from "@/components/SEO";
