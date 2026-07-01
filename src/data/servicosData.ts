@@ -3,7 +3,6 @@ import {
   RefreshCw,
   RotateCcw,
   Car,
-  Bike,
   type LucideIcon,
 } from "lucide-react";
 
