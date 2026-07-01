@@ -35,7 +35,7 @@ const HOME_FAQS = [
   },
   {
     q: "Vocês fazem renovação, reciclagem e mudança de categoria?",
-    a: "Sim. Oferecemos primeira habilitação, renovação de CNH, curso de reciclagem 100% online (para condutores suspensos), mudança e inclusão de categoria (A, B, C, D, E) e reteste prático para quem foi reprovado no exame.",
+    a: "Sim. Oferecemos primeira habilitação, renovação de CNH, curso de reciclagem 100% online (para condutores suspensos), mudança e inclusão de categoria (A e B) e reteste prático para quem foi reprovado no exame.",
   },
   {
     q: "O curso teórico é online?",
