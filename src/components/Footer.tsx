@@ -170,30 +170,25 @@ const Footer = () => {
                 </span>
               </li>
               <li className="flex items-start space-x-3">
-                <Phone className="w-5 h-5 text-primary flex-shrink-0" />
+                <MessageCircle className="w-5 h-5 text-primary flex-shrink-0" />
                 <div className="text-background/70 text-sm">
                   <a
-                    href="tel:4133833627"
+                    href={whatsappLink("Olá! Vim pelo site da Autoescola APTOS.", "funil")}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="hover:text-primary transition-colors block"
                   >
-                    (41) 3383-3627
+                    WhatsApp (41) 3383-3627
                   </a>
                   <a
-                    href="tel:41991453627"
+                    href={whatsappLink("Olá! Vim pelo site da Autoescola APTOS.", "direto")}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="hover:text-primary transition-colors block"
                   >
-                    (41) 99145-3627
+                    WhatsApp (41) 99145-3627
                   </a>
                 </div>
-              </li>
-              <li className="flex items-start space-x-3">
-                <Mail className="w-5 h-5 text-primary flex-shrink-0" />
-                <a
-                  href="mailto:contato@autoescolaaptos.com.br"
-                  className="text-background/70 text-sm hover:text-primary transition-colors"
-                >
-                  contato@autoescolaaptos.com.br
-                </a>
               </li>
             </ul>
           </div>
