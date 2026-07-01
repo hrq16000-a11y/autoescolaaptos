@@ -110,6 +110,58 @@ const DiagnosticoSeo = () => {
     setLog([]);
   };
 
+  const downloadCsv = (filename: string, rows: (string | number)[][]) => {
+    const escape = (v: string | number) => {
+      const s = String(v ?? "");
+      return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+    const csv = rows.map((r) => r.map(escape).join(",")).join("\n");
+    const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const exportLogCsv = () => {
+    const rows: (string | number)[][] = [
+      ["URL", "Hits", "Referrer", "Último acesso", "Status verificado", "Destino redirect", "Sugestão de indexação"],
+    ];
+    for (const e of sortedLog) {
+      const legacy = LEGACY_REDIRECTS.find((r) => r.from === e.path || (r.from.endsWith("/*") && e.path.startsWith(r.from.slice(0, -2))));
+      const check = results.find((r) => r.path === e.path);
+      rows.push([
+        e.path,
+        e.count,
+        e.ref,
+        new Date(e.ts).toISOString(),
+        check ? String(check.status) : "não testado",
+        legacy ? legacy.to : "(sem mapeamento)",
+        legacy ? "noindex + robots.txt bloqueia" : "avaliar — criar página ou redirect",
+      ]);
+    }
+    downloadCsv(`aptos-404-log-${new Date().toISOString().slice(0, 10)}.csv`, rows);
+  };
+
+  const exportChecksCsv = () => {
+    const rows: (string | number)[][] = [["Rota", "Status HTTP", "OK?", "Categoria", "Destino final", "Motivo", "Nota"]];
+    for (const r of results) {
+      const legacy = LEGACY_REDIRECTS.find((l) => l.from === r.path);
+      rows.push([
+        r.path,
+        r.status,
+        r.ok ? "sim" : "não",
+        legacy ? "legada" : "oficial",
+        legacy ? legacy.to : r.path,
+        legacy ? legacy.reason : "rota ativa",
+        r.note,
+      ]);
+    }
+    downloadCsv(`aptos-verificacao-rotas-${new Date().toISOString().slice(0, 10)}.csv`, rows);
+  };
+
   const sortedLog = [...log].sort((a, b) => b.count - a.count || b.ts - a.ts);
   const totalHits = log.reduce((s, e) => s + e.count, 0);
 
