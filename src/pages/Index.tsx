@@ -100,6 +100,7 @@ const Index = () => {
       <GoogleReviews />
       <Testimonials />
       <About />
+      <HomeFAQ />
       <Contact />
       <RelatedLinks title="Explore a APTOS" links={homeRelated} />
       <Footer />
