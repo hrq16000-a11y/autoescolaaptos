@@ -26,9 +26,54 @@ import Orcamento from "./pages/Orcamento";
 import AutoescolaSaoJoseDosPinhais from "./pages/AutoescolaSaoJoseDosPinhais";
 import Categoria from "./pages/Categoria";
 import Servico from "./pages/Servico";
+import CalculadoraCnh from "./pages/CalculadoraCnh";
+import Comparador from "./pages/Comparador";
+import Aprovados from "./pages/Aprovados";
 import NotFound from "./pages/NotFound";
+import { useEngagementTracking } from "./hooks/useEngagementTracking";
 
 const queryClient = new QueryClient();
+
+const AppRoutes = () => {
+  useEngagementTracking();
+  return (
+    <Routes>
+      <Route path="/" element={<Index />} />
+      <Route path="/perguntas-frequentes" element={<FAQ />} />
+      <Route path="/blog" element={<Blog />} />
+      <Route path="/blog/:slug" element={<BlogPost />} />
+      <Route path="/bairros" element={<NeighborhoodsIndex />} />
+      <Route path="/bairros/:slug" element={<NeighborhoodPage />} />
+      <Route path="/obrigado" element={<Obrigado />} />
+      <Route path="/parceiros/preciso-de-um-tecnico" element={<PrecisoDeTecnico />} />
+      <Route path="/parceiros/mestre-dos-servicos" element={<MestreDosServicos />} />
+      <Route path="/parceiros/ping-solucoes" element={<PingSolucoes />} />
+      <Route path="/primeira-habilitacao" element={<PrimeiraHabilitacao />} />
+      <Route path="/resolucao-1020-2025" element={<Resolucao1020 />} />
+      <Route path="/formas-estudo-teorico" element={<FormasEstudoTeorico />} />
+      <Route path="/aulas-praticas-direcao" element={<AulasPraticasDirecao />} />
+      <Route path="/exames-detran" element={<ExamesDetran />} />
+      <Route path="/por-que-autoescola-credenciada" element={<PorQueAutoescola />} />
+      <Route path="/promocao-aniversario" element={<PromoAniversario />} />
+      <Route path="/promocao-indique-amigo" element={<PromoIndiqueAmigo />} />
+      <Route path="/simulado-detran-pr" element={<SimuladoDetranPr />} />
+      <Route path="/orcamento" element={<Orcamento />} />
+      <Route path="/autoescola-sao-jose-dos-pinhais" element={<AutoescolaSaoJoseDosPinhais />} />
+      <Route path="/cnh-sao-jose-dos-pinhais" element={<AutoescolaSaoJoseDosPinhais />} />
+      <Route path="/categoria-:slug" element={<Categoria />} />
+      <Route path="/inclusao-categoria" element={<Servico />} />
+      <Route path="/reciclagem-cnh" element={<Servico />} />
+      <Route path="/reteste-pratico" element={<Servico />} />
+      <Route path="/aulas-praticas" element={<Servico />} />
+      <Route path="/mudanca-de-categoria" element={<Servico />} />
+      <Route path="/calculadora-cnh" element={<CalculadoraCnh />} />
+      <Route path="/comparador" element={<Comparador />} />
+      <Route path="/aprovados" element={<Aprovados />} />
+      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -36,38 +81,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/perguntas-frequentes" element={<FAQ />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
-          <Route path="/bairros" element={<NeighborhoodsIndex />} />
-          <Route path="/bairros/:slug" element={<NeighborhoodPage />} />
-          <Route path="/obrigado" element={<Obrigado />} />
-          <Route path="/parceiros/preciso-de-um-tecnico" element={<PrecisoDeTecnico />} />
-          <Route path="/parceiros/mestre-dos-servicos" element={<MestreDosServicos />} />
-          <Route path="/parceiros/ping-solucoes" element={<PingSolucoes />} />
-          <Route path="/primeira-habilitacao" element={<PrimeiraHabilitacao />} />
-          <Route path="/resolucao-1020-2025" element={<Resolucao1020 />} />
-          <Route path="/formas-estudo-teorico" element={<FormasEstudoTeorico />} />
-          <Route path="/aulas-praticas-direcao" element={<AulasPraticasDirecao />} />
-          <Route path="/exames-detran" element={<ExamesDetran />} />
-          <Route path="/por-que-autoescola-credenciada" element={<PorQueAutoescola />} />
-          <Route path="/promocao-aniversario" element={<PromoAniversario />} />
-          <Route path="/promocao-indique-amigo" element={<PromoIndiqueAmigo />} />
-          <Route path="/simulado-detran-pr" element={<SimuladoDetranPr />} />
-          <Route path="/orcamento" element={<Orcamento />} />
-          <Route path="/autoescola-sao-jose-dos-pinhais" element={<AutoescolaSaoJoseDosPinhais />} />
-          <Route path="/cnh-sao-jose-dos-pinhais" element={<AutoescolaSaoJoseDosPinhais />} />
-          <Route path="/categoria-:slug" element={<Categoria />} />
-          <Route path="/inclusao-categoria" element={<Servico />} />
-          <Route path="/reciclagem-cnh" element={<Servico />} />
-          <Route path="/reteste-pratico" element={<Servico />} />
-          <Route path="/aulas-praticas" element={<Servico />} />
-          <Route path="/mudanca-de-categoria" element={<Servico />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AppRoutes />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

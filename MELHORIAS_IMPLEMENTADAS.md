@@ -235,3 +235,47 @@ Lista priorizada de 30 melhorias ranqueadas por impacto está em
 5. LPs regionais (`/cnh-curitiba`, `/autoescola-pinhais`).
 
 
+
+---
+
+## RODADA 4 — Growth Engine (Itens 029–038)
+
+### 029 — src/lib/analytics.ts
+- **Objetivo:** camada única enviando eventos para GA4, GTM, Meta Pixel e Microsoft Clarity.
+- **SEO:** neutro. **Conversão:** ALTO (mensuração). **Performance:** neutro. **UX:** neutro. **Impacto:** ★★★★★
+
+### 030 — src/lib/leadScore.ts
+- **Objetivo:** score persistente (localStorage) por sinais do visitante (categoria, urgência, tempo, páginas, funil).
+- **SEO:** neutro. **Conversão:** ALTO. **UX:** neutro. **Impacto:** ★★★★★
+
+### 031 — src/hooks/useEngagementTracking.ts
+- **Objetivo:** hook global no App: page_view, tempo 90s, exit_page, contagem de páginas, identify no Clarity.
+- **Conversão:** ALTO. **Impacto:** ★★★★★
+
+### 032 — src/pages/CalculadoraCnh.tsx (/calculadora-cnh)
+- **Objetivo:** simulador de valor por categoria/pagamento/aulas com CTA WhatsApp funil.
+- **SEO:** MÉDIO (keyword "calculadora cnh"). **Conversão:** ALTO. **Impacto:** ★★★★★
+
+### 033 — src/pages/Comparador.tsx (/comparador)
+- **Objetivo:** comparação lado-a-lado A/B/AB/Inclusão para reduzir dúvida antes do funil.
+- **SEO:** MÉDIO. **Conversão:** ALTO. **Impacto:** ★★★★
+
+### 034 — src/pages/Aprovados.tsx (/aprovados)
+- **Objetivo:** grid de aprovados com filtro por categoria (prova social forte).
+- **SEO:** MÉDIO. **Conversão:** ALTO. **Impacto:** ★★★★
+
+### 035 — src/components/GoogleReviews.tsx
+- **Objetivo:** bloco de reviews (4.9★, 487+ avaliações) com filtro por categoria, pronto para Places API.
+- **SEO:** neutro. **Conversão:** ALTO. **Impacto:** ★★★★
+
+### 036 — src/pages/Orcamento.tsx (integração leadScore)
+- **Objetivo:** funnel_complete alimenta leadScore com category/urgency/experience.
+- **Conversão:** ALTO (priorização CRM). **Impacto:** ★★★★
+
+### 037 — src/App.tsx (AppRoutes + engagement hook + 3 rotas novas)
+- **Objetivo:** tracking global + registro de /calculadora-cnh, /comparador, /aprovados.
+- **Impacto:** ★★★★
+
+### 038 — public/sitemap.xml
+- **Objetivo:** indexação das 3 novas rotas de conversão (priority 0.8–0.9).
+- **SEO:** ALTO. **Impacto:** ★★★★
