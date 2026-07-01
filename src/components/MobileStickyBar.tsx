@@ -24,9 +24,10 @@ const MobileStickyBar = () => {
         <Link
           to="/orcamento"
           onClick={() => trackEvent("mobile_bar_orcamento")}
-          className="flex items-center justify-center gap-2 h-12 rounded-lg bg-primary text-primary-foreground font-bold text-sm shadow-glow active:scale-95 transition-transform"
+          aria-label="Simular orçamento da CNH"
+          className="flex items-center justify-center gap-2 min-h-[48px] px-3 rounded-lg bg-primary text-primary-foreground font-bold text-sm shadow-glow active:scale-95 transition-transform"
         >
-          <MessageCircle className="w-4 h-4" />
+          <MessageCircle className="w-5 h-5" aria-hidden />
           Simular Orçamento
         </Link>
 
@@ -35,9 +36,10 @@ const MobileStickyBar = () => {
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => trackWhatsAppClick("mobile_bar_direto")}
-          className="flex items-center justify-center gap-2 h-12 rounded-lg bg-[#25D366] text-white font-bold text-sm active:scale-95 transition-transform"
+          aria-label="Falar agora no WhatsApp"
+          className="flex items-center justify-center gap-2 min-h-[48px] px-3 rounded-lg bg-[#25D366] hover:bg-[#20BA5A] text-white font-bold text-sm active:scale-95 transition-transform"
         >
-          <Phone className="w-4 h-4" />
+          <Phone className="w-5 h-5" aria-hidden />
           Falar Agora
         </a>
       </nav>

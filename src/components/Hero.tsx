@@ -82,6 +82,9 @@ const Hero = () => {
               <img
                 src={slide.image}
                 alt={slide.alt}
+                loading={index === 0 ? "eager" : "lazy"}
+                fetchPriority={index === 0 ? "high" : "auto"}
+                decoding="async"
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 gradient-overlay" />
