@@ -163,9 +163,12 @@ const CTAButton = forwardRef<HTMLButtonElement, CTAButtonProps>(
     }
 
     if (intent === "telefone") {
+      // Ambos os telefones da autoescola são WhatsApp. O fixo é o número de triagem/funil.
       return (
         <Button ref={ref} size={size} variant={variant} className={baseClasses} onClick={handleClick} asChild>
-          <a href="tel:+554133833627">{content}</a>
+          <a href={whatsappLink(message, "funil")} target="_blank" rel="noopener noreferrer">
+            {content}
+          </a>
         </Button>
       );
     }
