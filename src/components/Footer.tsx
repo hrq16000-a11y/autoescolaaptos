@@ -240,21 +240,27 @@ const Footer = () => {
               className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm"
             >
               <a
-                href="mailto:contato@autoescolaaptos.com.br?subject=Política%20de%20Privacidade"
+                href={whatsappLink("Olá! Gostaria de solicitar a Política de Privacidade da Autoescola APTOS.", "direto")}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-background/60 hover:text-primary transition-colors"
               >
                 Política de Privacidade
               </a>
               <span className="text-background/30" aria-hidden="true">|</span>
               <a
-                href="mailto:contato@autoescolaaptos.com.br?subject=Termos%20de%20Uso"
+                href={whatsappLink("Olá! Gostaria de solicitar os Termos de Uso da Autoescola APTOS.", "direto")}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-background/60 hover:text-primary transition-colors"
               >
                 Termos de Uso
               </a>
               <span className="text-background/30" aria-hidden="true">|</span>
               <a
-                href="mailto:contato@autoescolaaptos.com.br?subject=LGPD"
+                href={whatsappLink("Olá! Gostaria de solicitar informações sobre LGPD da Autoescola APTOS.", "direto")}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-background/60 hover:text-primary transition-colors"
               >
                 LGPD
