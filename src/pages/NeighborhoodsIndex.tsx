@@ -135,7 +135,7 @@ const NeighborhoodsIndex = () => {
               {[
                 "Primeira Habilitação",
                 "Renovação de CNH",
-                "Mudança de Categoria",
+                "Inclusão de Categoria (A/B)",
                 "Curso de Reciclagem"
               ].map((service, index) => (
                 <Link
