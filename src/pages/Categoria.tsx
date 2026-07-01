@@ -194,7 +194,7 @@ const Categoria = () => {
               </Link>
             </Button>
             <Button size="lg" variant="outline" className="h-14 px-8" asChild>
-              <a href="https://api.whatsapp.com/send?phone=554133833627href="tel:+554133833627"text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20Autoescola%20APTOS." target="_blank" rel="noopener noreferrer">
+              <a href="https://api.whatsapp.com/send?phone=554133833627&amp;text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20Autoescola%20APTOS." target="_blank" rel="noopener noreferrer" target="_blank" rel="noopener noreferrer">
                 <Phone className="w-5 h-5 mr-2" />
                 (41) 3383-3627
               </a>
