@@ -95,9 +95,7 @@ const CTAButton = forwardRef<HTMLButtonElement, CTAButtonProps>(
       className
     );
 
-    const icon = !showIcon ? null : intent === "telefone" ? (
-      <Phone className="w-5 h-5 mr-2" aria-hidden />
-    ) : intent === "internal" || intent === "external" ? (
+    const icon = !showIcon ? null : intent === "internal" || intent === "external" ? (
       <ArrowRight className="w-5 h-5 ml-2" aria-hidden />
     ) : (
       <MessageCircle className="w-5 h-5 mr-2" aria-hidden />
