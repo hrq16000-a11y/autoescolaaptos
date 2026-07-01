@@ -5,7 +5,9 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
-import { WHATSAPP_DIRETO_URL } from "@/lib/whatsapp";
+import { whatsappLink } from "@/lib/whatsapp";
+
+const WHATSAPP_URL = whatsappLink("Olá! Cheguei aqui por um link antigo e gostaria de falar com a APTOS.", "direto");
 
 const suggestions = [
   { to: "/", label: "Página inicial" },
@@ -35,7 +37,7 @@ const NotFound = () => {
         title="Página não encontrada (404) — Autoescola APTOS"
         description="A página que você procura não existe ou foi movida. Encontre rapidamente o que precisa na Autoescola APTOS."
         canonical="https://autoescolaaptos.com.br/404"
-        noindex
+        noIndex
       />
       <Navbar />
       <main className="flex-1 pt-24 pb-16">
@@ -56,7 +58,7 @@ const NotFound = () => {
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline">
-              <a href={WHATSAPP_DIRETO_URL} target="_blank" rel="noopener noreferrer">
+              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
                 <MessageCircle className="w-5 h-5 mr-2" /> WhatsApp (41) 99145-3627
               </a>
             </Button>
