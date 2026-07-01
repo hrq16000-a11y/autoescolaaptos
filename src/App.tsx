@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import FAQ from "./pages/FAQ";
 import Blog from "./pages/Blog";
@@ -69,6 +69,17 @@ const AppRoutes = () => {
       <Route path="/calculadora-cnh" element={<CalculadoraCnh />} />
       <Route path="/comparador" element={<Comparador />} />
       <Route path="/aprovados" element={<Aprovados />} />
+      {/* Legacy URL redirects (301-equivalent via replace) — evita 404 em URLs indexadas por versões antigas do site */}
+      <Route path="/site" element={<Navigate to="/" replace />} />
+      <Route path="/site/*" element={<Navigate to="/" replace />} />
+      <Route path="/site/contato" element={<Navigate to="/#contato" replace />} />
+      <Route path="/modelo1" element={<Navigate to="/" replace />} />
+      <Route path="/modelo1/*" element={<Navigate to="/" replace />} />
+      <Route path="/1" element={<Navigate to="/" replace />} />
+      <Route path="/1/*" element={<Navigate to="/" replace />} />
+      <Route path="/index.html" element={<Navigate to="/" replace />} />
+      <Route path="/home" element={<Navigate to="/" replace />} />
+      <Route path="/contato" element={<Navigate to="/#contato" replace />} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>
