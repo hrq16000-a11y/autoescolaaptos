@@ -14,7 +14,7 @@ import { useFunnelModal } from "@/hooks/useFunnelModal";
  *  - "funil"     → leva ao /orcamento (lead qualificado).
  *  - "whatsapp"  → abre WhatsApp DIRETO (decidido).
  *  - "whatsapp-funil" → abre WhatsApp do FUNIL (pré-qualificado).
- *  - "telefone"  → tel: (41) 3383-3627.
+ *  - "telefone"  → WhatsApp FUNIL (fixo (41) 3383-3627 é WhatsApp de triagem).
  *  - "internal"  → navegação interna (precisa de `to`).
  *  - "external"  → link externo (precisa de `href`).
  *
