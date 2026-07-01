@@ -3,19 +3,17 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   MapPin,
-  Phone,
-  Mail,
   Clock,
   MessageCircle,
   Facebook,
   Instagram,
 } from "lucide-react";
 import { useAnalytics } from "@/hooks/useAnalytics";
-import ContactForm from "./ContactForm";
+import { whatsappLink } from "@/lib/whatsapp";
 
 const Contact = () => {
-  const { trackWhatsAppClick, trackPhoneClick } = useAnalytics();
-  
+  const { trackWhatsAppClick } = useAnalytics();
+
   const contactInfo = [
     {
       icon: MapPin,
@@ -24,17 +22,20 @@ const Contact = () => {
       subtitle: "São José dos Pinhais - PR",
     },
     {
-      icon: Phone,
-      title: "Telefones",
+      icon: MessageCircle,
+      title: "WhatsApp de triagem",
       content: "(41) 3383-3627",
-      subtitle: "WhatsApp: (41) 99145-3627",
-      link: "tel:4133833627",
+      subtitle: "Orçamento e informações",
+      link: whatsappLink("Olá! Vim pelo site da Autoescola APTOS e gostaria de um orçamento.", "funil"),
+      external: true,
     },
     {
-      icon: Mail,
-      title: "Email",
-      content: "contato@autoescolaaptos.com.br",
-      link: "mailto:contato@autoescolaaptos.com.br",
+      icon: MessageCircle,
+      title: "WhatsApp direto",
+      content: "(41) 99145-3627",
+      subtitle: "Fale agora com a equipe",
+      link: whatsappLink("Olá! Vim pelo site da Autoescola APTOS.", "direto"),
+      external: true,
     },
     {
       icon: Clock,
@@ -55,62 +56,53 @@ const Contact = () => {
           className="text-center max-w-3xl mx-auto mb-16"
         >
           <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-4">
-            Entre em Contato
+            Fale Conosco
           </span>
           <h2 className="text-4xl md:text-5xl font-heading font-black mb-6">
             Estamos Prontos para{" "}
-            <span className="text-primary">Atender Você</span>
+            <span className="text-primary">Atender Você no WhatsApp</span>
           </h2>
           <p className="text-lg text-muted-foreground">
-            Tire suas dúvidas, faça sua matrícula ou agende uma visita. Nossa equipe está à disposição!
+            Tire suas dúvidas, faça sua matrícula ou agende uma visita — tudo pelo WhatsApp, sem burocracia.
           </p>
         </motion.div>
 
-        {/* Contact Form + Info Grid */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-12">
-          {/* Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-          >
-            <ContactForm />
-          </motion.div>
-
-          {/* Contact Cards */}
-          <div className="grid sm:grid-cols-2 gap-4">
-            {contactInfo.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Card className="p-5 h-full hover:shadow-medium transition-all duration-300 hover:-translate-y-1">
-                  <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mb-3">
-                    <item.icon className="w-5 h-5 text-primary" />
-                  </div>
-                  <h3 className="font-heading font-bold mb-1 text-sm">{item.title}</h3>
-                  {item.link ? (
-                    <a
-                      href={item.link}
-                      className="text-foreground hover:text-primary transition-colors font-medium block text-sm"
-                    >
-                      {item.content}
-                    </a>
-                  ) : (
-                    <p className="text-foreground font-medium text-sm">{item.content}</p>
-                  )}
-                  {item.subtitle && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {item.subtitle}
-                    </p>
-                  )}
-                </Card>
-              </motion.div>
-            ))}
-          </div>
+        {/* Contact Cards */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12 max-w-5xl mx-auto">
+          {contactInfo.map((item, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <Card className="p-5 h-full hover:shadow-medium transition-all duration-300 hover:-translate-y-1">
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mb-3">
+                  <item.icon className="w-5 h-5 text-primary" />
+                </div>
+                <h3 className="font-heading font-bold mb-1 text-sm">{item.title}</h3>
+                {item.link ? (
+                  <a
+                    href={item.link}
+                    target={item.external ? "_blank" : undefined}
+                    rel={item.external ? "noopener noreferrer" : undefined}
+                    onClick={() => trackWhatsAppClick("contact_card")}
+                    className="text-foreground hover:text-primary transition-colors font-medium block text-sm"
+                  >
+                    {item.content}
+                  </a>
+                ) : (
+                  <p className="text-foreground font-medium text-sm">{item.content}</p>
+                )}
+                {item.subtitle && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {item.subtitle}
+                  </p>
+                )}
+              </Card>
+            </motion.div>
+          ))}
         </div>
 
         {/* CTA Section */}
@@ -125,8 +117,7 @@ const Contact = () => {
                 Fale Conosco Agora pelo WhatsApp
               </h3>
               <p className="text-lg mb-8 text-secondary-foreground/90">
-                Atendimento rápido e personalizado. Tire suas dúvidas, solicite
-                orçamento ou faça sua matrícula direto pelo WhatsApp.
+                Atendimento rápido e personalizado. Escolha o número mais adequado abaixo.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
@@ -135,13 +126,13 @@ const Contact = () => {
                   asChild
                 >
                   <a
-                    href="https://api.whatsapp.com/send?phone=5541991453627&text=Olá,%20gostaria%20de%20informações%20sobre%20a%20Autoescola%20APTOS"
+                    href={whatsappLink("Olá! Vim pelo site da Autoescola APTOS.", "direto")}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={() => trackWhatsAppClick('contact_section')}
+                    onClick={() => trackWhatsAppClick("contact_section_direto")}
                   >
                     <MessageCircle className="w-5 h-5 mr-2" />
-                    Abrir WhatsApp
+                    WhatsApp direto (41) 99145-3627
                   </a>
                 </Button>
                 <Button
@@ -150,9 +141,14 @@ const Contact = () => {
                   className="bg-secondary-foreground/10 backdrop-blur-sm border-white/30 text-white hover:bg-secondary-foreground/20 text-lg h-14 px-8"
                   asChild
                 >
-                  <a href="tel:4133833627" onClick={() => trackPhoneClick('contact_section')}>
-                    <Phone className="w-5 h-5 mr-2" />
-                    Ligar Agora
+                  <a
+                    href={whatsappLink("Olá! Gostaria de um orçamento pela Autoescola APTOS.", "funil")}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => trackWhatsAppClick("contact_section_funil")}
+                  >
+                    <MessageCircle className="w-5 h-5 mr-2" />
+                    WhatsApp triagem (41) 3383-3627
                   </a>
                 </Button>
               </div>
