@@ -89,8 +89,12 @@ const Navbar = () => {
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center space-x-3">
             <Button variant="outline" size="sm" asChild>
-              <a href="tel:4133833627">
-                <Phone className="w-4 h-4 mr-2" />
+              <a
+                href={whatsappLink("Olá! Vim pelo site da Autoescola APTOS.", "funil")}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <MessageCircle className="w-4 h-4 mr-2" />
                 (41) 3383-3627
               </a>
             </Button>
