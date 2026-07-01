@@ -235,10 +235,35 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="border-t border-background/10 pt-8 mt-4">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-background/60 text-sm text-center md:text-left">
               © {currentYear} Autoescola APTOS. Todos os direitos reservados.
             </p>
+            <nav
+              aria-label="Políticas do site"
+              className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm"
+            >
+              <a
+                href="mailto:contato@autoescolaaptos.com.br?subject=Política%20de%20Privacidade"
+                className="text-background/60 hover:text-primary transition-colors"
+              >
+                Política de Privacidade
+              </a>
+              <span className="text-background/30" aria-hidden="true">|</span>
+              <a
+                href="mailto:contato@autoescolaaptos.com.br?subject=Termos%20de%20Uso"
+                className="text-background/60 hover:text-primary transition-colors"
+              >
+                Termos de Uso
+              </a>
+              <span className="text-background/30" aria-hidden="true">|</span>
+              <a
+                href="mailto:contato@autoescolaaptos.com.br?subject=LGPD"
+                className="text-background/60 hover:text-primary transition-colors"
+              >
+                LGPD
+              </a>
+            </nav>
             <p className="text-background/60 text-sm text-center md:text-right">
               Credenciada pelo Detran PR | CNPJ: 10.233.266/0001-38
             </p>

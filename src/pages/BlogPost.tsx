@@ -34,8 +34,8 @@ const BlogPost = () => {
           text: post.description,
           url: window.location.href,
         });
-      } catch (err) {
-        console.log("Error sharing:", err);
+      } catch {
+        /* usuário cancelou o compartilhamento */
       }
     }
   };
