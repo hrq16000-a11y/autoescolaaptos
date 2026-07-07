@@ -1,7 +1,7 @@
 import { MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAnalytics } from "@/hooks/useAnalytics";
-import { whatsappLink } from "@/lib/whatsapp";
+import { whatsappLink, DEFAULT_MESSAGES } from "@/lib/whatsapp";
 
 /**
  * Global floating WhatsApp button (DIRETO).
@@ -26,7 +26,7 @@ const FloatingWhatsApp = () => {
 
   return (
     <motion.a
-      href={whatsappLink("Olá, gostaria de informações sobre a Autoescola APTOS", "direto")}
+      href={whatsappLink(DEFAULT_MESSAGES.direto, "direto")}
       target="_blank"
       rel="noopener noreferrer"
       onClick={handleClick}
