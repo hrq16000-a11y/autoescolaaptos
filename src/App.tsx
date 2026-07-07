@@ -31,6 +31,7 @@ const PromoAniversario = lazy(() => import("./pages/PromoAniversario"));
 const PromoIndiqueAmigo = lazy(() => import("./pages/PromoIndiqueAmigo"));
 const SimuladoDetranPr = lazy(() => import("./pages/SimuladoDetranPr"));
 const Orcamento = lazy(() => import("./pages/Orcamento"));
+const UmContato = lazy(() => import("./pages/UmContato"));
 const AutoescolaSaoJoseDosPinhais = lazy(() => import("./pages/AutoescolaSaoJoseDosPinhais"));
 const Categoria = lazy(() => import("./pages/Categoria"));
 const Servico = lazy(() => import("./pages/Servico"));
@@ -78,6 +79,8 @@ const AppRoutes = () => {
         <Route path="/promocao-indique-amigo" element={<PromoIndiqueAmigo />} />
         <Route path="/simulado-detran-pr" element={<SimuladoDetranPr />} />
         <Route path="/orcamento" element={<Orcamento />} />
+        <Route path="/1contato" element={<UmContato />} />
+        <Route path="/triagem" element={<Navigate to="/1contato" replace />} />
         <Route path="/autoescola-sao-jose-dos-pinhais" element={<AutoescolaSaoJoseDosPinhais />} />
         <Route path="/cnh-sao-jose-dos-pinhais" element={<AutoescolaSaoJoseDosPinhais />} />
         <Route path="/categoria-:slug" element={<Categoria />} />
