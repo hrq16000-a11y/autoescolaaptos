@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { MessageCircle, Phone } from "lucide-react";
-import { whatsappLink } from "@/lib/whatsapp";
+import { whatsappLink, DEFAULT_MESSAGES } from "@/lib/whatsapp";
 import { useAnalytics } from "@/hooks/useAnalytics";
 
 /**
@@ -32,7 +32,7 @@ const MobileStickyBar = () => {
         </Link>
 
         <a
-          href={whatsappLink("Olá! Quero tirar dúvidas com a Autoescola APTOS.", "direto")}
+          href={whatsappLink(DEFAULT_MESSAGES.direto, "direto")}
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => trackWhatsAppClick("mobile_bar_direto")}
