@@ -31,6 +31,7 @@ const PromoAniversario = lazy(() => import("./pages/PromoAniversario"));
 const PromoIndiqueAmigo = lazy(() => import("./pages/PromoIndiqueAmigo"));
 const SimuladoDetranPr = lazy(() => import("./pages/SimuladoDetranPr"));
 const Orcamento = lazy(() => import("./pages/Orcamento"));
+const UmContato = lazy(() => import("./pages/UmContato"));
 const AutoescolaSaoJoseDosPinhais = lazy(() => import("./pages/AutoescolaSaoJoseDosPinhais"));
 const Categoria = lazy(() => import("./pages/Categoria"));
 const Servico = lazy(() => import("./pages/Servico"));
