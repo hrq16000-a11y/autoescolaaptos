@@ -14,3 +14,15 @@ export function whatsappLink(message: string, kind: WhatsAppKind = "direto"): st
   const phone = kind === "funil" ? WHATSAPP_FUNIL : WHATSAPP_DIRETO;
   return `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
 }
+
+/**
+ * Mensagens padrão pensadas para conversão (SJP + intenção clara).
+ * Use DEFAULT_MESSAGES.direto para CTAs "falar agora" e
+ * DEFAULT_MESSAGES.funil para CTAs de qualificação (fixo/triagem).
+ */
+export const DEFAULT_MESSAGES = {
+  direto:
+    "Olá! Quero informações sobre a Autoescola APTOS em São José dos Pinhais. Pode me passar valores e próximas turmas?",
+  funil:
+    "Olá! Vim pelo site e gostaria de simular meu orçamento na Autoescola APTOS (São José dos Pinhais).",
+} as const;
