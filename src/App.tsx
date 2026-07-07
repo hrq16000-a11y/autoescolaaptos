@@ -79,6 +79,8 @@ const AppRoutes = () => {
         <Route path="/promocao-indique-amigo" element={<PromoIndiqueAmigo />} />
         <Route path="/simulado-detran-pr" element={<SimuladoDetranPr />} />
         <Route path="/orcamento" element={<Orcamento />} />
+        <Route path="/1contato" element={<UmContato />} />
+        <Route path="/triagem" element={<Navigate to="/1contato" replace />} />
         <Route path="/autoescola-sao-jose-dos-pinhais" element={<AutoescolaSaoJoseDosPinhais />} />
         <Route path="/cnh-sao-jose-dos-pinhais" element={<AutoescolaSaoJoseDosPinhais />} />
         <Route path="/categoria-:slug" element={<Categoria />} />
