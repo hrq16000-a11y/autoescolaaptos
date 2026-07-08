@@ -435,9 +435,9 @@ const UmContato = () => {
 
               {!done && step === 1 && (
                 <Step key="1" title="Qual é o seu caso?">
-                  <div className="space-y-5">
+                  <div className="space-y-4">
                     <div>
-                      <h3 className="text-base md:text-lg font-heading font-bold mb-3">
+                      <h3 className="text-sm md:text-base font-heading font-bold mb-2">
                         Já conhece o novo procedimento da CNH?
                       </h3>
                       <OptionGrid>
@@ -463,7 +463,7 @@ const UmContato = () => {
                     </div>
 
                     <div ref={servicoRef}>
-                      <h3 className="text-base md:text-lg font-heading font-bold mb-3">
+                      <h3 className="text-sm md:text-base font-heading font-bold mb-2">
                         Qual serviço você procura?
                       </h3>
                       <OptionGrid>
@@ -485,7 +485,8 @@ const UmContato = () => {
                                 s === "Primeira Habilitação" || s === "Mudança / Inclusão de Categoria";
                               setResp({ ...resp, servico: s, categoria: needsCat ? resp.categoria : undefined });
                               track("triagem_select", { step: 1, field: "servico", value: s });
-                              scrollTo(needsCat ? categoriaRef.current : nextStepBtnRef.current);
+                              // Se precisa categoria, foca nela; senão o useEffect avança sozinho
+                              if (needsCat) scrollTo(categoriaRef.current);
                             }}
                           />
                         ))}
@@ -496,7 +497,7 @@ const UmContato = () => {
                     {(resp.servico === "Primeira Habilitação" ||
                       resp.servico === "Mudança / Inclusão de Categoria") && (
                       <div ref={categoriaRef}>
-                        <h3 className="text-base md:text-lg font-heading font-bold mb-3">
+                        <h3 className="text-sm md:text-base font-heading font-bold mb-2">
                           Qual categoria?
                         </h3>
                         <OptionGrid>
@@ -508,7 +509,7 @@ const UmContato = () => {
                               onClick={() => {
                                 setResp({ ...resp, categoria: c });
                                 track("triagem_select", { step: 1, field: "categoria", value: c });
-                                scrollTo(nextStepBtnRef.current);
+                                // useEffect faz auto-avanço
                               }}
                             />
                           ))}
@@ -516,15 +517,6 @@ const UmContato = () => {
                         <FieldError message={errors.categoria} />
                       </div>
                     )}
-
-                    <Button
-                      ref={nextStepBtnRef}
-                      size="lg"
-                      className="w-full"
-                      onClick={goNext}
-                    >
-                      Próxima etapa →
-                    </Button>
                   </div>
                 </Step>
               )}
