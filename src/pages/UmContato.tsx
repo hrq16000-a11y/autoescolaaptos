@@ -682,26 +682,57 @@ const UmContato = () => {
                     <SummaryRow ok label={`Início: ${resp.prazo}`} />
                   </div>
 
-                  <Button
-                    size="lg"
-                    className="text-lg h-14 px-8 shadow-glow w-full max-w-md bg-emerald-600 hover:bg-emerald-700"
-                    asChild
-                  >
-                    <a
-                      href={finalUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() =>
-                        trackConversion("WhatsAppClick", {
-                          source: "1contato_success",
-                          servico: resp.servico,
-                        })
-                      }
+                  <div className="flex flex-col gap-3 max-w-md mx-auto">
+                    <Button
+                      size="lg"
+                      className="text-lg h-14 px-8 shadow-glow w-full bg-emerald-600 hover:bg-emerald-700"
+                      asChild
                     >
-                      <MessageCircle className="w-5 h-5 mr-2" aria-hidden="true" />
-                      Continuar atendimento no WhatsApp
-                    </a>
-                  </Button>
+                      <a
+                        href={finalUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() =>
+                          trackConversion("WhatsAppClick", {
+                            source: "1contato_success",
+                            servico: resp.servico,
+                          })
+                        }
+                      >
+                        <MessageCircle className="w-5 h-5 mr-2" aria-hidden="true" />
+                        Continuar atendimento no WhatsApp
+                      </a>
+                    </Button>
+
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="lg"
+                      className="w-full"
+                      onClick={copyMessage}
+                      aria-live="polite"
+                    >
+                      {copied ? (
+                        <>
+                          <Check className="w-4 h-4 mr-2" aria-hidden="true" />
+                          Mensagem copiada!
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-4 h-4 mr-2" aria-hidden="true" />
+                          Copiar mensagem antes de enviar
+                        </>
+                      )}
+                    </Button>
+                  </div>
+
+                  {submitError && (
+                    <div role="alert" className="mt-4 text-sm text-destructive flex items-center justify-center gap-1.5">
+                      <AlertCircle className="w-4 h-4" aria-hidden="true" />
+                      {submitError}
+                    </div>
+                  )}
+
                   <p className="text-xs text-muted-foreground mt-4">
                     Você será redirecionado ao WhatsApp da nossa central de triagem.
                   </p>
