@@ -10,6 +10,8 @@ import {
   Award,
   Sparkles,
   AlertCircle,
+  Copy,
+  Check,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
