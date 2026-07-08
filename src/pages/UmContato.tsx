@@ -356,63 +356,42 @@ const UmContato = () => {
       </Helmet>
       <Navbar />
 
-      <main id="main" className="flex-1 pt-28 pb-16">
-        <div className="container mx-auto px-4 max-w-3xl">
-          {/* HERO */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-4 text-sm font-semibold">
-              <Sparkles className="w-4 h-4" aria-hidden="true" />
-              Triagem em menos de 60 segundos
+      <main id="main" className="flex-1 pt-20 md:pt-24 pb-10">
+        <div className="container mx-auto px-3 sm:px-4 max-w-3xl">
+          {/* HERO — compacto para mobile */}
+          <div className="text-center mb-4 md:mb-6">
+            <div className="inline-flex items-center gap-1.5 bg-primary/10 text-primary px-3 py-1 rounded-full mb-2 text-xs font-semibold">
+              <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
+              Triagem em menos de 60s
             </div>
-            <h1 className="text-3xl md:text-5xl font-heading font-black mb-3">
+            <h1 className="text-2xl md:text-4xl font-heading font-black mb-1.5 leading-tight">
               Vamos entender <span className="text-primary">seu caso</span> em 3 passos
             </h1>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Para indicar o plano ideal e agilizar seu atendimento, precisamos de algumas
-              respostas rápidas. Depois, você fala direto com um consultor no WhatsApp.
+            <p className="text-muted-foreground text-sm md:text-base max-w-xl mx-auto">
+              Responda 3 perguntas rápidas e fale com um consultor no WhatsApp.
             </p>
-            <p className="mt-3 text-sm text-muted-foreground inline-flex items-center gap-2">
-              <Clock className="w-4 h-4" aria-hidden="true" />
-              Leva menos de 1 minuto para concluir.
+            <p className="mt-2 text-[11px] md:text-xs text-muted-foreground max-w-md mx-auto leading-snug">
+              <ShieldCheck className="w-3.5 h-3.5 inline-block mr-1 -mt-0.5 text-primary" aria-hidden="true" />
+              Esse processo é para sua segurança e nossa autorização de contato com você,
+              de acordo com as leis de proteção de dados (LGPD).
             </p>
           </div>
 
-          {/* PROGRESS */}
+          {/* PROGRESS — enxuto */}
           {!done && (
             <div
-              className="mb-8"
+              className="mb-4 md:mb-6"
               role="progressbar"
               aria-valuenow={progressPct}
               aria-valuemin={0}
               aria-valuemax={100}
               aria-label={`Etapa ${Math.min(step + 1, TOTAL_STEPS)} de ${TOTAL_STEPS}`}
             >
-              <div className="flex items-center justify-center gap-2 mb-3" aria-hidden="true">
-                {Array.from({ length: TOTAL_STEPS }).map((_, i) => {
-                  const active = i <= step;
-                  return (
-                    <div key={i} className="flex items-center gap-2">
-                      <span
-                        className={`w-3 h-3 rounded-full transition-all ${
-                          active ? "bg-primary scale-110" : "bg-muted-foreground/30"
-                        }`}
-                      />
-                      {i < TOTAL_STEPS - 1 && (
-                        <span
-                          className={`h-0.5 w-8 md:w-16 transition-all ${
-                            i < step ? "bg-primary" : "bg-muted-foreground/20"
-                          }`}
-                        />
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="flex justify-between text-xs font-medium text-muted-foreground mb-2">
+              <div className="flex justify-between text-[11px] font-medium text-muted-foreground mb-1.5">
                 <span>Etapa {Math.min(step + 1, TOTAL_STEPS)} de {TOTAL_STEPS}</span>
                 <span>{progressPct}%</span>
               </div>
-              <div className="h-2 bg-muted rounded-full overflow-hidden">
+              <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                 <motion.div
                   className="h-full bg-primary"
                   initial={{ width: 0 }}
@@ -423,8 +402,8 @@ const UmContato = () => {
             </div>
           )}
 
-          {/* CARD */}
-          <div id="triagem-card" className="bg-card border border-border rounded-2xl shadow-large p-6 md:p-10 min-h-[360px]">
+          {/* CARD — padding menor no mobile */}
+          <div id="triagem-card" className="bg-card border border-border rounded-2xl shadow-large p-4 sm:p-6 md:p-8 min-h-[300px]">
             <AnimatePresence mode="wait">
               {!done && step === 0 && (
                 <Step key="0" title="Você já dirige?">
