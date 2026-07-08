@@ -111,29 +111,41 @@ const UmContato = () => {
 
   const scrollTo = (el: HTMLElement | null) => {
     if (!el) return;
-    // pequeno delay para animação de entrada terminar
     setTimeout(() => {
       el.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 120);
+    }, 160);
   };
 
-  // ViewContent + StartTriagem on mount
+  // Foco sempre no topo ao entrar na página
   useEffect(() => {
     if (viewedRef.current) return;
     viewedRef.current = true;
     startedAt.current = Date.now();
-    window.scrollTo({ top: 0 });
+    window.scrollTo({ top: 0, behavior: "auto" });
     track("ViewContent", { content_name: "1contato_triagem", page_path: "/1contato" });
     track("StartTriagem", { funnel: "1contato" });
   }, []);
 
-  // Track each step change + foco no topo do card
+  // Track each step change + foco suave no topo do card
   useEffect(() => {
     if (step === 0) return;
     track(`Step${step}`, { funnel: "1contato", step });
     const card = document.getElementById("triagem-card");
-    if (card) card.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (card) setTimeout(() => card.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
   }, [step]);
+
+  // Auto-avanço da etapa 1 quando todas as respostas obrigatórias estiverem prontas
+  useEffect(() => {
+    if (step !== 1) return;
+    const needsCat =
+      resp.servico === "Primeira Habilitação" ||
+      resp.servico === "Mudança / Inclusão de Categoria";
+    const ready = !!resp.conhece && !!resp.servico && (!needsCat || !!resp.categoria);
+    if (ready) {
+      const t = setTimeout(() => setStep(2), 420);
+      return () => clearTimeout(t);
+    }
+  }, [step, resp.conhece, resp.servico, resp.categoria]);
 
   const validateStep = (s: number): boolean => {
     const e: Record<string, string> = {};
@@ -344,63 +356,42 @@ const UmContato = () => {
       </Helmet>
       <Navbar />
 
-      <main id="main" className="flex-1 pt-28 pb-16">
-        <div className="container mx-auto px-4 max-w-3xl">
-          {/* HERO */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-4 text-sm font-semibold">
-              <Sparkles className="w-4 h-4" aria-hidden="true" />
-              Triagem em menos de 60 segundos
+      <main id="main" className="flex-1 pt-20 md:pt-24 pb-10">
+        <div className="container mx-auto px-3 sm:px-4 max-w-3xl">
+          {/* HERO — compacto para mobile */}
+          <div className="text-center mb-4 md:mb-6">
+            <div className="inline-flex items-center gap-1.5 bg-primary/10 text-primary px-3 py-1 rounded-full mb-2 text-xs font-semibold">
+              <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
+              Triagem em menos de 60s
             </div>
-            <h1 className="text-3xl md:text-5xl font-heading font-black mb-3">
+            <h1 className="text-2xl md:text-4xl font-heading font-black mb-1.5 leading-tight">
               Vamos entender <span className="text-primary">seu caso</span> em 3 passos
             </h1>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Para indicar o plano ideal e agilizar seu atendimento, precisamos de algumas
-              respostas rápidas. Depois, você fala direto com um consultor no WhatsApp.
+            <p className="text-muted-foreground text-sm md:text-base max-w-xl mx-auto">
+              Responda 3 perguntas rápidas e fale com um consultor no WhatsApp.
             </p>
-            <p className="mt-3 text-sm text-muted-foreground inline-flex items-center gap-2">
-              <Clock className="w-4 h-4" aria-hidden="true" />
-              Leva menos de 1 minuto para concluir.
+            <p className="mt-2 text-[11px] md:text-xs text-muted-foreground max-w-md mx-auto leading-snug">
+              <ShieldCheck className="w-3.5 h-3.5 inline-block mr-1 -mt-0.5 text-primary" aria-hidden="true" />
+              Esse processo é para sua segurança e nossa autorização de contato com você,
+              de acordo com as leis de proteção de dados (LGPD).
             </p>
           </div>
 
-          {/* PROGRESS */}
+          {/* PROGRESS — enxuto */}
           {!done && (
             <div
-              className="mb-8"
+              className="mb-4 md:mb-6"
               role="progressbar"
               aria-valuenow={progressPct}
               aria-valuemin={0}
               aria-valuemax={100}
               aria-label={`Etapa ${Math.min(step + 1, TOTAL_STEPS)} de ${TOTAL_STEPS}`}
             >
-              <div className="flex items-center justify-center gap-2 mb-3" aria-hidden="true">
-                {Array.from({ length: TOTAL_STEPS }).map((_, i) => {
-                  const active = i <= step;
-                  return (
-                    <div key={i} className="flex items-center gap-2">
-                      <span
-                        className={`w-3 h-3 rounded-full transition-all ${
-                          active ? "bg-primary scale-110" : "bg-muted-foreground/30"
-                        }`}
-                      />
-                      {i < TOTAL_STEPS - 1 && (
-                        <span
-                          className={`h-0.5 w-8 md:w-16 transition-all ${
-                            i < step ? "bg-primary" : "bg-muted-foreground/20"
-                          }`}
-                        />
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="flex justify-between text-xs font-medium text-muted-foreground mb-2">
+              <div className="flex justify-between text-[11px] font-medium text-muted-foreground mb-1.5">
                 <span>Etapa {Math.min(step + 1, TOTAL_STEPS)} de {TOTAL_STEPS}</span>
                 <span>{progressPct}%</span>
               </div>
-              <div className="h-2 bg-muted rounded-full overflow-hidden">
+              <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                 <motion.div
                   className="h-full bg-primary"
                   initial={{ width: 0 }}
@@ -411,8 +402,8 @@ const UmContato = () => {
             </div>
           )}
 
-          {/* CARD */}
-          <div id="triagem-card" className="bg-card border border-border rounded-2xl shadow-large p-6 md:p-10 min-h-[360px]">
+          {/* CARD — padding menor no mobile */}
+          <div id="triagem-card" className="bg-card border border-border rounded-2xl shadow-large p-4 sm:p-6 md:p-8 min-h-[300px]">
             <AnimatePresence mode="wait">
               {!done && step === 0 && (
                 <Step key="0" title="Você já dirige?">
@@ -444,9 +435,9 @@ const UmContato = () => {
 
               {!done && step === 1 && (
                 <Step key="1" title="Qual é o seu caso?">
-                  <div className="space-y-5">
+                  <div className="space-y-4">
                     <div>
-                      <h3 className="text-base md:text-lg font-heading font-bold mb-3">
+                      <h3 className="text-sm md:text-base font-heading font-bold mb-2">
                         Já conhece o novo procedimento da CNH?
                       </h3>
                       <OptionGrid>
@@ -472,7 +463,7 @@ const UmContato = () => {
                     </div>
 
                     <div ref={servicoRef}>
-                      <h3 className="text-base md:text-lg font-heading font-bold mb-3">
+                      <h3 className="text-sm md:text-base font-heading font-bold mb-2">
                         Qual serviço você procura?
                       </h3>
                       <OptionGrid>
@@ -494,7 +485,8 @@ const UmContato = () => {
                                 s === "Primeira Habilitação" || s === "Mudança / Inclusão de Categoria";
                               setResp({ ...resp, servico: s, categoria: needsCat ? resp.categoria : undefined });
                               track("triagem_select", { step: 1, field: "servico", value: s });
-                              scrollTo(needsCat ? categoriaRef.current : nextStepBtnRef.current);
+                              // Se precisa categoria, foca nela; senão o useEffect avança sozinho
+                              if (needsCat) scrollTo(categoriaRef.current);
                             }}
                           />
                         ))}
@@ -505,7 +497,7 @@ const UmContato = () => {
                     {(resp.servico === "Primeira Habilitação" ||
                       resp.servico === "Mudança / Inclusão de Categoria") && (
                       <div ref={categoriaRef}>
-                        <h3 className="text-base md:text-lg font-heading font-bold mb-3">
+                        <h3 className="text-sm md:text-base font-heading font-bold mb-2">
                           Qual categoria?
                         </h3>
                         <OptionGrid>
@@ -517,7 +509,7 @@ const UmContato = () => {
                               onClick={() => {
                                 setResp({ ...resp, categoria: c });
                                 track("triagem_select", { step: 1, field: "categoria", value: c });
-                                scrollTo(nextStepBtnRef.current);
+                                // useEffect faz auto-avanço
                               }}
                             />
                           ))}
@@ -525,15 +517,6 @@ const UmContato = () => {
                         <FieldError message={errors.categoria} />
                       </div>
                     )}
-
-                    <Button
-                      ref={nextStepBtnRef}
-                      size="lg"
-                      className="w-full"
-                      onClick={goNext}
-                    >
-                      Próxima etapa →
-                    </Button>
                   </div>
                 </Step>
               )}
@@ -823,7 +806,7 @@ const Step = ({ title, children }: { title: string; children: React.ReactNode })
     exit={{ opacity: 0, x: -24 }}
     transition={{ duration: 0.25 }}
   >
-    <h2 className="text-xl md:text-2xl font-heading font-bold mb-6 text-center">{title}</h2>
+    <h2 className="text-lg md:text-xl font-heading font-bold mb-4 text-center">{title}</h2>
     {children}
   </motion.div>
 );
@@ -847,13 +830,13 @@ const Option = ({
     type="button"
     onClick={onClick}
     aria-pressed={selected}
-    className={`group flex items-center gap-3 p-5 rounded-xl border-2 transition-all text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 ${
+    className={`group flex items-center gap-2 px-4 py-3 rounded-xl border-2 transition-all text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 ${
       selected
         ? "border-primary bg-primary/10"
         : "border-border bg-background hover:border-primary hover:bg-primary/5"
     }`}
   >
-    <span className="font-semibold text-base flex-1">{label}</span>
+    <span className="font-semibold text-sm md:text-base flex-1 leading-tight">{label}</span>
     <span
       className={`text-primary transition-opacity ${
         selected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
