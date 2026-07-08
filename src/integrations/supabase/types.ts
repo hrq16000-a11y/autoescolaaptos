@@ -14,7 +14,96 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      triagem_leads: {
+        Row: {
+          aceita_email: boolean | null
+          aceita_whats: boolean | null
+          categoria: string | null
+          conhece_procedimento: string | null
+          created_at: string
+          data_inicio: string | null
+          device: string | null
+          email: string | null
+          experiencia: string | null
+          id: string
+          lgpd_aceite: boolean
+          nome: string | null
+          origem: string | null
+          prazo: string | null
+          referrer: string | null
+          servico: string | null
+          situacao: string | null
+          status: string
+          telefone: string | null
+          tempo_gasto_segundos: number | null
+          updated_at: string
+          user_agent: string | null
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+        }
+        Insert: {
+          aceita_email?: boolean | null
+          aceita_whats?: boolean | null
+          categoria?: string | null
+          conhece_procedimento?: string | null
+          created_at?: string
+          data_inicio?: string | null
+          device?: string | null
+          email?: string | null
+          experiencia?: string | null
+          id?: string
+          lgpd_aceite?: boolean
+          nome?: string | null
+          origem?: string | null
+          prazo?: string | null
+          referrer?: string | null
+          servico?: string | null
+          situacao?: string | null
+          status?: string
+          telefone?: string | null
+          tempo_gasto_segundos?: number | null
+          updated_at?: string
+          user_agent?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+        }
+        Update: {
+          aceita_email?: boolean | null
+          aceita_whats?: boolean | null
+          categoria?: string | null
+          conhece_procedimento?: string | null
+          created_at?: string
+          data_inicio?: string | null
+          device?: string | null
+          email?: string | null
+          experiencia?: string | null
+          id?: string
+          lgpd_aceite?: boolean
+          nome?: string | null
+          origem?: string | null
+          prazo?: string | null
+          referrer?: string | null
+          servico?: string | null
+          situacao?: string | null
+          status?: string
+          telefone?: string | null
+          tempo_gasto_segundos?: number | null
+          updated_at?: string
+          user_agent?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
