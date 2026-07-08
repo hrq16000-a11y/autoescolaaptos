@@ -95,7 +95,7 @@ function readUtms() {
 
 const UmContato = () => {
   const [step, setStep] = useState(0);
-  const [resp, setResp] = useState<Respostas>({});
+  const [resp, setResp] = useState<Respostas>({ lgpd: true, aceita_whats: true });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
