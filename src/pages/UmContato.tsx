@@ -93,6 +93,8 @@ function readUtms() {
 
 // ---------- component ----------
 
+const STORAGE_KEY = "aptos:1contato:draft:v1";
+
 const UmContato = () => {
   const [step, setStep] = useState(0);
   const [resp, setResp] = useState<Respostas>({ lgpd: true, aceita_whats: true });
@@ -101,22 +103,68 @@ const UmContato = () => {
   const [done, setDone] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [restored, setRestored] = useState(false);
   const startedAt = useRef<number>(Date.now());
   const viewedRef = useRef(false);
 
   // Refs para auto-scroll dentro da etapa 1
+  const cardRef = useRef<HTMLDivElement | null>(null);
   const servicoRef = useRef<HTMLDivElement | null>(null);
   const categoriaRef = useRef<HTMLDivElement | null>(null);
   const nextStepBtnRef = useRef<HTMLButtonElement | null>(null);
 
-  const scrollTo = (el: HTMLElement | null) => {
+  // Autoscroll suave + foco no primeiro elemento interativo do bloco alvo
+  const scrollTo = (el: HTMLElement | null, opts?: { focus?: boolean }) => {
     if (!el) return;
     setTimeout(() => {
       el.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 160);
+      if (opts?.focus !== false) {
+        const focusable = el.querySelector<HTMLElement>(
+          'input, textarea, select, button, [tabindex]:not([tabindex="-1"])'
+        );
+        // preventScroll evita "pulo" — o scrollIntoView já cuida disso
+        focusable?.focus?.({ preventScroll: true });
+      }
+    }, 180);
   };
 
-  // Foco sempre no topo ao entrar na página
+  // Restaura rascunho do localStorage antes de qualquer render de conteúdo
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const saved = JSON.parse(raw) as { resp?: Respostas; step?: number; ts?: number };
+        // ignora rascunho > 7 dias
+        if (saved.ts && Date.now() - saved.ts < 7 * 24 * 3600 * 1000) {
+          if (saved.resp) setResp((prev) => ({ ...prev, ...saved.resp }));
+          if (typeof saved.step === "number" && saved.step >= 0 && saved.step < TOTAL_STEPS) {
+            setStep(saved.step);
+            setRestored(true);
+          }
+        }
+      }
+    } catch { /* noop */ }
+  }, []);
+
+  // Persiste rascunho a cada mudança relevante (não persiste após envio)
+  useEffect(() => {
+    if (done) return;
+    try {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ resp, step, ts: Date.now() })
+      );
+    } catch { /* noop */ }
+  }, [resp, step, done]);
+
+  // Limpa rascunho ao concluir
+  useEffect(() => {
+    if (done) {
+      try { localStorage.removeItem(STORAGE_KEY); } catch { /* noop */ }
+    }
+  }, [done]);
+
+  // Foco sempre no topo ao entrar na página + autoscroll suave até o card em mobile
   useEffect(() => {
     if (viewedRef.current) return;
     viewedRef.current = true;
@@ -124,14 +172,22 @@ const UmContato = () => {
     window.scrollTo({ top: 0, behavior: "auto" });
     track("ViewContent", { content_name: "1contato_triagem", page_path: "/1contato" });
     track("StartTriagem", { funnel: "1contato" });
+
+    // Em mobile, rola suavemente até a primeira pergunta após um pequeno delay
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      setTimeout(() => {
+        cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 500);
+    }
   }, []);
 
-  // Track each step change + foco suave no topo do card
+  // Track cada mudança de etapa + foco suave no topo do card
   useEffect(() => {
     if (step === 0) return;
     track(`Step${step}`, { funnel: "1contato", step });
-    const card = document.getElementById("triagem-card");
-    if (card) setTimeout(() => card.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+    setTimeout(() => {
+      cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
   }, [step]);
 
   // Auto-avanço da etapa 1 quando todas as respostas obrigatórias estiverem prontas
@@ -146,6 +202,7 @@ const UmContato = () => {
       return () => clearTimeout(t);
     }
   }, [step, resp.conhece, resp.servico, resp.categoria]);
+
 
   const validateStep = (s: number): boolean => {
     const e: Record<string, string> = {};
@@ -352,7 +409,14 @@ const UmContato = () => {
       />
       <Helmet>
         <meta name="keywords" content="triagem CNH, autoescola São José dos Pinhais, orçamento CNH, primeira habilitação, renovação CNH, reciclagem CNH suspensos" />
-        <meta property="og:image:alt" content="Triagem rápida de CNH na Autoescola APTOS" />
+        <meta property="og:image" content="https://autoescolaaptos.com.br/og-1contato.jpg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="Triagem CNH em 60 segundos — Autoescola APTOS" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://autoescolaaptos.com.br/1contato" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="https://autoescolaaptos.com.br/og-1contato.jpg" />
       </Helmet>
       <Navbar />
 
@@ -402,8 +466,36 @@ const UmContato = () => {
             </div>
           )}
 
-          {/* CARD — padding menor no mobile */}
-          <div id="triagem-card" className="bg-card border border-border rounded-2xl shadow-large p-4 sm:p-6 md:p-8 min-h-[300px]">
+          {/* Aviso de rascunho restaurado */}
+          {restored && !done && (
+            <div className="mb-3 rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 text-xs text-foreground flex items-center justify-between gap-2">
+              <span>✨ Continuamos de onde você parou. Suas respostas foram salvas.</span>
+              <button
+                type="button"
+                onClick={() => {
+                  try { localStorage.removeItem(STORAGE_KEY); } catch { /* noop */ }
+                  setResp({ lgpd: true, aceita_whats: true });
+                  setStep(0);
+                  setRestored(false);
+                }}
+                className="underline text-primary font-semibold shrink-0"
+              >
+                Recomeçar
+              </button>
+            </div>
+          )}
+
+          {/* Fundo desfocado atrás do card em mobile — destaca o foco de atenção */}
+          <div className="relative">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -inset-6 md:hidden bg-gradient-to-b from-primary/10 via-background/40 to-background/0 blur-2xl -z-10"
+            />
+            <div
+              ref={cardRef}
+              id="triagem-card"
+              className="relative bg-card border border-border rounded-2xl shadow-large p-4 sm:p-6 md:p-8 min-h-[280px] ring-1 ring-primary/10"
+            >
             <AnimatePresence mode="wait">
               {!done && step === 0 && (
                 <Step key="0" title="Você já dirige?">
@@ -782,7 +874,9 @@ const UmContato = () => {
                 Voltar
               </button>
             )}
+            </div>
           </div>
+
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
             <TrustItem icon={Award} title="+15 anos" subtitle="formando condutores" />
