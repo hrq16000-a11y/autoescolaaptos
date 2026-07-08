@@ -203,7 +203,15 @@ const AdminLeads = () => {
               {leads.length} lead(s) carregados · {filtered.length} após busca
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/admin/metricas">
+                <BarChart3 className="w-4 h-4 mr-2" /> Métricas
+              </Link>
+            </Button>
+            <Button variant="outline" size="sm" onClick={exportCsv} disabled={!filtered.length}>
+              <Download className="w-4 h-4 mr-2" /> Exportar CSV ({filtered.length})
+            </Button>
             <Button variant="outline" size="sm" onClick={fetchLeads} disabled={loading}>
               {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
               Atualizar
