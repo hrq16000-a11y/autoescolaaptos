@@ -99,6 +99,8 @@ const UmContato = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const startedAt = useRef<number>(Date.now());
   const viewedRef = useRef(false);
 
