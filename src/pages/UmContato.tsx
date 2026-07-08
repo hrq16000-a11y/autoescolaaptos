@@ -621,6 +621,26 @@ const UmContato = () => {
                     <FieldError message={errors.lgpd} />
                   </div>
 
+                  {/* Honeypot: campo invisível — bots preenchem, humanos não */}
+                  <div aria-hidden="true" className="absolute -left-[9999px] top-auto w-px h-px overflow-hidden">
+                    <label htmlFor="hp-website">Website</label>
+                    <input
+                      id="hp-website"
+                      type="text"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={resp.honeypot || ""}
+                      onChange={(e) => setResp({ ...resp, honeypot: e.target.value })}
+                    />
+                  </div>
+
+                  {submitError && (
+                    <div role="alert" className="max-w-md mx-auto mb-4 text-sm text-destructive flex items-center justify-center gap-1.5">
+                      <AlertCircle className="w-4 h-4" aria-hidden="true" />
+                      {submitError}
+                    </div>
+                  )}
+
                   <Button
                     size="lg"
                     className="text-lg h-14 px-8 shadow-glow w-full max-w-md"
