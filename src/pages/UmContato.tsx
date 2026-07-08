@@ -93,6 +93,8 @@ function readUtms() {
 
 // ---------- component ----------
 
+const STORAGE_KEY = "aptos:1contato:draft:v1";
+
 const UmContato = () => {
   const [step, setStep] = useState(0);
   const [resp, setResp] = useState<Respostas>({ lgpd: true, aceita_whats: true });
@@ -101,22 +103,68 @@ const UmContato = () => {
   const [done, setDone] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [restored, setRestored] = useState(false);
   const startedAt = useRef<number>(Date.now());
   const viewedRef = useRef(false);
 
   // Refs para auto-scroll dentro da etapa 1
+  const cardRef = useRef<HTMLDivElement | null>(null);
   const servicoRef = useRef<HTMLDivElement | null>(null);
   const categoriaRef = useRef<HTMLDivElement | null>(null);
   const nextStepBtnRef = useRef<HTMLButtonElement | null>(null);
 
-  const scrollTo = (el: HTMLElement | null) => {
+  // Autoscroll suave + foco no primeiro elemento interativo do bloco alvo
+  const scrollTo = (el: HTMLElement | null, opts?: { focus?: boolean }) => {
     if (!el) return;
     setTimeout(() => {
       el.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 160);
+      if (opts?.focus !== false) {
+        const focusable = el.querySelector<HTMLElement>(
+          'input, textarea, select, button, [tabindex]:not([tabindex="-1"])'
+        );
+        // preventScroll evita "pulo" — o scrollIntoView já cuida disso
+        focusable?.focus?.({ preventScroll: true });
+      }
+    }, 180);
   };
 
-  // Foco sempre no topo ao entrar na página
+  // Restaura rascunho do localStorage antes de qualquer render de conteúdo
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const saved = JSON.parse(raw) as { resp?: Respostas; step?: number; ts?: number };
+        // ignora rascunho > 7 dias
+        if (saved.ts && Date.now() - saved.ts < 7 * 24 * 3600 * 1000) {
+          if (saved.resp) setResp((prev) => ({ ...prev, ...saved.resp }));
+          if (typeof saved.step === "number" && saved.step >= 0 && saved.step < TOTAL_STEPS) {
+            setStep(saved.step);
+            setRestored(true);
+          }
+        }
+      }
+    } catch { /* noop */ }
+  }, []);
+
+  // Persiste rascunho a cada mudança relevante (não persiste após envio)
+  useEffect(() => {
+    if (done) return;
+    try {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ resp, step, ts: Date.now() })
+      );
+    } catch { /* noop */ }
+  }, [resp, step, done]);
+
+  // Limpa rascunho ao concluir
+  useEffect(() => {
+    if (done) {
+      try { localStorage.removeItem(STORAGE_KEY); } catch { /* noop */ }
+    }
+  }, [done]);
+
+  // Foco sempre no topo ao entrar na página + autoscroll suave até o card em mobile
   useEffect(() => {
     if (viewedRef.current) return;
     viewedRef.current = true;
@@ -124,14 +172,22 @@ const UmContato = () => {
     window.scrollTo({ top: 0, behavior: "auto" });
     track("ViewContent", { content_name: "1contato_triagem", page_path: "/1contato" });
     track("StartTriagem", { funnel: "1contato" });
+
+    // Em mobile, rola suavemente até a primeira pergunta após um pequeno delay
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      setTimeout(() => {
+        cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 500);
+    }
   }, []);
 
-  // Track each step change + foco suave no topo do card
+  // Track cada mudança de etapa + foco suave no topo do card
   useEffect(() => {
     if (step === 0) return;
     track(`Step${step}`, { funnel: "1contato", step });
-    const card = document.getElementById("triagem-card");
-    if (card) setTimeout(() => card.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+    setTimeout(() => {
+      cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
   }, [step]);
 
   // Auto-avanço da etapa 1 quando todas as respostas obrigatórias estiverem prontas
@@ -146,6 +202,7 @@ const UmContato = () => {
       return () => clearTimeout(t);
     }
   }, [step, resp.conhece, resp.servico, resp.categoria]);
+
 
   const validateStep = (s: number): boolean => {
     const e: Record<string, string> = {};
