@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Helmet } from "react-helmet";
 import {
   ArrowLeft,
   CheckCircle2,
@@ -8,6 +9,7 @@ import {
   Clock,
   Award,
   Sparkles,
+  AlertCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -15,113 +17,220 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
 import { whatsappLink } from "@/lib/whatsapp";
-import { useAnalytics } from "@/hooks/useAnalytics";
+import { track, trackConversion } from "@/lib/analytics";
 import { supabase } from "@/integrations/supabase/client";
 
-type Experiencia = "Nunca dirigi" | "Pouca experiência" | "Já dirijo";
-type ConheceProcedimento = "Sim" | "Não";
+type Experiencia = "Tenho experiência com carro" | "Tenho experiência com moto" | "Começaria do zero";
+type ConheceProcedimento = "Sim, conheço o procedimento" | "Não, é minha primeira vez";
 type Servico =
-  | "Primeira Habilitação A"
-  | "Primeira Habilitação B"
-  | "Primeira Habilitação A+B"
-  | "Inclusão de Categoria"
-  | "Renovação"
-  | "Reciclagem"
-  | "Outro";
-type Prazo =
-  | "Hoje"
-  | "Esta semana"
-  | "Este mês"
-  | "Nos próximos meses"
-  | "Apenas pesquisando";
+  | "Primeira Habilitação"
+  | "Renovação de CNH"
+  | "Mudança / Inclusão de Categoria"
+  | "Curso de Reciclagem (Suspensos)"
+  | "Reteste Prático";
+type Categoria = "A (moto)" | "B (carro)" | "A+B (moto e carro)";
+type Prazo = "Hoje" | "Esta semana" | "Este mês" | "Nos próximos meses" | "Apenas pesquisando";
 
 interface Respostas {
   experiencia?: Experiencia;
   conhece?: ConheceProcedimento;
   servico?: Servico;
+  categoria?: Categoria;
   prazo?: Prazo;
   nome?: string;
+  telefone?: string;
+  email?: string;
   lgpd?: boolean;
+  aceita_whats?: boolean;
+  aceita_email?: boolean;
 }
 
 const TOTAL_STEPS = 3;
 
+// ---------- helpers ----------
+
+function maskPhone(raw: string): string {
+  const d = raw.replace(/\D/g, "").slice(0, 11);
+  if (d.length <= 2) return d;
+  if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+}
+
+function isValidPhone(v?: string) {
+  if (!v) return false;
+  const d = v.replace(/\D/g, "");
+  return d.length === 10 || d.length === 11;
+}
+
+function isValidEmail(v?: string) {
+  if (!v) return false;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
+}
+
+function detectDevice(): string {
+  if (typeof navigator === "undefined") return "unknown";
+  const ua = navigator.userAgent;
+  if (/iPad|Tablet/i.test(ua)) return "tablet";
+  if (/Mobi|Android|iPhone/i.test(ua)) return "mobile";
+  return "desktop";
+}
+
+function readUtms() {
+  if (typeof window === "undefined") return {};
+  const p = new URLSearchParams(window.location.search);
+  return {
+    utm_source: p.get("utm_source") || undefined,
+    utm_medium: p.get("utm_medium") || undefined,
+    utm_campaign: p.get("utm_campaign") || undefined,
+    utm_term: p.get("utm_term") || undefined,
+    utm_content: p.get("utm_content") || undefined,
+  };
+}
+
+// ---------- component ----------
+
 const UmContato = () => {
-  const { trackEvent } = useAnalytics();
   const [step, setStep] = useState(0);
   const [resp, setResp] = useState<Respostas>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
+  const startedAt = useRef<number>(Date.now());
+  const viewedRef = useRef(false);
 
-  const next = (patch: Partial<Respostas>, jump = 1) => {
-    const merged = { ...resp, ...patch };
-    setResp(merged);
-    trackEvent("triagem_step", { step: step + 1, ...patch });
-    setStep((s) => s + jump);
+  // ViewContent + StartTriagem on mount
+  useEffect(() => {
+    if (viewedRef.current) return;
+    viewedRef.current = true;
+    startedAt.current = Date.now();
+    track("ViewContent", { content_name: "1contato_triagem", page_path: "/1contato" });
+    track("StartTriagem", { funnel: "1contato" });
+  }, []);
+
+  // Track each step change
+  useEffect(() => {
+    if (step === 0) return;
+    track(`Step${step}`, { funnel: "1contato", step });
+  }, [step]);
+
+  const validateStep = (s: number): boolean => {
+    const e: Record<string, string> = {};
+    if (s === 0 && !resp.experiencia) e.experiencia = "Escolha uma opção para continuar.";
+    if (s === 1) {
+      if (!resp.conhece) e.conhece = "Selecione uma opção.";
+      if (!resp.servico) e.servico = "Escolha o serviço desejado.";
+      if (
+        resp.servico === "Primeira Habilitação" ||
+        resp.servico === "Mudança / Inclusão de Categoria"
+      ) {
+        if (!resp.categoria) e.categoria = "Escolha a categoria desejada.";
+      }
+    }
+    if (s === 2 && !resp.prazo) e.prazo = "Selecione quando pretende iniciar.";
+    setErrors(e);
+    return Object.keys(e).length === 0;
   };
 
-  const back = () => setStep((s) => Math.max(0, s - 1));
+  const goNext = () => {
+    if (!validateStep(step)) return;
+    setErrors({});
+    setStep((s) => s + 1);
+  };
+
+  const goBack = () => {
+    setErrors({});
+    setStep((s) => Math.max(0, s - 1));
+  };
 
   const buildMessage = (r: Respostas) => {
+    const servicoLinha = r.categoria ? `${r.servico} — Categoria ${r.categoria}` : r.servico;
     return (
-      `Olá! Concluí a triagem no site da Autoescola APTOS. Segue meu resumo:\n\n` +
-      `👤 Nome: ${r.nome || "(não informado)"}\n` +
-      `🚗 Experiência: ${r.experiencia || "-"}\n` +
-      `📋 Conhece o novo procedimento da CNH? ${r.conhece || "-"}\n` +
-      `🎯 Serviço: ${r.servico || "-"}\n` +
-      `📅 Pretende iniciar: ${r.prazo || "-"}\n\n` +
-      `Pode me passar valores, formas de pagamento e os próximos passos, por favor?`
+      `Olá! 😊\n\n` +
+      `Acabei de concluir a triagem no site da Autoescola APTOS. Segue meu resumo:\n\n` +
+      `• Nome: ${r.nome}\n` +
+      `• WhatsApp: ${r.telefone}\n` +
+      (r.email ? `• Email: ${r.email}\n` : "") +
+      `• Serviço: ${servicoLinha}\n` +
+      `• Experiência: ${r.experiencia}\n` +
+      `• Conhece o novo procedimento da CNH: ${r.conhece}\n` +
+      `• Pretendo iniciar: ${r.prazo}\n\n` +
+      `Gostaria de receber meu orçamento e os próximos passos, por favor.`
     );
   };
 
   const finalUrl = useMemo(() => whatsappLink(buildMessage(resp), "funil"), [resp]);
-  const progress = Math.min(step, TOTAL_STEPS) / TOTAL_STEPS;
 
   const canFinish =
     !!resp.experiencia &&
     !!resp.conhece &&
     !!resp.servico &&
     !!resp.prazo &&
+    !!resp.nome &&
+    resp.nome.trim().length >= 5 &&
+    isValidPhone(resp.telefone) &&
     !!resp.lgpd;
 
+  const validateFinal = (): boolean => {
+    const e: Record<string, string> = {};
+    if (!resp.nome || resp.nome.trim().length < 5)
+      e.nome = "Informe seu nome completo (mínimo 5 caracteres).";
+    if (!isValidPhone(resp.telefone))
+      e.telefone = "Informe um WhatsApp válido com DDD.";
+    if (resp.email && !isValidEmail(resp.email))
+      e.email = "E-mail inválido.";
+    if (!resp.lgpd) e.lgpd = "É preciso aceitar os termos da LGPD.";
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
+
   const finalize = async () => {
-    if (!canFinish || submitting) return;
+    if (submitting) return;
+    if (!validateFinal()) return;
     setSubmitting(true);
+
+    const utms = readUtms();
+    const tempo = Math.round((Date.now() - startedAt.current) / 1000);
 
     const payload = {
       nome: resp.nome ?? null,
+      telefone: resp.telefone ?? null,
+      email: resp.email ?? null,
       experiencia: resp.experiencia ?? null,
       conhece_procedimento: resp.conhece ?? null,
       servico: resp.servico ?? null,
+      categoria: resp.categoria ?? null,
       prazo: resp.prazo ?? null,
+      aceita_whats: resp.aceita_whats ?? true,
+      aceita_email: resp.aceita_email ?? false,
       lgpd_aceite: !!resp.lgpd,
       origem: "1contato",
       user_agent: typeof navigator !== "undefined" ? navigator.userAgent : null,
-      referrer: typeof document !== "undefined" ? document.referrer : null,
+      referrer: typeof document !== "undefined" ? document.referrer || null : null,
+      device: detectDevice(),
+      tempo_gasto_segundos: tempo,
+      status: "Novo",
+      ...utms,
     };
 
-    // Best-effort persistence for future CRM/Sheets integration.
-    // Falha silenciosa: nunca bloquear o envio do WhatsApp.
+    // Persist (best-effort, never blocks the WhatsApp handoff)
     try {
-      // @ts-expect-error - tabela opcional, criada quando o backend for provisionado
-      await supabase.from("triagem_leads").insert(payload);
+      await supabase.from("triagem_leads").insert(payload as never);
     } catch {
-      /* noop */
+      /* silent */
     }
 
-    try {
-      const w = window as unknown as { dataLayer?: unknown[] };
-      w.dataLayer?.push({
-        event: "generate_lead",
-        currency: "BRL",
-        value: 0,
-        lead_source: "1contato_triagem",
-        ...payload,
-      });
-    } catch {
-      /* noop */
-    }
-
-    trackEvent("triagem_complete", payload as Record<string, unknown>);
+    // Analytics — Lead event + custom
+    trackConversion("Lead", {
+      lead_source: "1contato_triagem",
+      servico: payload.servico,
+      categoria: payload.categoria,
+      prazo: payload.prazo,
+      tempo_gasto_segundos: tempo,
+      value: 10,
+      currency: "BRL",
+    });
+    track("triagem_complete", payload as unknown as Record<string, unknown>);
 
     try {
       const { addSignal } = await import("@/lib/leadScore");
@@ -130,121 +239,243 @@ const UmContato = () => {
       /* noop */
     }
 
-    window.open(finalUrl, "_blank", "noopener");
     setSubmitting(false);
+    setDone(true);
   };
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Triagem Rápida CNH — Autoescola APTOS",
+    description:
+      "Formulário de triagem em 3 passos para primeira habilitação, renovação, mudança de categoria, reciclagem e reteste na Autoescola APTOS em São José dos Pinhais.",
+    url: "https://autoescolaaptos.com.br/1contato",
+    inLanguage: "pt-BR",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Autoescola APTOS",
+      url: "https://autoescolaaptos.com.br",
+    },
+    mainEntity: {
+      "@type": "Service",
+      name: "Triagem e orçamento de CNH",
+      provider: {
+        "@type": "DrivingSchool",
+        name: "Autoescola APTOS",
+        telephone: "+554133833627",
+        areaServed: "São José dos Pinhais, PR",
+      },
+    },
+  };
+
+  const progressPct = done ? 100 : Math.round((step / TOTAL_STEPS) * 100);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <SEO
-        title="Triagem Rápida — Fale com a Autoescola APTOS | 1º Contato"
-        description="Responda 3 perguntas rápidas e receba um atendimento personalizado da Autoescola APTOS em São José dos Pinhais. Triagem em segundos, direto no WhatsApp."
+        title="Triagem CNH em 60s | Autoescola APTOS São José dos Pinhais"
+        description="Responda 3 perguntas rápidas e receba seu orçamento de CNH direto no WhatsApp. Primeira habilitação, renovação, mudança de categoria, reciclagem e reteste na Autoescola APTOS."
         canonical="/1contato"
+        jsonLd={jsonLd}
       />
+      <Helmet>
+        <meta name="keywords" content="triagem CNH, autoescola São José dos Pinhais, orçamento CNH, primeira habilitação, renovação CNH, reciclagem CNH suspensos" />
+        <meta property="og:image:alt" content="Triagem rápida de CNH na Autoescola APTOS" />
+      </Helmet>
       <Navbar />
 
-      <main className="flex-1 pt-28 pb-16">
+      <main id="main" className="flex-1 pt-28 pb-16">
         <div className="container mx-auto px-4 max-w-3xl">
+          {/* HERO */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-4 text-sm font-semibold">
-              <Sparkles className="w-4 h-4" />
-              Triagem rápida em menos de 60 segundos
+              <Sparkles className="w-4 h-4" aria-hidden="true" />
+              Triagem em menos de 60 segundos
             </div>
             <h1 className="text-3xl md:text-5xl font-heading font-black mb-3">
               Vamos entender <span className="text-primary">seu caso</span> em 3 passos
             </h1>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Responda rapidamente e nossa equipe já entra em contato pelo WhatsApp com
-              a solução ideal para você — sem enrolação e sem repetir informações.
+              Para indicar o plano ideal e agilizar seu atendimento, precisamos de algumas
+              respostas rápidas. Depois, você fala direto com um consultor no WhatsApp.
+            </p>
+            <p className="mt-3 text-sm text-muted-foreground inline-flex items-center gap-2">
+              <Clock className="w-4 h-4" aria-hidden="true" />
+              Leva menos de 1 minuto para concluir.
             </p>
           </div>
 
-          <div className="mb-8" role="progressbar" aria-valuenow={Math.round(progress * 100)} aria-valuemin={0} aria-valuemax={100}>
-            <div className="flex justify-between text-xs font-medium text-muted-foreground mb-2">
-              <span>Etapa {Math.min(step + 1, TOTAL_STEPS)} de {TOTAL_STEPS}</span>
-              <span>{Math.round(progress * 100)}%</span>
+          {/* PROGRESS */}
+          {!done && (
+            <div
+              className="mb-8"
+              role="progressbar"
+              aria-valuenow={progressPct}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label={`Etapa ${Math.min(step + 1, TOTAL_STEPS)} de ${TOTAL_STEPS}`}
+            >
+              <div className="flex items-center justify-center gap-2 mb-3" aria-hidden="true">
+                {Array.from({ length: TOTAL_STEPS }).map((_, i) => {
+                  const active = i <= step;
+                  return (
+                    <div key={i} className="flex items-center gap-2">
+                      <span
+                        className={`w-3 h-3 rounded-full transition-all ${
+                          active ? "bg-primary scale-110" : "bg-muted-foreground/30"
+                        }`}
+                      />
+                      {i < TOTAL_STEPS - 1 && (
+                        <span
+                          className={`h-0.5 w-8 md:w-16 transition-all ${
+                            i < step ? "bg-primary" : "bg-muted-foreground/20"
+                          }`}
+                        />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="flex justify-between text-xs font-medium text-muted-foreground mb-2">
+                <span>Etapa {Math.min(step + 1, TOTAL_STEPS)} de {TOTAL_STEPS}</span>
+                <span>{progressPct}%</span>
+              </div>
+              <div className="h-2 bg-muted rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full bg-primary"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progressPct}%` }}
+                  transition={{ type: "spring", stiffness: 120, damping: 20 }}
+                />
+              </div>
             </div>
-            <div className="h-2 bg-muted rounded-full overflow-hidden">
-              <motion.div
-                className="h-full bg-primary"
-                initial={{ width: 0 }}
-                animate={{ width: `${progress * 100}%` }}
-                transition={{ type: "spring", stiffness: 120, damping: 20 }}
-              />
-            </div>
-          </div>
+          )}
 
+          {/* CARD */}
           <div className="bg-card border border-border rounded-2xl shadow-large p-6 md:p-10 min-h-[360px]">
             <AnimatePresence mode="wait">
-              {step === 0 && (
-                <Step key="0" title="Você já possui experiência dirigindo?">
+              {!done && step === 0 && (
+                <Step key="0" title="Você já tem experiência dirigindo?">
                   <OptionGrid cols={1}>
-                    <Option label="Nunca dirigi" onClick={() => next({ experiencia: "Nunca dirigi" })} />
-                    <Option label="Pouca experiência" onClick={() => next({ experiencia: "Pouca experiência" })} />
-                    <Option label="Já dirijo" onClick={() => next({ experiencia: "Já dirijo" })} />
+                    <Option
+                      label="Tenho experiência com carro"
+                      onClick={() => { setResp({ ...resp, experiencia: "Tenho experiência com carro" }); setErrors({}); }}
+                      selected={resp.experiencia === "Tenho experiência com carro"}
+                    />
+                    <Option
+                      label="Tenho experiência com moto"
+                      onClick={() => { setResp({ ...resp, experiencia: "Tenho experiência com moto" }); setErrors({}); }}
+                      selected={resp.experiencia === "Tenho experiência com moto"}
+                    />
+                    <Option
+                      label="Começaria do zero"
+                      onClick={() => { setResp({ ...resp, experiencia: "Começaria do zero" }); setErrors({}); }}
+                      selected={resp.experiencia === "Começaria do zero"}
+                    />
                   </OptionGrid>
+                  <FieldError message={errors.experiencia} />
+                  <Button size="lg" className="w-full mt-6" onClick={goNext}>
+                    Próxima etapa →
+                  </Button>
                 </Step>
               )}
 
-              {step === 1 && (
-                <Step key="1" title="Você já conhece o novo procedimento da CNH?">
+              {!done && step === 1 && (
+                <Step key="1" title="Sobre o procedimento e o serviço">
                   <div className="space-y-6">
-                    <OptionGrid>
-                      <Option
-                        label="Sim, já conheço"
-                        onClick={() => setResp({ ...resp, conhece: "Sim" })}
-                        selected={resp.conhece === "Sim"}
-                      />
-                      <Option
-                        label="Não, gostaria de saber"
-                        onClick={() => setResp({ ...resp, conhece: "Não" })}
-                        selected={resp.conhece === "Não"}
-                      />
-                    </OptionGrid>
-
-                    <div className="pt-2">
-                      <h3 className="text-base md:text-lg font-heading font-bold mb-3 text-center">
-                        Qual serviço procura?
+                    <div>
+                      <h3 className="text-base md:text-lg font-heading font-bold mb-3">
+                        Você já conhece o procedimento atual da CNH?
                       </h3>
                       <OptionGrid>
-                        <Option label="Primeira Habilitação A" onClick={() => setResp({ ...resp, servico: "Primeira Habilitação A" })} selected={resp.servico === "Primeira Habilitação A"} />
-                        <Option label="Primeira Habilitação B" onClick={() => setResp({ ...resp, servico: "Primeira Habilitação B" })} selected={resp.servico === "Primeira Habilitação B"} />
-                        <Option label="Primeira Habilitação A+B" onClick={() => setResp({ ...resp, servico: "Primeira Habilitação A+B" })} selected={resp.servico === "Primeira Habilitação A+B"} />
-                        <Option label="Inclusão de Categoria" onClick={() => setResp({ ...resp, servico: "Inclusão de Categoria" })} selected={resp.servico === "Inclusão de Categoria"} />
-                        <Option label="Renovação" onClick={() => setResp({ ...resp, servico: "Renovação" })} selected={resp.servico === "Renovação"} />
-                        <Option label="Reciclagem" onClick={() => setResp({ ...resp, servico: "Reciclagem" })} selected={resp.servico === "Reciclagem"} />
-                        <Option label="Outro" onClick={() => setResp({ ...resp, servico: "Outro" })} selected={resp.servico === "Outro"} />
+                        <Option
+                          label="Sim, conheço o procedimento"
+                          onClick={() => setResp({ ...resp, conhece: "Sim, conheço o procedimento" })}
+                          selected={resp.conhece === "Sim, conheço o procedimento"}
+                        />
+                        <Option
+                          label="Não, é minha primeira vez"
+                          onClick={() => setResp({ ...resp, conhece: "Não, é minha primeira vez" })}
+                          selected={resp.conhece === "Não, é minha primeira vez"}
+                        />
                       </OptionGrid>
+                      <FieldError message={errors.conhece} />
                     </div>
 
-                    <Button
-                      size="lg"
-                      className="w-full"
-                      disabled={!resp.conhece || !resp.servico}
-                      onClick={() => {
-                        trackEvent("triagem_step", { step: 2, conhece: resp.conhece, servico: resp.servico });
-                        setStep(2);
-                      }}
-                    >
-                      Continuar
+                    <div>
+                      <h3 className="text-base md:text-lg font-heading font-bold mb-3">
+                        Qual serviço você procura?
+                      </h3>
+                      <OptionGrid>
+                        {(
+                          [
+                            "Primeira Habilitação",
+                            "Renovação de CNH",
+                            "Mudança / Inclusão de Categoria",
+                            "Curso de Reciclagem (Suspensos)",
+                            "Reteste Prático",
+                          ] as Servico[]
+                        ).map((s) => (
+                          <Option
+                            key={s}
+                            label={s}
+                            onClick={() => setResp({ ...resp, servico: s, categoria: undefined })}
+                            selected={resp.servico === s}
+                          />
+                        ))}
+                      </OptionGrid>
+                      <FieldError message={errors.servico} />
+                    </div>
+
+                    {(resp.servico === "Primeira Habilitação" ||
+                      resp.servico === "Mudança / Inclusão de Categoria") && (
+                      <div>
+                        <h3 className="text-base md:text-lg font-heading font-bold mb-3">
+                          Qual categoria você pretende?
+                        </h3>
+                        <OptionGrid>
+                          {(["A (moto)", "B (carro)", "A+B (moto e carro)"] as Categoria[]).map((c) => (
+                            <Option
+                              key={c}
+                              label={c}
+                              onClick={() => setResp({ ...resp, categoria: c })}
+                              selected={resp.categoria === c}
+                            />
+                          ))}
+                        </OptionGrid>
+                        <FieldError message={errors.categoria} />
+                      </div>
+                    )}
+
+                    <Button size="lg" className="w-full" onClick={goNext}>
+                      Próxima etapa →
                     </Button>
                   </div>
                 </Step>
               )}
 
-              {step === 2 && (
+              {!done && step === 2 && (
                 <Step key="2" title="Quando pretende iniciar?">
                   <OptionGrid cols={1}>
-                    <Option label="Hoje" onClick={() => next({ prazo: "Hoje" })} />
-                    <Option label="Esta semana" onClick={() => next({ prazo: "Esta semana" })} />
-                    <Option label="Este mês" onClick={() => next({ prazo: "Este mês" })} />
-                    <Option label="Nos próximos meses" onClick={() => next({ prazo: "Nos próximos meses" })} />
-                    <Option label="Apenas pesquisando" onClick={() => next({ prazo: "Apenas pesquisando" })} />
+                    {(["Hoje", "Esta semana", "Este mês", "Nos próximos meses", "Apenas pesquisando"] as Prazo[]).map(
+                      (p) => (
+                        <Option
+                          key={p}
+                          label={p}
+                          onClick={() => setResp({ ...resp, prazo: p })}
+                          selected={resp.prazo === p}
+                        />
+                      ),
+                    )}
                   </OptionGrid>
+                  <FieldError message={errors.prazo} />
+                  <Button size="lg" className="w-full mt-6" onClick={goNext}>
+                    Próxima etapa →
+                  </Button>
                 </Step>
               )}
 
-              {step >= 3 && (
+              {!done && step >= 3 && (
                 <motion.div
                   key="final"
                   initial={{ opacity: 0, y: 16 }}
@@ -253,53 +484,104 @@ const UmContato = () => {
                   className="text-center py-2"
                 >
                   <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center">
-                    <CheckCircle2 className="w-12 h-12 text-primary" />
+                    <CheckCircle2 className="w-12 h-12 text-primary" aria-hidden="true" />
                   </div>
                   <h2 className="text-2xl md:text-3xl font-heading font-black mb-3">
                     Quase lá! Confirme seus dados
                   </h2>
                   <p className="text-muted-foreground mb-6">
-                    Ao finalizar, abriremos o WhatsApp da nossa central de triagem com
-                    seu resumo já preenchido. Sem retrabalho.
+                    Confira o resumo abaixo e complete seus dados. Ao finalizar, você abre o
+                    WhatsApp da nossa central com tudo pronto.
                   </p>
 
-                  <div className="bg-muted/40 rounded-xl p-4 text-left mb-6 max-w-md mx-auto text-sm">
-                    <Row label="Experiência" value={resp.experiencia} />
-                    <Row label="Conhece o novo procedimento" value={resp.conhece} />
-                    <Row label="Serviço" value={resp.servico} />
-                    <Row label="Início" value={resp.prazo} />
+                  {/* Visual summary */}
+                  <div className="bg-muted/40 rounded-xl p-4 text-left mb-6 max-w-md mx-auto text-sm space-y-2">
+                    <SummaryRow ok label={resp.servico} />
+                    {resp.categoria && <SummaryRow ok label={`Categoria ${resp.categoria}`} />}
+                    <SummaryRow ok label={resp.experiencia} />
+                    <SummaryRow ok label={resp.conhece} />
+                    <SummaryRow ok label={`Início: ${resp.prazo}`} />
                   </div>
 
-                  <div className="max-w-md mx-auto mb-6 text-left">
+                  <div className="max-w-md mx-auto mb-4 text-left">
                     <label htmlFor="nome-triagem" className="block text-sm font-semibold mb-2">
-                      Seu nome <span className="text-muted-foreground font-normal">(opcional, agiliza o atendimento)</span>
+                      Nome completo *
                     </label>
                     <input
                       id="nome-triagem"
                       type="text"
                       value={resp.nome || ""}
-                      onChange={(e) => setResp({ ...resp, nome: e.target.value.slice(0, 80) })}
-                      placeholder="Ex.: Ana Souza"
-                      className="w-full h-12 px-4 rounded-lg border-2 border-border bg-background focus:border-primary focus:outline-none transition-colors"
+                      onChange={(e) => setResp({ ...resp, nome: e.target.value.slice(0, 100) })}
+                      placeholder="Ex.: João Silva"
+                      required
+                      minLength={5}
+                      autoComplete="name"
+                      aria-invalid={!!errors.nome}
+                      aria-describedby={errors.nome ? "err-nome" : undefined}
+                      className="w-full h-12 px-4 rounded-lg border-2 border-border bg-background focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 transition-colors"
                     />
+                    <FieldError id="err-nome" message={errors.nome} />
+                  </div>
+
+                  <div className="max-w-md mx-auto mb-4 text-left">
+                    <label htmlFor="tel-triagem" className="block text-sm font-semibold mb-2">
+                      WhatsApp (com DDD) *
+                    </label>
+                    <input
+                      id="tel-triagem"
+                      type="tel"
+                      inputMode="tel"
+                      value={resp.telefone || ""}
+                      onChange={(e) => setResp({ ...resp, telefone: maskPhone(e.target.value) })}
+                      placeholder="(41) 99999-9999"
+                      required
+                      autoComplete="tel"
+                      aria-invalid={!!errors.telefone}
+                      aria-describedby={errors.telefone ? "err-tel" : undefined}
+                      className="w-full h-12 px-4 rounded-lg border-2 border-border bg-background focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 transition-colors"
+                    />
+                    <FieldError id="err-tel" message={errors.telefone} />
                   </div>
 
                   <div className="max-w-md mx-auto mb-6 text-left">
-                    <label className="flex items-start gap-3 cursor-pointer group">
+                    <label htmlFor="email-triagem" className="block text-sm font-semibold mb-2">
+                      E-mail <span className="text-muted-foreground font-normal">(opcional)</span>
+                    </label>
+                    <input
+                      id="email-triagem"
+                      type="email"
+                      value={resp.email || ""}
+                      onChange={(e) => setResp({ ...resp, email: e.target.value.slice(0, 150) })}
+                      placeholder="seu@email.com"
+                      autoComplete="email"
+                      aria-invalid={!!errors.email}
+                      aria-describedby={errors.email ? "err-email" : undefined}
+                      className="w-full h-12 px-4 rounded-lg border-2 border-border bg-background focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 transition-colors"
+                    />
+                    <FieldError id="err-email" message={errors.email} />
+                  </div>
+
+                  <div className="max-w-md mx-auto mb-6 text-left rounded-lg border border-amber-300/60 bg-amber-50 dark:bg-amber-900/20 p-4">
+                    <label className="flex items-start gap-3 cursor-pointer">
                       <Checkbox
                         checked={!!resp.lgpd}
-                        onCheckedChange={(v) => setResp({ ...resp, lgpd: v === true })}
+                        onCheckedChange={(v) => {
+                          const val = v === true;
+                          setResp({ ...resp, lgpd: val });
+                          if (val) track("lgpd_accept", { funnel: "1contato" });
+                        }}
                         className="mt-1"
                         aria-label="Autorização LGPD"
+                        aria-invalid={!!errors.lgpd}
                       />
-                      <span className="text-xs text-muted-foreground leading-relaxed">
-                        Autorizo a Autoescola Aptos a utilizar meus dados para contato
-                        referente ao orçamento solicitado, envio de informações
-                        relacionadas aos serviços da empresa e acompanhamento da minha
-                        solicitação, conforme a <strong>Lei Geral de Proteção de Dados
-                        (LGPD)</strong>.
+                      <span className="text-xs text-foreground/90 leading-relaxed">
+                        Autorizo a <strong>Autoescola APTOS</strong> a utilizar meus dados
+                        para contato, envio do orçamento e informações relacionadas aos
+                        serviços, conforme a <strong>LGPD</strong>. Meus dados jamais serão
+                        compartilhados com terceiros.
                       </span>
                     </label>
+                    <FieldError message={errors.lgpd} />
                   </div>
 
                   <Button
@@ -308,7 +590,7 @@ const UmContato = () => {
                     disabled={!canFinish || submitting}
                     onClick={finalize}
                   >
-                    <MessageCircle className="w-5 h-5 mr-2" />
+                    <MessageCircle className="w-5 h-5 mr-2" aria-hidden="true" />
                     {submitting ? "Enviando…" : "Finalizar Triagem"}
                   </Button>
                   <p className="text-xs text-muted-foreground mt-4">
@@ -316,15 +598,67 @@ const UmContato = () => {
                   </p>
                 </motion.div>
               )}
+
+              {done && (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-center py-4"
+                >
+                  <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                    <CheckCircle2 className="w-14 h-14 text-emerald-600" aria-hidden="true" />
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-heading font-black mb-3">
+                    Triagem concluída! 🎉
+                  </h2>
+                  <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
+                    Recebemos suas informações. Agora um consultor da <strong>Autoescola APTOS</strong>{" "}
+                    vai analisar sua necessidade. Clique abaixo para continuar pelo WhatsApp
+                    com o seu resumo já preenchido.
+                  </p>
+
+                  <div className="bg-muted/40 rounded-xl p-4 text-left mb-6 max-w-md mx-auto text-sm space-y-2">
+                    <SummaryRow ok label={resp.servico} />
+                    {resp.categoria && <SummaryRow ok label={`Categoria ${resp.categoria}`} />}
+                    <SummaryRow ok label={resp.experiencia} />
+                    <SummaryRow ok label={`Início: ${resp.prazo}`} />
+                  </div>
+
+                  <Button
+                    size="lg"
+                    className="text-lg h-14 px-8 shadow-glow w-full max-w-md bg-emerald-600 hover:bg-emerald-700"
+                    asChild
+                  >
+                    <a
+                      href={finalUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() =>
+                        trackConversion("WhatsAppClick", {
+                          source: "1contato_success",
+                          servico: resp.servico,
+                        })
+                      }
+                    >
+                      <MessageCircle className="w-5 h-5 mr-2" aria-hidden="true" />
+                      Continuar atendimento no WhatsApp
+                    </a>
+                  </Button>
+                  <p className="text-xs text-muted-foreground mt-4">
+                    Você será redirecionado ao WhatsApp da nossa central de triagem.
+                  </p>
+                </motion.div>
+              )}
             </AnimatePresence>
 
-            {step > 0 && step < 3 && (
+            {!done && step > 0 && step < TOTAL_STEPS && (
               <button
-                onClick={back}
-                className="mt-8 inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors"
-                aria-label="Voltar etapa"
+                onClick={goBack}
+                className="mt-8 inline-flex items-center text-sm text-muted-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded transition-colors"
+                aria-label="Voltar para a etapa anterior"
               >
-                <ArrowLeft className="w-4 h-4 mr-1" />
+                <ArrowLeft className="w-4 h-4 mr-1" aria-hidden="true" />
                 Voltar
               </button>
             )}
@@ -335,11 +669,6 @@ const UmContato = () => {
             <TrustItem icon={CheckCircle2} title="95% aprovação" subtitle="em provas do DETRAN-PR" />
             <TrustItem icon={ShieldCheck} title="Dados protegidos" subtitle="conforme a LGPD" />
           </div>
-
-          <div className="mt-8 text-center text-xs text-muted-foreground flex items-center justify-center gap-2">
-            <Clock className="w-3 h-3" />
-            Levamos menos de 60 segundos para direcionar seu atendimento
-          </div>
         </div>
       </main>
 
@@ -347,6 +676,8 @@ const UmContato = () => {
     </div>
   );
 };
+
+// ---------- subcomponents ----------
 
 const Step = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <motion.div
@@ -376,27 +707,46 @@ const Option = ({
   selected?: boolean;
 }) => (
   <button
+    type="button"
     onClick={onClick}
     aria-pressed={selected}
-    className={`group flex items-center gap-3 p-5 rounded-xl border-2 transition-all text-left ${
+    className={`group flex items-center gap-3 p-5 rounded-xl border-2 transition-all text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 ${
       selected
         ? "border-primary bg-primary/10"
         : "border-border bg-background hover:border-primary hover:bg-primary/5"
     }`}
   >
     <span className="font-semibold text-base flex-1">{label}</span>
-    <span className={`text-primary transition-opacity ${selected ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
+    <span
+      className={`text-primary transition-opacity ${
+        selected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+      }`}
+      aria-hidden="true"
+    >
       {selected ? "✓" : "→"}
     </span>
   </button>
 );
 
-const Row = ({ label, value }: { label: string; value?: string }) => (
-  <div className="flex justify-between gap-4 py-1">
-    <span className="text-muted-foreground">{label}</span>
-    <strong className="text-right">{value || "-"}</strong>
-  </div>
-);
+const FieldError = ({ id, message }: { id?: string; message?: string }) =>
+  message ? (
+    <p
+      id={id}
+      role="alert"
+      className="mt-2 text-sm text-destructive flex items-center gap-1.5"
+    >
+      <AlertCircle className="w-4 h-4" aria-hidden="true" />
+      {message}
+    </p>
+  ) : null;
+
+const SummaryRow = ({ ok, label }: { ok?: boolean; label?: string }) =>
+  label ? (
+    <div className="flex items-center gap-2">
+      <CheckCircle2 className={`w-4 h-4 ${ok ? "text-emerald-600" : "text-muted-foreground"}`} />
+      <span>{label}</span>
+    </div>
+  ) : null;
 
 const TrustItem = ({
   icon: Icon,
