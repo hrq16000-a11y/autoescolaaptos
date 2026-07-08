@@ -26,6 +26,7 @@ export type Database = {
           email: string | null
           experiencia: string | null
           id: string
+          ip: string | null
           lgpd_aceite: boolean
           nome: string | null
           origem: string | null
@@ -55,6 +56,7 @@ export type Database = {
           email?: string | null
           experiencia?: string | null
           id?: string
+          ip?: string | null
           lgpd_aceite?: boolean
           nome?: string | null
           origem?: string | null
@@ -84,6 +86,7 @@ export type Database = {
           email?: string | null
           experiencia?: string | null
           id?: string
+          ip?: string | null
           lgpd_aceite?: boolean
           nome?: string | null
           origem?: string | null
@@ -109,7 +112,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      submit_triagem: { Args: { payload: Json }; Returns: Json }
     }
     Enums: {
       [_ in never]: never
