@@ -409,7 +409,14 @@ const UmContato = () => {
       />
       <Helmet>
         <meta name="keywords" content="triagem CNH, autoescola São José dos Pinhais, orçamento CNH, primeira habilitação, renovação CNH, reciclagem CNH suspensos" />
-        <meta property="og:image:alt" content="Triagem rápida de CNH na Autoescola APTOS" />
+        <meta property="og:image" content="https://autoescolaaptos.com.br/og-1contato.jpg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="Triagem CNH em 60 segundos — Autoescola APTOS" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://autoescolaaptos.com.br/1contato" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="https://autoescolaaptos.com.br/og-1contato.jpg" />
       </Helmet>
       <Navbar />
 
