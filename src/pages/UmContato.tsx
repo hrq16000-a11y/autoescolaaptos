@@ -806,7 +806,7 @@ const Step = ({ title, children }: { title: string; children: React.ReactNode })
     exit={{ opacity: 0, x: -24 }}
     transition={{ duration: 0.25 }}
   >
-    <h2 className="text-xl md:text-2xl font-heading font-bold mb-6 text-center">{title}</h2>
+    <h2 className="text-lg md:text-xl font-heading font-bold mb-4 text-center">{title}</h2>
     {children}
   </motion.div>
 );
