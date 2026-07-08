@@ -35,6 +35,7 @@ export type Database = {
           servico: string | null
           situacao: string | null
           status: string
+          status_funil: string
           telefone: string | null
           tempo_gasto_segundos: number | null
           updated_at: string
@@ -65,6 +66,7 @@ export type Database = {
           servico?: string | null
           situacao?: string | null
           status?: string
+          status_funil?: string
           telefone?: string | null
           tempo_gasto_segundos?: number | null
           updated_at?: string
@@ -95,6 +97,7 @@ export type Database = {
           servico?: string | null
           situacao?: string | null
           status?: string
+          status_funil?: string
           telefone?: string | null
           tempo_gasto_segundos?: number | null
           updated_at?: string

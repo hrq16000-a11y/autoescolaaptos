@@ -104,19 +104,35 @@ const UmContato = () => {
   const startedAt = useRef<number>(Date.now());
   const viewedRef = useRef(false);
 
+  // Refs para auto-scroll dentro da etapa 1
+  const servicoRef = useRef<HTMLDivElement | null>(null);
+  const categoriaRef = useRef<HTMLDivElement | null>(null);
+  const nextStepBtnRef = useRef<HTMLButtonElement | null>(null);
+
+  const scrollTo = (el: HTMLElement | null) => {
+    if (!el) return;
+    // pequeno delay para animação de entrada terminar
+    setTimeout(() => {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 120);
+  };
+
   // ViewContent + StartTriagem on mount
   useEffect(() => {
     if (viewedRef.current) return;
     viewedRef.current = true;
     startedAt.current = Date.now();
+    window.scrollTo({ top: 0 });
     track("ViewContent", { content_name: "1contato_triagem", page_path: "/1contato" });
     track("StartTriagem", { funnel: "1contato" });
   }, []);
 
-  // Track each step change
+  // Track each step change + foco no topo do card
   useEffect(() => {
     if (step === 0) return;
     track(`Step${step}`, { funnel: "1contato", step });
+    const card = document.getElementById("triagem-card");
+    if (card) card.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [step]);
 
   const validateStep = (s: number): boolean => {
@@ -389,57 +405,66 @@ const UmContato = () => {
           )}
 
           {/* CARD */}
-          <div className="bg-card border border-border rounded-2xl shadow-large p-6 md:p-10 min-h-[360px]">
+          <div id="triagem-card" className="bg-card border border-border rounded-2xl shadow-large p-6 md:p-10 min-h-[360px]">
             <AnimatePresence mode="wait">
               {!done && step === 0 && (
-                <Step key="0" title="Você já tem experiência dirigindo?">
+                <Step key="0" title="Você já dirige?">
                   <OptionGrid cols={1}>
-                    <Option
-                      label="Tenho experiência com carro"
-                      onClick={() => { setResp({ ...resp, experiencia: "Tenho experiência com carro" }); setErrors({}); }}
-                      selected={resp.experiencia === "Tenho experiência com carro"}
-                    />
-                    <Option
-                      label="Tenho experiência com moto"
-                      onClick={() => { setResp({ ...resp, experiencia: "Tenho experiência com moto" }); setErrors({}); }}
-                      selected={resp.experiencia === "Tenho experiência com moto"}
-                    />
-                    <Option
-                      label="Começaria do zero"
-                      onClick={() => { setResp({ ...resp, experiencia: "Começaria do zero" }); setErrors({}); }}
-                      selected={resp.experiencia === "Começaria do zero"}
-                    />
+                    {(
+                      [
+                        "Tenho experiência com carro",
+                        "Tenho experiência com moto",
+                        "Começaria do zero",
+                      ] as Experiencia[]
+                    ).map((e) => (
+                      <Option
+                        key={e}
+                        label={e}
+                        selected={resp.experiencia === e}
+                        onClick={() => {
+                          setResp({ ...resp, experiencia: e });
+                          setErrors({});
+                          track("triagem_select", { step: 0, field: "experiencia", value: e });
+                          // auto-advance
+                          setTimeout(() => setStep(1), 220);
+                        }}
+                      />
+                    ))}
                   </OptionGrid>
                   <FieldError message={errors.experiencia} />
-                  <Button size="lg" className="w-full mt-6" onClick={goNext}>
-                    Próxima etapa →
-                  </Button>
                 </Step>
               )}
 
               {!done && step === 1 && (
-                <Step key="1" title="Sobre o procedimento e o serviço">
-                  <div className="space-y-6">
+                <Step key="1" title="Qual é o seu caso?">
+                  <div className="space-y-5">
                     <div>
                       <h3 className="text-base md:text-lg font-heading font-bold mb-3">
-                        Você já conhece o procedimento atual da CNH?
+                        Já conhece o novo procedimento da CNH?
                       </h3>
                       <OptionGrid>
-                        <Option
-                          label="Sim, conheço o procedimento"
-                          onClick={() => setResp({ ...resp, conhece: "Sim, conheço o procedimento" })}
-                          selected={resp.conhece === "Sim, conheço o procedimento"}
-                        />
-                        <Option
-                          label="Não, é minha primeira vez"
-                          onClick={() => setResp({ ...resp, conhece: "Não, é minha primeira vez" })}
-                          selected={resp.conhece === "Não, é minha primeira vez"}
-                        />
+                        {(
+                          [
+                            "Sim, conheço o procedimento",
+                            "Não, é minha primeira vez",
+                          ] as ConheceProcedimento[]
+                        ).map((c) => (
+                          <Option
+                            key={c}
+                            label={c}
+                            selected={resp.conhece === c}
+                            onClick={() => {
+                              setResp({ ...resp, conhece: c });
+                              track("triagem_select", { step: 1, field: "conhece", value: c });
+                              scrollTo(servicoRef.current);
+                            }}
+                          />
+                        ))}
                       </OptionGrid>
                       <FieldError message={errors.conhece} />
                     </div>
 
-                    <div>
+                    <div ref={servicoRef}>
                       <h3 className="text-base md:text-lg font-heading font-bold mb-3">
                         Qual serviço você procura?
                       </h3>
@@ -456,8 +481,14 @@ const UmContato = () => {
                           <Option
                             key={s}
                             label={s}
-                            onClick={() => setResp({ ...resp, servico: s, categoria: undefined })}
                             selected={resp.servico === s}
+                            onClick={() => {
+                              const needsCat =
+                                s === "Primeira Habilitação" || s === "Mudança / Inclusão de Categoria";
+                              setResp({ ...resp, servico: s, categoria: needsCat ? resp.categoria : undefined });
+                              track("triagem_select", { step: 1, field: "servico", value: s });
+                              scrollTo(needsCat ? categoriaRef.current : nextStepBtnRef.current);
+                            }}
                           />
                         ))}
                       </OptionGrid>
@@ -466,17 +497,21 @@ const UmContato = () => {
 
                     {(resp.servico === "Primeira Habilitação" ||
                       resp.servico === "Mudança / Inclusão de Categoria") && (
-                      <div>
+                      <div ref={categoriaRef}>
                         <h3 className="text-base md:text-lg font-heading font-bold mb-3">
-                          Qual categoria você pretende?
+                          Qual categoria?
                         </h3>
                         <OptionGrid>
                           {(["A (moto)", "B (carro)", "A+B (moto e carro)"] as Categoria[]).map((c) => (
                             <Option
                               key={c}
                               label={c}
-                              onClick={() => setResp({ ...resp, categoria: c })}
                               selected={resp.categoria === c}
+                              onClick={() => {
+                                setResp({ ...resp, categoria: c });
+                                track("triagem_select", { step: 1, field: "categoria", value: c });
+                                scrollTo(nextStepBtnRef.current);
+                              }}
                             />
                           ))}
                         </OptionGrid>
@@ -484,7 +519,12 @@ const UmContato = () => {
                       </div>
                     )}
 
-                    <Button size="lg" className="w-full" onClick={goNext}>
+                    <Button
+                      ref={nextStepBtnRef}
+                      size="lg"
+                      className="w-full"
+                      onClick={goNext}
+                    >
                       Próxima etapa →
                     </Button>
                   </div>
@@ -499,18 +539,20 @@ const UmContato = () => {
                         <Option
                           key={p}
                           label={p}
-                          onClick={() => setResp({ ...resp, prazo: p })}
                           selected={resp.prazo === p}
+                          onClick={() => {
+                            setResp({ ...resp, prazo: p });
+                            track("triagem_select", { step: 2, field: "prazo", value: p });
+                            setTimeout(() => setStep(3), 220);
+                          }}
                         />
                       ),
                     )}
                   </OptionGrid>
                   <FieldError message={errors.prazo} />
-                  <Button size="lg" className="w-full mt-6" onClick={goNext}>
-                    Próxima etapa →
-                  </Button>
                 </Step>
               )}
+
 
               {!done && step >= 3 && (
                 <motion.div
