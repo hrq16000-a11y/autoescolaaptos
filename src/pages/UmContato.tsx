@@ -188,7 +188,14 @@ const UmContato = () => {
   const finalize = async () => {
     if (submitting) return;
     if (!validateFinal()) return;
+    // honeypot: bots costumam preencher qualquer input
+    if (resp.honeypot && resp.honeypot.length > 0) {
+      // finge sucesso, não envia
+      setDone(true);
+      return;
+    }
     setSubmitting(true);
+    setSubmitError(null);
 
     const utms = readUtms();
     const tempo = Math.round((Date.now() - startedAt.current) / 1000);
@@ -210,15 +217,28 @@ const UmContato = () => {
       referrer: typeof document !== "undefined" ? document.referrer || null : null,
       device: detectDevice(),
       tempo_gasto_segundos: tempo,
-      status: "Novo",
+      honeypot: resp.honeypot ?? "",
       ...utms,
     };
 
-    // Persist (best-effort, never blocks the WhatsApp handoff)
+    // Envia via edge function (aplica honeypot + rate-limit por IP + webhook opcional).
+    // Fallback silencioso para insert direto se a função ainda não estiver publicada.
     try {
-      await supabase.from("triagem_leads").insert(payload as never);
-    } catch {
-      /* silent */
+      const { error } = await supabase.functions.invoke("submit-triagem", { body: payload });
+      if (error) throw error;
+    } catch (err) {
+      // Fallback best-effort — nunca bloquear o handoff do WhatsApp por falha de rede.
+      const msg = String((err as { message?: string })?.message || "");
+      if (msg.includes("429") || msg.toLowerCase().includes("rate")) {
+        setSubmitError("Muitas tentativas em pouco tempo. Aguarde um instante e tente novamente.");
+        setSubmitting(false);
+        return;
+      }
+      try {
+        await supabase.from("triagem_leads").insert(payload as never);
+      } catch {
+        /* silent */
+      }
     }
 
     // Analytics — Lead event + custom
@@ -243,6 +263,18 @@ const UmContato = () => {
     setSubmitting(false);
     setDone(true);
   };
+
+  const copyMessage = async () => {
+    try {
+      await navigator.clipboard.writeText(buildMessage(resp));
+      setCopied(true);
+      track("copy_whatsapp_message", { source: "1contato_success" });
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      setSubmitError("Não foi possível copiar. Selecione a mensagem manualmente.");
+    }
+  };
+
 
   const jsonLd = {
     "@context": "https://schema.org",
