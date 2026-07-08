@@ -42,6 +42,7 @@ const DiagnosticoSeo = lazy(() => import("./pages/DiagnosticoSeo"));
 const HabilitacaoPCD = lazy(() => import("./pages/HabilitacaoPCD"));
 const GrowthDashboard = lazy(() => import("./pages/admin/GrowthDashboard"));
 const AdminLeads = lazy(() => import("./pages/admin/AdminLeads"));
+const AdminMetricas = lazy(() => import("./pages/admin/AdminMetricas"));
 import ScrollToTop from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
@@ -100,6 +101,7 @@ const AppRoutes = () => {
         <Route path="/autoescola-pcd" element={<Navigate to="/pcd" replace />} />
         <Route path="/admin/growth" element={<GrowthDashboard />} />
         <Route path="/admin/leads" element={<AdminLeads />} />
+        <Route path="/admin/metricas" element={<AdminMetricas />} />
         {/* Legacy URL redirects — mapa central em src/lib/legacyRedirects.ts */}
         {LEGACY_REDIRECTS.map((r) => (
           <Route key={r.from} path={r.from} element={<Navigate to={r.to} replace />} />

@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { RefreshCw, Filter, Search, LogOut, Loader2, ExternalLink } from "lucide-react";
+import { RefreshCw, Filter, Search, LogOut, Loader2, ExternalLink, Download, BarChart3 } from "lucide-react";
 
 interface Lead {
   id: string;
@@ -127,6 +128,31 @@ const AdminLeads = () => {
     }
   };
 
+  const exportCsv = () => {
+    if (!filtered.length) return;
+    const cols: (keyof Lead)[] = [
+      "created_at", "nome", "telefone", "email", "servico", "categoria",
+      "experiencia", "prazo", "status_funil", "utm_source", "utm_medium",
+      "utm_campaign", "device", "ip", "tempo_gasto_segundos",
+    ];
+    const esc = (v: unknown) => {
+      const s = v === null || v === undefined ? "" : String(v);
+      return `"${s.replace(/"/g, '""')}"`;
+    };
+    const header = cols.join(",");
+    const rows = filtered.map((l) => cols.map((c) => esc(l[c])).join(","));
+    const csv = "\uFEFF" + [header, ...rows].join("\n"); // BOM p/ Excel PT-BR
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `leads-triagem-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
   if (!authed) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4 bg-background">
@@ -177,7 +203,15 @@ const AdminLeads = () => {
               {leads.length} lead(s) carregados · {filtered.length} após busca
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/admin/metricas">
+                <BarChart3 className="w-4 h-4 mr-2" /> Métricas
+              </Link>
+            </Button>
+            <Button variant="outline" size="sm" onClick={exportCsv} disabled={!filtered.length}>
+              <Download className="w-4 h-4 mr-2" /> Exportar CSV ({filtered.length})
+            </Button>
             <Button variant="outline" size="sm" onClick={fetchLeads} disabled={loading}>
               {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
               Atualizar

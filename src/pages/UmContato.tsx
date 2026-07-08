@@ -95,7 +95,7 @@ function readUtms() {
 
 const UmContato = () => {
   const [step, setStep] = useState(0);
-  const [resp, setResp] = useState<Respostas>({});
+  const [resp, setResp] = useState<Respostas>({ lgpd: true, aceita_whats: true });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
@@ -282,6 +282,13 @@ const UmContato = () => {
 
     setSubmitting(false);
     setDone(true);
+
+    // Redireciona imediatamente ao WhatsApp — sem clique extra.
+    trackConversion("WhatsAppClick", {
+      source: "1contato_auto_redirect",
+      servico: payload.servico,
+    });
+    window.location.href = whatsappLink(buildMessage(resp), "funil");
   };
 
   const copyMessage = async () => {

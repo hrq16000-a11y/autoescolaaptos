@@ -85,17 +85,17 @@ Deno.serve(async (req) => {
 
   // Forward opcional com retry
   let webhookResult: unknown = { skipped: true };
-  if (LEAD_WEBHOOK_URL && !(data as { skipped?: boolean })?.skipped) {
+  const rpcData = data as { id?: string; action?: string; skipped?: boolean };
+  if (LEAD_WEBHOOK_URL && !rpcData?.skipped) {
     webhookResult = await forwardWithRetry(LEAD_WEBHOOK_URL, {
       ...body,
       ip,
-      lead_id: (data as { id?: string })?.id,
-      status_funil: "new",
+      lead_id: rpcData?.id,
+      action: rpcData?.action ?? "created", // "created" | "updated"
       received_at: new Date().toISOString(),
     });
     if (!(webhookResult as { ok?: boolean }).ok) {
       console.error("webhook forward failed after retries:", webhookResult);
-      // não falha o lead — apenas registra
     }
   }
 
