@@ -128,6 +128,31 @@ const AdminLeads = () => {
     }
   };
 
+  const exportCsv = () => {
+    if (!filtered.length) return;
+    const cols: (keyof Lead)[] = [
+      "created_at", "nome", "telefone", "email", "servico", "categoria",
+      "experiencia", "prazo", "status_funil", "utm_source", "utm_medium",
+      "utm_campaign", "device", "ip", "tempo_gasto_segundos",
+    ];
+    const esc = (v: unknown) => {
+      const s = v === null || v === undefined ? "" : String(v);
+      return `"${s.replace(/"/g, '""')}"`;
+    };
+    const header = cols.join(",");
+    const rows = filtered.map((l) => cols.map((c) => esc(l[c])).join(","));
+    const csv = "\uFEFF" + [header, ...rows].join("\n"); // BOM p/ Excel PT-BR
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `leads-triagem-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
   if (!authed) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4 bg-background">
