@@ -874,7 +874,9 @@ const UmContato = () => {
                 Voltar
               </button>
             )}
+            </div>
           </div>
+
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
             <TrustItem icon={Award} title="+15 anos" subtitle="formando condutores" />
