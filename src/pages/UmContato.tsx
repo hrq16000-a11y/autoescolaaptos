@@ -215,7 +215,7 @@ const UmContato = () => {
 
     // Persist (best-effort, never blocks the WhatsApp handoff)
     try {
-      await supabase.from("triagem_leads").insert(payload);
+      await supabase.from("triagem_leads").insert(payload as never);
     } catch {
       /* silent */
     }
