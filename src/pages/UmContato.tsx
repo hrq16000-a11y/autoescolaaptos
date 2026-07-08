@@ -104,19 +104,35 @@ const UmContato = () => {
   const startedAt = useRef<number>(Date.now());
   const viewedRef = useRef(false);
 
+  // Refs para auto-scroll dentro da etapa 1
+  const servicoRef = useRef<HTMLDivElement | null>(null);
+  const categoriaRef = useRef<HTMLDivElement | null>(null);
+  const nextStepBtnRef = useRef<HTMLButtonElement | null>(null);
+
+  const scrollTo = (el: HTMLElement | null) => {
+    if (!el) return;
+    // pequeno delay para animação de entrada terminar
+    setTimeout(() => {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 120);
+  };
+
   // ViewContent + StartTriagem on mount
   useEffect(() => {
     if (viewedRef.current) return;
     viewedRef.current = true;
     startedAt.current = Date.now();
+    window.scrollTo({ top: 0 });
     track("ViewContent", { content_name: "1contato_triagem", page_path: "/1contato" });
     track("StartTriagem", { funnel: "1contato" });
   }, []);
 
-  // Track each step change
+  // Track each step change + foco no topo do card
   useEffect(() => {
     if (step === 0) return;
     track(`Step${step}`, { funnel: "1contato", step });
+    const card = document.getElementById("triagem-card");
+    if (card) card.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [step]);
 
   const validateStep = (s: number): boolean => {
