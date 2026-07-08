@@ -466,8 +466,36 @@ const UmContato = () => {
             </div>
           )}
 
-          {/* CARD — padding menor no mobile */}
-          <div id="triagem-card" className="bg-card border border-border rounded-2xl shadow-large p-4 sm:p-6 md:p-8 min-h-[300px]">
+          {/* Aviso de rascunho restaurado */}
+          {restored && !done && (
+            <div className="mb-3 rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 text-xs text-foreground flex items-center justify-between gap-2">
+              <span>✨ Continuamos de onde você parou. Suas respostas foram salvas.</span>
+              <button
+                type="button"
+                onClick={() => {
+                  try { localStorage.removeItem(STORAGE_KEY); } catch { /* noop */ }
+                  setResp({ lgpd: true, aceita_whats: true });
+                  setStep(0);
+                  setRestored(false);
+                }}
+                className="underline text-primary font-semibold shrink-0"
+              >
+                Recomeçar
+              </button>
+            </div>
+          )}
+
+          {/* Fundo desfocado atrás do card em mobile — destaca o foco de atenção */}
+          <div className="relative">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -inset-6 md:hidden bg-gradient-to-b from-primary/10 via-background/40 to-background/0 blur-2xl -z-10"
+            />
+            <div
+              ref={cardRef}
+              id="triagem-card"
+              className="relative bg-card border border-border rounded-2xl shadow-large p-4 sm:p-6 md:p-8 min-h-[280px] ring-1 ring-primary/10"
+            >
             <AnimatePresence mode="wait">
               {!done && step === 0 && (
                 <Step key="0" title="Você já dirige?">
