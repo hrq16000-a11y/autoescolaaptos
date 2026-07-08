@@ -111,29 +111,41 @@ const UmContato = () => {
 
   const scrollTo = (el: HTMLElement | null) => {
     if (!el) return;
-    // pequeno delay para animação de entrada terminar
     setTimeout(() => {
       el.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 120);
+    }, 160);
   };
 
-  // ViewContent + StartTriagem on mount
+  // Foco sempre no topo ao entrar na página
   useEffect(() => {
     if (viewedRef.current) return;
     viewedRef.current = true;
     startedAt.current = Date.now();
-    window.scrollTo({ top: 0 });
+    window.scrollTo({ top: 0, behavior: "auto" });
     track("ViewContent", { content_name: "1contato_triagem", page_path: "/1contato" });
     track("StartTriagem", { funnel: "1contato" });
   }, []);
 
-  // Track each step change + foco no topo do card
+  // Track each step change + foco suave no topo do card
   useEffect(() => {
     if (step === 0) return;
     track(`Step${step}`, { funnel: "1contato", step });
     const card = document.getElementById("triagem-card");
-    if (card) card.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (card) setTimeout(() => card.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
   }, [step]);
+
+  // Auto-avanço da etapa 1 quando todas as respostas obrigatórias estiverem prontas
+  useEffect(() => {
+    if (step !== 1) return;
+    const needsCat =
+      resp.servico === "Primeira Habilitação" ||
+      resp.servico === "Mudança / Inclusão de Categoria";
+    const ready = !!resp.conhece && !!resp.servico && (!needsCat || !!resp.categoria);
+    if (ready) {
+      const t = setTimeout(() => setStep(2), 420);
+      return () => clearTimeout(t);
+    }
+  }, [step, resp.conhece, resp.servico, resp.categoria]);
 
   const validateStep = (s: number): boolean => {
     const e: Record<string, string> = {};
