@@ -282,6 +282,13 @@ const UmContato = () => {
 
     setSubmitting(false);
     setDone(true);
+
+    // Redireciona imediatamente ao WhatsApp — sem clique extra.
+    trackConversion("WhatsAppClick", {
+      source: "1contato_auto_redirect",
+      servico: payload.servico,
+    });
+    window.location.href = whatsappLink(buildMessage(resp), "funil");
   };
 
   const copyMessage = async () => {
