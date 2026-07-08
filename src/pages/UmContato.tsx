@@ -830,13 +830,13 @@ const Option = ({
     type="button"
     onClick={onClick}
     aria-pressed={selected}
-    className={`group flex items-center gap-3 p-5 rounded-xl border-2 transition-all text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 ${
+    className={`group flex items-center gap-2 px-4 py-3 rounded-xl border-2 transition-all text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 ${
       selected
         ? "border-primary bg-primary/10"
         : "border-border bg-background hover:border-primary hover:bg-primary/5"
     }`}
   >
-    <span className="font-semibold text-base flex-1">{label}</span>
+    <span className="font-semibold text-sm md:text-base flex-1 leading-tight">{label}</span>
     <span
       className={`text-primary transition-opacity ${
         selected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
