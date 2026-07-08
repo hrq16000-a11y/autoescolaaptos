@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { RefreshCw, Filter, Search, LogOut, Loader2, ExternalLink } from "lucide-react";
+import { RefreshCw, Filter, Search, LogOut, Loader2, ExternalLink, Download, BarChart3 } from "lucide-react";
 
 interface Lead {
   id: string;
