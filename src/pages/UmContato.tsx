@@ -10,6 +10,8 @@ import {
   Award,
   Sparkles,
   AlertCircle,
+  Copy,
+  Check,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -43,6 +45,7 @@ interface Respostas {
   lgpd?: boolean;
   aceita_whats?: boolean;
   aceita_email?: boolean;
+  honeypot?: string; // anti-spam
 }
 
 const TOTAL_STEPS = 3;
@@ -96,6 +99,8 @@ const UmContato = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const startedAt = useRef<number>(Date.now());
   const viewedRef = useRef(false);
 
@@ -187,7 +192,14 @@ const UmContato = () => {
   const finalize = async () => {
     if (submitting) return;
     if (!validateFinal()) return;
+    // honeypot: bots costumam preencher qualquer input
+    if (resp.honeypot && resp.honeypot.length > 0) {
+      // finge sucesso, não envia
+      setDone(true);
+      return;
+    }
     setSubmitting(true);
+    setSubmitError(null);
 
     const utms = readUtms();
     const tempo = Math.round((Date.now() - startedAt.current) / 1000);
@@ -209,15 +221,28 @@ const UmContato = () => {
       referrer: typeof document !== "undefined" ? document.referrer || null : null,
       device: detectDevice(),
       tempo_gasto_segundos: tempo,
-      status: "Novo",
+      honeypot: resp.honeypot ?? "",
       ...utms,
     };
 
-    // Persist (best-effort, never blocks the WhatsApp handoff)
+    // Envia via edge function (aplica honeypot + rate-limit por IP + webhook opcional).
+    // Fallback silencioso para insert direto se a função ainda não estiver publicada.
     try {
-      await supabase.from("triagem_leads").insert(payload as never);
-    } catch {
-      /* silent */
+      const { error } = await supabase.functions.invoke("submit-triagem", { body: payload });
+      if (error) throw error;
+    } catch (err) {
+      // Fallback best-effort — nunca bloquear o handoff do WhatsApp por falha de rede.
+      const msg = String((err as { message?: string })?.message || "");
+      if (msg.includes("429") || msg.toLowerCase().includes("rate")) {
+        setSubmitError("Muitas tentativas em pouco tempo. Aguarde um instante e tente novamente.");
+        setSubmitting(false);
+        return;
+      }
+      try {
+        await supabase.from("triagem_leads").insert(payload as never);
+      } catch {
+        /* silent */
+      }
     }
 
     // Analytics — Lead event + custom
@@ -242,6 +267,18 @@ const UmContato = () => {
     setSubmitting(false);
     setDone(true);
   };
+
+  const copyMessage = async () => {
+    try {
+      await navigator.clipboard.writeText(buildMessage(resp));
+      setCopied(true);
+      track("copy_whatsapp_message", { source: "1contato_success" });
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      setSubmitError("Não foi possível copiar. Selecione a mensagem manualmente.");
+    }
+  };
+
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -584,6 +621,26 @@ const UmContato = () => {
                     <FieldError message={errors.lgpd} />
                   </div>
 
+                  {/* Honeypot: campo invisível — bots preenchem, humanos não */}
+                  <div aria-hidden="true" className="absolute -left-[9999px] top-auto w-px h-px overflow-hidden">
+                    <label htmlFor="hp-website">Website</label>
+                    <input
+                      id="hp-website"
+                      type="text"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={resp.honeypot || ""}
+                      onChange={(e) => setResp({ ...resp, honeypot: e.target.value })}
+                    />
+                  </div>
+
+                  {submitError && (
+                    <div role="alert" className="max-w-md mx-auto mb-4 text-sm text-destructive flex items-center justify-center gap-1.5">
+                      <AlertCircle className="w-4 h-4" aria-hidden="true" />
+                      {submitError}
+                    </div>
+                  )}
+
                   <Button
                     size="lg"
                     className="text-lg h-14 px-8 shadow-glow w-full max-w-md"
@@ -625,26 +682,57 @@ const UmContato = () => {
                     <SummaryRow ok label={`Início: ${resp.prazo}`} />
                   </div>
 
-                  <Button
-                    size="lg"
-                    className="text-lg h-14 px-8 shadow-glow w-full max-w-md bg-emerald-600 hover:bg-emerald-700"
-                    asChild
-                  >
-                    <a
-                      href={finalUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() =>
-                        trackConversion("WhatsAppClick", {
-                          source: "1contato_success",
-                          servico: resp.servico,
-                        })
-                      }
+                  <div className="flex flex-col gap-3 max-w-md mx-auto">
+                    <Button
+                      size="lg"
+                      className="text-lg h-14 px-8 shadow-glow w-full bg-emerald-600 hover:bg-emerald-700"
+                      asChild
                     >
-                      <MessageCircle className="w-5 h-5 mr-2" aria-hidden="true" />
-                      Continuar atendimento no WhatsApp
-                    </a>
-                  </Button>
+                      <a
+                        href={finalUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() =>
+                          trackConversion("WhatsAppClick", {
+                            source: "1contato_success",
+                            servico: resp.servico,
+                          })
+                        }
+                      >
+                        <MessageCircle className="w-5 h-5 mr-2" aria-hidden="true" />
+                        Continuar atendimento no WhatsApp
+                      </a>
+                    </Button>
+
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="lg"
+                      className="w-full"
+                      onClick={copyMessage}
+                      aria-live="polite"
+                    >
+                      {copied ? (
+                        <>
+                          <Check className="w-4 h-4 mr-2" aria-hidden="true" />
+                          Mensagem copiada!
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-4 h-4 mr-2" aria-hidden="true" />
+                          Copiar mensagem antes de enviar
+                        </>
+                      )}
+                    </Button>
+                  </div>
+
+                  {submitError && (
+                    <div role="alert" className="mt-4 text-sm text-destructive flex items-center justify-center gap-1.5">
+                      <AlertCircle className="w-4 h-4" aria-hidden="true" />
+                      {submitError}
+                    </div>
+                  )}
+
                   <p className="text-xs text-muted-foreground mt-4">
                     Você será redirecionado ao WhatsApp da nossa central de triagem.
                   </p>
