@@ -43,6 +43,7 @@ interface Respostas {
   lgpd?: boolean;
   aceita_whats?: boolean;
   aceita_email?: boolean;
+  honeypot?: string; // anti-spam
 }
 
 const TOTAL_STEPS = 3;
