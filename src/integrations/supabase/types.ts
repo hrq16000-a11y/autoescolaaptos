@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      marketing_optin: {
+        Row: {
+          campaign_source: string | null
+          created_at: string
+          data_aceite: string
+          data_cadastro: string
+          id: string
+          ip: string | null
+          origem: string
+          quantidade_campanhas: number
+          status: string
+          telefone: string
+          tipo: string
+          ultima_campanha: string | null
+          ultimo_template_enviado: string | null
+          updated_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          campaign_source?: string | null
+          created_at?: string
+          data_aceite?: string
+          data_cadastro?: string
+          id?: string
+          ip?: string | null
+          origem?: string
+          quantidade_campanhas?: number
+          status?: string
+          telefone: string
+          tipo?: string
+          ultima_campanha?: string | null
+          ultimo_template_enviado?: string | null
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          campaign_source?: string | null
+          created_at?: string
+          data_aceite?: string
+          data_cadastro?: string
+          id?: string
+          ip?: string | null
+          origem?: string
+          quantidade_campanhas?: number
+          status?: string
+          telefone?: string
+          tipo?: string
+          ultima_campanha?: string | null
+          ultimo_template_enviado?: string | null
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       triagem_leads: {
         Row: {
           aceita_email: boolean | null
@@ -143,6 +197,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      submit_marketing_optin: { Args: { payload: Json }; Returns: Json }
       submit_triagem: { Args: { payload: Json }; Returns: Json }
     }
     Enums: {
