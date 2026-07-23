@@ -107,6 +107,7 @@ const AppRoutes = () => {
         <Route path="/admin/metricas" element={<AdminMetricas />} />
         <Route path="/login" element={<Login />} />
         <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
+        <Route path="/ofertas" element={<Ofertas />} />
         {/* Legacy URL redirects — mapa central em src/lib/legacyRedirects.ts */}
         {LEGACY_REDIRECTS.map((r) => (
           <Route key={r.from} path={r.from} element={<Navigate to={r.to} replace />} />
