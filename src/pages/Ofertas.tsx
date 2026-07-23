@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "react-helmet";
 import { supabase } from "@/integrations/supabase/client";
 
 function formatBR(v: string) {
