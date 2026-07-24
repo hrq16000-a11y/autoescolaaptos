@@ -122,7 +122,7 @@ const AdminOptin = () => {
     };
     const csv = [
       headers.join(","),
-      ...rows.map((r) => headers.map((h) => esc((r as Record<string, unknown>)[h])).join(",")),
+      ...rows.map((r) => headers.map((h) => esc((r as unknown as Record<string, unknown>)[h])).join(",")),
     ].join("\n");
     const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
