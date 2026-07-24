@@ -16,11 +16,33 @@ const admin = createClient(SUPABASE_URL, SERVICE_KEY, {
   auth: { persistSession: false, autoRefreshToken: false },
 });
 
-async function appendToSheet(row: (string | number | null)[]) {
+export async function appendOptinToSheet(row: {
+  id: string;
+  created_at: string;
+  telefone: string;
+  status: string;
+  campaign_source: string | null;
+  ultimo_template_enviado: string | null;
+  origem_url: string | null;
+  ip: string | null;
+  user_agent: string | null;
+  data_aceite: string | null;
+}): Promise<{ ok: boolean; error?: string }> {
   if (!SHEET_ID || !LOVABLE_API_KEY || !GOOGLE_SHEETS_API_KEY) {
-    console.warn("sheet_append_skipped: missing SHEET_ID / gateway keys");
-    return;
+    return { ok: false, error: "missing_sheet_config" };
   }
+  const values = [[
+    row.created_at,
+    row.id,
+    row.telefone,
+    row.status,
+    row.campaign_source ?? "",
+    row.ultimo_template_enviado ?? "",
+    row.origem_url ?? "",
+    row.ip ?? "",
+    row.user_agent ?? "",
+    row.data_aceite ?? row.created_at,
+  ]];
   try {
     const url = `https://connector-gateway.lovable.dev/google_sheets/v4/spreadsheets/${SHEET_ID}/values/${SHEET_TAB}!A:J:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`;
     const resp = await fetch(url, {
@@ -30,17 +52,38 @@ async function appendToSheet(row: (string | number | null)[]) {
         "X-Connection-Api-Key": GOOGLE_SHEETS_API_KEY,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ values: [row] }),
+      body: JSON.stringify({ values }),
     });
     if (!resp.ok) {
       const txt = await resp.text();
-      console.error(`sheet_append_failed [${resp.status}]: ${txt}`);
-    } else {
-      console.log("sheet_append_ok");
+      return { ok: false, error: `[${resp.status}] ${txt.slice(0, 400)}` };
     }
+    return { ok: true };
   } catch (e) {
-    console.error("sheet_append_exception", e instanceof Error ? e.message : e);
+    return { ok: false, error: e instanceof Error ? e.message : String(e) };
   }
+}
+
+async function markSync(id: string, ok: boolean, error?: string) {
+  const patch: Record<string, unknown> = {
+    sheet_last_attempt_at: new Date().toISOString(),
+  };
+  // increment attempts via RPC-less update: fetch current + 1
+  const { data: current } = await admin
+    .from("marketing_optin")
+    .select("sheet_attempts")
+    .eq("id", id)
+    .maybeSingle();
+  patch.sheet_attempts = (current?.sheet_attempts ?? 0) + 1;
+  if (ok) {
+    patch.sheet_sync_status = "ok";
+    patch.sheet_synced_at = new Date().toISOString();
+    patch.sheet_sync_error = null;
+  } else {
+    patch.sheet_sync_status = "error";
+    patch.sheet_sync_error = error ?? "unknown";
+  }
+  await admin.from("marketing_optin").update(patch).eq("id", id);
 }
 
 function json(body: unknown, status = 200) {
@@ -68,7 +111,8 @@ Deno.serve(async (req) => {
     return json({ success: false, message: "Payload inválido." }, 400);
   }
 
-  const telefone = str(body.telefone, 40);
+  const telefoneRaw = str(body.telefone, 40);
+  const telefone = telefoneRaw ? telefoneRaw.replace(/\D/g, "") : null;
   const campaign_source = str(body.campaign_source, 120);
   const origem_url = str(body.origem_url, 500) ?? req.headers.get("referer");
   const ultimo_template_enviado = str(body.ultimo_template_enviado, 120);
@@ -79,15 +123,12 @@ Deno.serve(async (req) => {
   const ip = ipHeader.split(",")[0].trim() || null;
 
   const errors: Record<string, string> = {};
-  if (!telefone) errors.telefone = "Informe um WhatsApp válido.";
-  else {
-    const digits = telefone.replace(/\D/g, "");
-    if (digits.length < 10 || digits.length > 13) errors.telefone = "DDD + número (10 a 13 dígitos).";
+  if (!telefone || telefone.length < 10 || telefone.length > 13) {
+    errors.telefone = "DDD + número (10 a 13 dígitos).";
   }
   if (!lgpd_aceite) errors.lgpd_aceite = "Consentimento obrigatório.";
 
   if (Object.keys(errors).length) {
-    console.warn("marketing_optin validation_failed", { errors, ip, campaign_source });
     return json({ success: false, message: "Dados inválidos.", errors }, 400);
   }
 
@@ -101,24 +142,12 @@ Deno.serve(async (req) => {
     lgpd_aceite: true,
   };
 
-  console.log("marketing_optin submit", {
-    ip,
-    campaign_source,
-    origem_url,
-    ultimo_template_enviado,
-    ua_len: user_agent?.length ?? 0,
-  });
-
   const { data, error } = await admin.rpc("submit_marketing_optin", { payload });
 
   if (error) {
     const msg = String(error.message || "");
-    if (msg.includes("INVALID_PHONE")) {
-      return json({ success: false, message: "Informe um WhatsApp válido com DDD." }, 400);
-    }
-    if (msg.includes("LGPD_REQUIRED")) {
-      return json({ success: false, message: "Consentimento obrigatório." }, 400);
-    }
+    if (msg.includes("INVALID_PHONE")) return json({ success: false, message: "Informe um WhatsApp válido com DDD." }, 400);
+    if (msg.includes("LGPD_REQUIRED")) return json({ success: false, message: "Consentimento obrigatório." }, 400);
     if (msg.includes("INVALID_CAMPAIGN") || msg.includes("INVALID_TEMPLATE")) {
       return json({ success: false, message: "Parâmetro de campanha inválido." }, 400);
     }
@@ -128,7 +157,6 @@ Deno.serve(async (req) => {
 
   const result = data as { ok?: boolean; duplicate?: boolean; id?: string };
   if (result?.duplicate) {
-    console.log("marketing_optin duplicate", { id: result.id, campaign_source });
     return json({
       success: false,
       duplicate: true,
@@ -136,21 +164,19 @@ Deno.serve(async (req) => {
     }, 200);
   }
 
-  console.log("marketing_optin created", { id: result?.id, campaign_source });
-
-  const now = new Date().toISOString();
-  await appendToSheet([
-    now,
-    result?.id ?? "",
-    telefone ?? "",
-    "autorizado",
-    campaign_source ?? "",
-    ultimo_template_enviado ?? "",
-    origem_url ?? "",
-    ip ?? "",
-    user_agent ?? "",
-    now,
-  ]);
+  // Fetch full row to sync to Sheets
+  if (result?.id) {
+    const { data: row } = await admin
+      .from("marketing_optin")
+      .select("id, created_at, telefone, status, campaign_source, ultimo_template_enviado, origem_url, ip, user_agent, data_aceite")
+      .eq("id", result.id)
+      .maybeSingle();
+    if (row) {
+      const res = await appendOptinToSheet(row);
+      await markSync(row.id, res.ok, res.error);
+      if (!res.ok) console.warn("sheet_append_failed", res.error);
+    }
+  }
 
   return json({ success: true, id: result?.id, message: "Cadastro realizado com sucesso." });
 });
