@@ -749,7 +749,7 @@ const UmContato = () => {
                     onClick={finalize}
                   >
                     <MessageCircle className="w-5 h-5 mr-2" aria-hidden="true" />
-                    {submitting ? "Enviando…" : "Finalizar Triagem"}
+                    {submitting ? "Enviando…" : "Quero agilizar meu atendimento"}
                   </Button>
                   <p className="text-xs text-muted-foreground mt-4">
                     Atendimento humano de segunda a sábado · Resposta em minutos no horário comercial.
