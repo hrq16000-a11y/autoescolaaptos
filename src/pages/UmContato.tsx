@@ -879,9 +879,8 @@ const UmContato = () => {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
+
   );
 };
 
