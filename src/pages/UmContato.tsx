@@ -412,9 +412,9 @@ const UmContato = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:image" content="https://autoescolaaptos.com.br/og-1contato.jpg" />
       </Helmet>
-      <Navbar />
 
-      <main id="main" className="flex-1 pt-20 md:pt-24 pb-10">
+      <main id="main" className="flex-1 pt-4 pb-10">
+
         <div className="container mx-auto px-3 sm:px-4 max-w-3xl">
           {/* HERO — compacto para mobile */}
           <div className="text-center mb-4 md:mb-6">
