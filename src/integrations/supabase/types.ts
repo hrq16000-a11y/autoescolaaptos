@@ -23,6 +23,7 @@ export type Database = {
           id: string
           ip: string | null
           origem: string
+          origem_url: string | null
           quantidade_campanhas: number
           status: string
           telefone: string
@@ -40,6 +41,7 @@ export type Database = {
           id?: string
           ip?: string | null
           origem?: string
+          origem_url?: string | null
           quantidade_campanhas?: number
           status?: string
           telefone: string
@@ -57,6 +59,7 @@ export type Database = {
           id?: string
           ip?: string | null
           origem?: string
+          origem_url?: string | null
           quantidade_campanhas?: number
           status?: string
           telefone?: string
