@@ -345,13 +345,16 @@ const UmContato = () => {
 
     setSubmitting(false);
     setDone(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
 
-    // Redireciona imediatamente ao WhatsApp — sem clique extra.
+    // Pequeno delay para o usuário ler o pop-up "aguarde um instante"
     trackConversion("WhatsAppClick", {
       source: "1contato_auto_redirect",
       servico: payload.servico,
     });
-    window.location.href = whatsappLink(buildMessage(resp), "funil");
+    setTimeout(() => {
+      window.location.href = whatsappLink(buildMessage(resp), "funil");
+    }, 2600);
   };
 
   const copyMessage = async () => {
