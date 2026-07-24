@@ -106,6 +106,7 @@ const AppRoutes = () => {
         <Route path="/admin/growth" element={<GrowthDashboard />} />
         <Route path="/admin/leads" element={<AdminLeads />} />
         <Route path="/admin/metricas" element={<AdminMetricas />} />
+        <Route path="/admin/ofertas" element={<AdminOptin />} />
         <Route path="/login" element={<Login />} />
         <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
         <Route path="/ofertas" element={<Ofertas />} />
