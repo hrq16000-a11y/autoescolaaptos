@@ -137,5 +137,20 @@ Deno.serve(async (req) => {
   }
 
   console.log("marketing_optin created", { id: result?.id, campaign_source });
+
+  const now = new Date().toISOString();
+  await appendToSheet([
+    now,
+    result?.id ?? "",
+    telefone ?? "",
+    "autorizado",
+    campaign_source ?? "",
+    ultimo_template_enviado ?? "",
+    origem_url ?? "",
+    ip ?? "",
+    user_agent ?? "",
+    now,
+  ]);
+
   return json({ success: true, id: result?.id, message: "Cadastro realizado com sucesso." });
 });
