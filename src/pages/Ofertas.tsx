@@ -22,10 +22,15 @@ export default function Ofertas() {
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const campaignSource = useMemo(() => {
-    if (typeof window === "undefined") return null;
+  const { campaignSource, template, origemUrl } = useMemo(() => {
+    if (typeof window === "undefined") return { campaignSource: null, template: null, origemUrl: null };
     const params = new URLSearchParams(window.location.search);
-    return params.get("campanha") || params.get("src") || params.get("utm_campaign") || null;
+    return {
+      campaignSource:
+        params.get("campanha") || params.get("src") || params.get("utm_campaign") || null,
+      template: params.get("template") || params.get("tpl") || null,
+      origemUrl: window.location.href,
+    };
   }, []);
 
   useEffect(() => {
