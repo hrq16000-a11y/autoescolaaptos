@@ -25,6 +25,11 @@ export type Database = {
           origem: string
           origem_url: string | null
           quantidade_campanhas: number
+          sheet_attempts: number
+          sheet_last_attempt_at: string | null
+          sheet_sync_error: string | null
+          sheet_sync_status: string
+          sheet_synced_at: string | null
           status: string
           telefone: string
           tipo: string
@@ -43,6 +48,11 @@ export type Database = {
           origem?: string
           origem_url?: string | null
           quantidade_campanhas?: number
+          sheet_attempts?: number
+          sheet_last_attempt_at?: string | null
+          sheet_sync_error?: string | null
+          sheet_sync_status?: string
+          sheet_synced_at?: string | null
           status?: string
           telefone: string
           tipo?: string
@@ -61,6 +71,11 @@ export type Database = {
           origem?: string
           origem_url?: string | null
           quantidade_campanhas?: number
+          sheet_attempts?: number
+          sheet_last_attempt_at?: string | null
+          sheet_sync_error?: string | null
+          sheet_sync_status?: string
+          sheet_synced_at?: string | null
           status?: string
           telefone?: string
           tipo?: string

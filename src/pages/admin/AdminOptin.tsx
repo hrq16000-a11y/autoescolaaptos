@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, RefreshCw, Loader2, Download, Gift, TrendingUp } from "lucide-react";
+import { ArrowLeft, RefreshCw, Loader2, Download, Gift, TrendingUp, CloudUpload, RotateCw } from "lucide-react";
 
 interface OptinRow {
   id: string;
@@ -18,6 +18,11 @@ interface OptinRow {
   user_agent: string | null;
   data_aceite: string | null;
   created_at: string;
+  sheet_sync_status?: string | null;
+  sheet_synced_at?: string | null;
+  sheet_last_attempt_at?: string | null;
+  sheet_attempts?: number | null;
+  sheet_sync_error?: string | null;
 }
 
 interface Metrics {
@@ -26,6 +31,7 @@ interface Metrics {
   byCampaign: Record<string, { optins: number; retorno: number; taxa: number }>;
   byTemplate: Record<string, number>;
   byDay: Record<string, number>;
+  bySync?: Record<string, number>;
 }
 
 const FN_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-optin`;
@@ -39,6 +45,18 @@ const defaultFrom = () => {
 
 const pct = (n: number) => `${(n * 100).toFixed(1)}%`;
 
+const syncBadge = (s?: string | null) => {
+  const v = s || "pending";
+  const cls =
+    v === "ok"
+      ? "bg-green-100 text-green-800 border-green-300"
+      : v === "error"
+      ? "bg-red-100 text-red-800 border-red-300"
+      : "bg-yellow-100 text-yellow-800 border-yellow-300";
+  const label = v === "ok" ? "Sincronizado" : v === "error" ? "Erro" : "Pendente";
+  return <span className={`inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full border ${cls}`}>{label}</span>;
+};
+
 const AdminOptin = () => {
   useEffect(() => window.scrollTo({ top: 0 }), []);
   const [tokenInput, setTokenInput] = useState("");
@@ -46,12 +64,15 @@ const AdminOptin = () => {
   const [rows, setRows] = useState<OptinRow[]>([]);
   const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [loading, setLoading] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
   const [filters, setFilters] = useState({
     from: defaultFrom(),
     to: new Date().toISOString().slice(0, 10),
     status: "",
     campaign_source: "",
+    sync_status: "",
     q: "",
   });
 
@@ -63,6 +84,7 @@ const AdminOptin = () => {
     if (filters.to) p.set("to", `${filters.to}T23:59:59`);
     if (filters.status) p.set("status", filters.status);
     if (filters.campaign_source) p.set("campaign_source", filters.campaign_source);
+    if (filters.sync_status) p.set("sync_status", filters.sync_status);
     return p;
   };
 
@@ -70,9 +92,10 @@ const AdminOptin = () => {
     if (!token) return;
     setLoading(true);
     setError(null);
+    setInfo(null);
     try {
       const [listRes, metRes] = await Promise.all([
-        fetch(`${FN_URL}?${buildParams({ action: "list", limit: "500", ...(filters.q ? { q: filters.q } : {}) })}`, {
+        fetch(`${FN_URL}?${buildParams({ action: "list", limit: "2000", ...(filters.q ? { q: filters.q } : {}) })}`, {
           headers: { "x-admin-token": token },
         }),
         fetch(`${FN_URL}?${buildParams({ action: "metrics" })}`, {
@@ -101,6 +124,53 @@ const AdminOptin = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
+  const callAction = async (action: "retry_sync" | "backfill", body: Record<string, unknown>) => {
+    setSyncing(true);
+    setError(null);
+    setInfo(null);
+    try {
+      const res = await fetch(`${FN_URL}?action=${action}`, {
+        method: "POST",
+        headers: { "x-admin-token": token, "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const j = await res.json();
+      if (!res.ok) throw new Error(j.message || j.error || "Falha");
+      setInfo(
+        `${action === "backfill" ? "Backfill" : "Reprocessamento"}: ${j.succeeded ?? 0} enviados, ${j.failed ?? 0} falharam${
+          j.error ? ` — ${j.error}` : ""
+        }.`
+      );
+      await fetchAll();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Falha ao sincronizar");
+    } finally {
+      setSyncing(false);
+    }
+  };
+
+  const retryFiltered = () => callAction("retry_sync", {
+    from: filters.from || undefined,
+    to: filters.to ? `${filters.to}T23:59:59` : undefined,
+    only_errors: true,
+    limit: 500,
+  });
+
+  const retryByPhone = () => {
+    const raw = window.prompt("Reprocessar por telefone(s). Separe por vírgula:");
+    if (!raw) return;
+    const telefones = raw.split(",").map((t) => t.trim()).filter(Boolean);
+    if (!telefones.length) return;
+    callAction("retry_sync", { telefones, limit: 500 });
+  };
+
+  const retryOne = (r: OptinRow) => callAction("retry_sync", { ids: [r.id] });
+
+  const backfill = () => {
+    if (!window.confirm("Enviar TODOS os opt-ins ainda não sincronizados para a planilha?")) return;
+    callAction("backfill", { limit: 500 });
+  };
+
   const exportCsv = () => {
     if (!rows.length) return;
     const headers = [
@@ -111,6 +181,10 @@ const AdminOptin = () => {
       "campaign_source",
       "ultimo_template_enviado",
       "quantidade_campanhas",
+      "sheet_sync_status",
+      "sheet_synced_at",
+      "sheet_attempts",
+      "sheet_sync_error",
       "origem_url",
       "ip",
       "user_agent",
@@ -192,9 +266,18 @@ const AdminOptin = () => {
               </p>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <Button variant="outline" size="sm" onClick={exportCsv} disabled={!rows.length}>
-              <Download className="w-4 h-4 mr-2" /> CSV
+              <Download className="w-4 h-4 mr-2" /> CSV (filtrado)
+            </Button>
+            <Button variant="outline" size="sm" onClick={retryByPhone} disabled={syncing}>
+              <RotateCw className="w-4 h-4 mr-2" /> Reprocessar por telefone
+            </Button>
+            <Button variant="outline" size="sm" onClick={retryFiltered} disabled={syncing}>
+              <RotateCw className="w-4 h-4 mr-2" /> Reprocessar erros (período)
+            </Button>
+            <Button variant="default" size="sm" onClick={backfill} disabled={syncing}>
+              <CloudUpload className="w-4 h-4 mr-2" /> Backfill Sheets
             </Button>
             <Button variant="outline" size="sm" onClick={fetchAll} disabled={loading}>
               {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
@@ -207,7 +290,7 @@ const AdminOptin = () => {
       <main className="container mx-auto px-4 py-6 space-y-6">
         {/* Filtros */}
         <div className="bg-card border border-border rounded-xl p-4">
-          <div className="grid grid-cols-1 md:grid-cols-6 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-7 gap-3">
             <div>
               <label className="text-xs font-semibold text-muted-foreground">De</label>
               <Input type="date" value={filters.from} onChange={(e) => setFilters({ ...filters, from: e.target.value })} />
@@ -228,6 +311,21 @@ const AdminOptin = () => {
                   <SelectItem value="autorizado">Autorizado</SelectItem>
                   <SelectItem value="cancelado">Cancelado</SelectItem>
                   <SelectItem value="bloqueado">Bloqueado</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground">Sincronização</label>
+              <Select
+                value={filters.sync_status || "all"}
+                onValueChange={(v) => setFilters({ ...filters, sync_status: v === "all" ? "" : v })}
+              >
+                <SelectTrigger><SelectValue placeholder="Todos" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos</SelectItem>
+                  <SelectItem value="ok">Sincronizados</SelectItem>
+                  <SelectItem value="pending">Pendentes</SelectItem>
+                  <SelectItem value="error">Com erro</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -262,15 +360,20 @@ const AdminOptin = () => {
             {error}
           </div>
         )}
+        {info && (
+          <div className="p-3 text-sm text-green-800 bg-green-100 border border-green-300 rounded-lg">
+            {info}
+          </div>
+        )}
 
         {metrics && (
           <>
             {/* Cards de status */}
             <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <MetricCard label="Total opt-ins" value={String(metrics.total)} highlight />
-              <MetricCard label="Autorizados" value={String(metrics.byStatus.autorizado || 0)} />
-              <MetricCard label="Cancelados" value={String(metrics.byStatus.cancelado || 0)} />
-              <MetricCard label="Bloqueados" value={String(metrics.byStatus.bloqueado || 0)} />
+              <MetricCard label="Sincronizados" value={String(metrics.bySync?.ok || 0)} />
+              <MetricCard label="Pendentes" value={String(metrics.bySync?.pending || 0)} />
+              <MetricCard label="Com erro" value={String(metrics.bySync?.error || 0)} />
             </section>
 
             {/* Funil por campanha */}
@@ -336,17 +439,19 @@ const AdminOptin = () => {
         {/* Lista */}
         <section className="bg-card border border-border rounded-xl p-4 overflow-x-auto">
           <h2 className="font-heading font-bold mb-3">Opt-ins ({rows.length})</h2>
-          <table className="w-full text-xs min-w-[900px]">
+          <table className="w-full text-xs min-w-[1100px]">
             <thead className="text-left text-muted-foreground border-b">
               <tr>
                 <th className="py-2 pr-3">Data</th>
                 <th className="py-2 pr-3">Telefone</th>
                 <th className="py-2 pr-3">Status</th>
+                <th className="py-2 pr-3">Sheets</th>
+                <th className="py-2 pr-3">Tentativas</th>
                 <th className="py-2 pr-3">Campanha</th>
                 <th className="py-2 pr-3">Template</th>
                 <th className="py-2 pr-3">Origem URL</th>
-                <th className="py-2 pr-3">IP</th>
-                <th className="py-2 pr-3">User agent</th>
+                <th className="py-2 pr-3">Erro</th>
+                <th className="py-2 pr-3"></th>
               </tr>
             </thead>
             <tbody>
@@ -355,15 +460,23 @@ const AdminOptin = () => {
                   <td className="py-2 pr-3 whitespace-nowrap">{new Date(r.created_at).toLocaleString("pt-BR")}</td>
                   <td className="py-2 pr-3 font-mono">{r.telefone}</td>
                   <td className="py-2 pr-3">{r.status}</td>
+                  <td className="py-2 pr-3">{syncBadge(r.sheet_sync_status)}</td>
+                  <td className="py-2 pr-3 tabular-nums">{r.sheet_attempts ?? 0}</td>
                   <td className="py-2 pr-3">{r.campaign_source || "—"}</td>
                   <td className="py-2 pr-3">{r.ultimo_template_enviado || "—"}</td>
                   <td className="py-2 pr-3 max-w-[220px] truncate" title={r.origem_url || ""}>{r.origem_url || "—"}</td>
-                  <td className="py-2 pr-3">{r.ip || "—"}</td>
-                  <td className="py-2 pr-3 max-w-[220px] truncate" title={r.user_agent || ""}>{r.user_agent || "—"}</td>
+                  <td className="py-2 pr-3 max-w-[220px] truncate text-destructive" title={r.sheet_sync_error || ""}>{r.sheet_sync_error || "—"}</td>
+                  <td className="py-2 pr-3">
+                    {r.sheet_sync_status !== "ok" && (
+                      <Button size="sm" variant="outline" onClick={() => retryOne(r)} disabled={syncing}>
+                        Reenviar
+                      </Button>
+                    )}
+                  </td>
                 </tr>
               ))}
               {!rows.length && (
-                <tr><td colSpan={8} className="py-6 text-center text-muted-foreground">Sem registros.</td></tr>
+                <tr><td colSpan={10} className="py-6 text-center text-muted-foreground">Sem registros.</td></tr>
               )}
             </tbody>
           </table>
