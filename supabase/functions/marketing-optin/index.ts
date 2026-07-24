@@ -19,6 +19,13 @@ function json(body: unknown, status = 200) {
   });
 }
 
+function str(v: unknown, max = 500): string | null {
+  if (v === null || v === undefined) return null;
+  const s = String(v).trim();
+  if (!s) return null;
+  return s.slice(0, max);
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json({ success: false, error: "method_not_allowed" }, 405);
@@ -30,24 +37,59 @@ Deno.serve(async (req) => {
     return json({ success: false, message: "Payload inválido." }, 400);
   }
 
-  const telefone = String(body.telefone || "").trim();
-  const campaign_source = body.campaign_source ? String(body.campaign_source).slice(0, 120) : null;
+  const telefone = str(body.telefone, 40);
+  const campaign_source = str(body.campaign_source, 120);
+  const origem_url = str(body.origem_url, 500) ?? req.headers.get("referer");
+  const ultimo_template_enviado = str(body.ultimo_template_enviado, 120);
+  const lgpd_aceite = body.lgpd_aceite === true || body.lgpd_aceite === "true";
+
   const user_agent = req.headers.get("user-agent") || null;
   const ipHeader = req.headers.get("x-forwarded-for") || req.headers.get("cf-connecting-ip") || "";
   const ip = ipHeader.split(",")[0].trim() || null;
 
-  if (!telefone) {
-    return json({ success: false, message: "Informe um WhatsApp válido." }, 400);
+  const errors: Record<string, string> = {};
+  if (!telefone) errors.telefone = "Informe um WhatsApp válido.";
+  else {
+    const digits = telefone.replace(/\D/g, "");
+    if (digits.length < 10 || digits.length > 13) errors.telefone = "DDD + número (10 a 13 dígitos).";
+  }
+  if (!lgpd_aceite) errors.lgpd_aceite = "Consentimento obrigatório.";
+
+  if (Object.keys(errors).length) {
+    console.warn("marketing_optin validation_failed", { errors, ip, campaign_source });
+    return json({ success: false, message: "Dados inválidos.", errors }, 400);
   }
 
-  const { data, error } = await admin.rpc("submit_marketing_optin", {
-    payload: { telefone, campaign_source, ip, user_agent },
+  const payload = {
+    telefone,
+    campaign_source,
+    origem_url,
+    ultimo_template_enviado,
+    ip,
+    user_agent,
+    lgpd_aceite: true,
+  };
+
+  console.log("marketing_optin submit", {
+    ip,
+    campaign_source,
+    origem_url,
+    ultimo_template_enviado,
+    ua_len: user_agent?.length ?? 0,
   });
+
+  const { data, error } = await admin.rpc("submit_marketing_optin", { payload });
 
   if (error) {
     const msg = String(error.message || "");
     if (msg.includes("INVALID_PHONE")) {
       return json({ success: false, message: "Informe um WhatsApp válido com DDD." }, 400);
+    }
+    if (msg.includes("LGPD_REQUIRED")) {
+      return json({ success: false, message: "Consentimento obrigatório." }, 400);
+    }
+    if (msg.includes("INVALID_CAMPAIGN") || msg.includes("INVALID_TEMPLATE")) {
+      return json({ success: false, message: "Parâmetro de campanha inválido." }, 400);
     }
     console.error("marketing_optin failed:", error);
     return json({ success: false, message: "Falha temporária. Tente novamente." }, 500);
@@ -55,6 +97,7 @@ Deno.serve(async (req) => {
 
   const result = data as { ok?: boolean; duplicate?: boolean; id?: string };
   if (result?.duplicate) {
+    console.log("marketing_optin duplicate", { id: result.id, campaign_source });
     return json({
       success: false,
       duplicate: true,
@@ -62,5 +105,6 @@ Deno.serve(async (req) => {
     }, 200);
   }
 
-  return json({ success: true, message: "Cadastro realizado com sucesso." });
+  console.log("marketing_optin created", { id: result?.id, campaign_source });
+  return json({ success: true, id: result?.id, message: "Cadastro realizado com sucesso." });
 });
