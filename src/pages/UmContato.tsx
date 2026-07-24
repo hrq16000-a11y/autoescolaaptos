@@ -15,8 +15,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
 import { whatsappLink } from "@/lib/whatsapp";
 import { track, trackConversion } from "@/lib/analytics";
@@ -164,7 +162,7 @@ const UmContato = () => {
     }
   }, [done]);
 
-  // Foco sempre no topo ao entrar na página + autoscroll suave até o card em mobile
+  // Foco sempre no topo ao entrar na página
   useEffect(() => {
     if (viewedRef.current) return;
     viewedRef.current = true;
@@ -172,22 +170,12 @@ const UmContato = () => {
     window.scrollTo({ top: 0, behavior: "auto" });
     track("ViewContent", { content_name: "1contato_triagem", page_path: "/1contato" });
     track("StartTriagem", { funnel: "1contato" });
-
-    // Em mobile, rola suavemente até a primeira pergunta após um pequeno delay
-    if (typeof window !== "undefined" && window.innerWidth < 768) {
-      setTimeout(() => {
-        cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 500);
-    }
   }, []);
 
-  // Track cada mudança de etapa + foco suave no topo do card
+  // Sempre rola pro TOPO da página em cada mudança de etapa
   useEffect(() => {
-    if (step === 0) return;
     track(`Step${step}`, { funnel: "1contato", step });
-    setTimeout(() => {
-      cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 100);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [step]);
 
   // Auto-avanço da etapa 1 quando todas as respostas obrigatórias estiverem prontas
@@ -236,16 +224,22 @@ const UmContato = () => {
   const buildMessage = (r: Respostas) => {
     const servicoLinha = r.categoria ? `${r.servico} — Categoria ${r.categoria}` : r.servico;
     return (
-      `Olá! 😊\n\n` +
-      `Acabei de concluir a triagem no site da Autoescola APTOS. Segue meu resumo:\n\n` +
+      `Olá, Autoescola APTOS! 😊\n` +
+      `Acabei de concluir minha triagem pelo site.\n` +
+      `\n` +
+      `👤 *Meus dados*\n` +
       `• Nome: ${r.nome}\n` +
       `• WhatsApp: ${r.telefone}\n` +
-      (r.email ? `• Email: ${r.email}\n` : "") +
+      `\n` +
+      `🎯 *O que eu preciso*\n` +
       `• Serviço: ${servicoLinha}\n` +
       `• Experiência: ${r.experiencia}\n` +
+      `\n` +
+      `📋 *Sobre o processo*\n` +
       `• Conhece o novo procedimento da CNH: ${r.conhece}\n` +
-      `• Pretendo iniciar: ${r.prazo}\n\n` +
-      `Gostaria de receber meu orçamento e os próximos passos, por favor.`
+      `• Quando quero iniciar: ${r.prazo}\n` +
+      `\n` +
+      `Gostaria de agilizar meu atendimento e receber orçamento e próximos passos. Obrigado! 🙏`
     );
   };
 
