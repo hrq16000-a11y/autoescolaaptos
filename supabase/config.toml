@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.marketing-optin]
 verify_jwt = false
+
+[functions.admin-optin]
+verify_jwt = false
