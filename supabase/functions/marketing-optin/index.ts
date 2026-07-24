@@ -7,10 +7,41 @@ import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+const GOOGLE_SHEETS_API_KEY = Deno.env.get("GOOGLE_SHEETS_API_KEY");
+const SHEET_ID = Deno.env.get("OFERTAS_SHEET_ID");
+const SHEET_TAB = Deno.env.get("OFERTAS_SHEET_TAB") || "Optins";
 
 const admin = createClient(SUPABASE_URL, SERVICE_KEY, {
   auth: { persistSession: false, autoRefreshToken: false },
 });
+
+async function appendToSheet(row: (string | number | null)[]) {
+  if (!SHEET_ID || !LOVABLE_API_KEY || !GOOGLE_SHEETS_API_KEY) {
+    console.warn("sheet_append_skipped: missing SHEET_ID / gateway keys");
+    return;
+  }
+  try {
+    const url = `https://connector-gateway.lovable.dev/google_sheets/v4/spreadsheets/${SHEET_ID}/values/${SHEET_TAB}!A:J:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`;
+    const resp = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "X-Connection-Api-Key": GOOGLE_SHEETS_API_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ values: [row] }),
+    });
+    if (!resp.ok) {
+      const txt = await resp.text();
+      console.error(`sheet_append_failed [${resp.status}]: ${txt}`);
+    } else {
+      console.log("sheet_append_ok");
+    }
+  } catch (e) {
+    console.error("sheet_append_exception", e instanceof Error ? e.message : e);
+  }
+}
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
