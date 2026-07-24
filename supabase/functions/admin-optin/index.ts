@@ -1,9 +1,12 @@
 // Edge function protegida por token: /functions/v1/admin-optin
 // Painel do Programa de Ofertas Exclusivas (marketing_optin).
-// Ações:
-//  - GET  ?action=list&limit=500&status=autorizado&campaign_source=julho2026&from=...&to=...&q=41999
-//  - GET  ?action=metrics&from=...&to=...
-// Autenticação: header `x-admin-token` = secret ADMIN_LEADS_TOKEN.
+// Ações GET:
+//  - ?action=list&limit=500&status=&campaign_source=&sync_status=&from=&to=&q=
+//  - ?action=metrics&from=&to=
+// Ações POST (mesma auth):
+//  - ?action=retry_sync         body: { ids?: string[], telefones?: string[], from?, to?, only_errors?: boolean, limit?: number }
+//  - ?action=backfill           body: { limit?: number }  (envia todos ok=false ainda não sincronizados)
+// Auth: header `x-admin-token` = ADMIN_LEADS_TOKEN.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
@@ -11,6 +14,10 @@ import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const ADMIN_TOKEN = Deno.env.get("ADMIN_LEADS_TOKEN");
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+const GOOGLE_SHEETS_API_KEY = Deno.env.get("GOOGLE_SHEETS_API_KEY");
+const SHEET_ID = Deno.env.get("OFERTAS_SHEET_ID");
+const SHEET_TAB = Deno.env.get("OFERTAS_SHEET_TAB") || "Optins";
 
 const admin = createClient(SUPABASE_URL, SERVICE_KEY, {
   auth: { persistSession: false, autoRefreshToken: false },
@@ -23,18 +30,151 @@ function json(body: unknown, status = 200) {
   });
 }
 
+type OptinRow = {
+  id: string;
+  created_at: string;
+  telefone: string;
+  status: string;
+  campaign_source: string | null;
+  ultimo_template_enviado: string | null;
+  origem_url: string | null;
+  ip: string | null;
+  user_agent: string | null;
+  data_aceite: string | null;
+  sheet_attempts?: number | null;
+};
+
+async function appendBatchToSheet(rows: OptinRow[]): Promise<{ ok: boolean; error?: string }> {
+  if (!rows.length) return { ok: true };
+  if (!SHEET_ID || !LOVABLE_API_KEY || !GOOGLE_SHEETS_API_KEY) {
+    return { ok: false, error: "missing_sheet_config" };
+  }
+  const values = rows.map((row) => [
+    row.created_at,
+    row.id,
+    row.telefone,
+    row.status,
+    row.campaign_source ?? "",
+    row.ultimo_template_enviado ?? "",
+    row.origem_url ?? "",
+    row.ip ?? "",
+    row.user_agent ?? "",
+    row.data_aceite ?? row.created_at,
+  ]);
+  try {
+    const url = `https://connector-gateway.lovable.dev/google_sheets/v4/spreadsheets/${SHEET_ID}/values/${SHEET_TAB}!A:J:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`;
+    const resp = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "X-Connection-Api-Key": GOOGLE_SHEETS_API_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ values }),
+    });
+    if (!resp.ok) {
+      const txt = await resp.text();
+      return { ok: false, error: `[${resp.status}] ${txt.slice(0, 400)}` };
+    }
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : String(e) };
+  }
+}
+
+async function markSyncBatch(ids: string[], ok: boolean, error?: string) {
+  if (!ids.length) return;
+  const now = new Date().toISOString();
+  // Fetch attempts to increment
+  const { data: current } = await admin
+    .from("marketing_optin")
+    .select("id, sheet_attempts")
+    .in("id", ids);
+  const attemptsMap = new Map<string, number>();
+  (current ?? []).forEach((r) => attemptsMap.set(r.id, (r.sheet_attempts ?? 0) + 1));
+
+  // Update per row (batch of small size — acceptable for admin flow)
+  for (const id of ids) {
+    await admin.from("marketing_optin").update({
+      sheet_last_attempt_at: now,
+      sheet_attempts: attemptsMap.get(id) ?? 1,
+      sheet_sync_status: ok ? "ok" : "error",
+      sheet_synced_at: ok ? now : null,
+      sheet_sync_error: ok ? null : (error ?? "unknown"),
+    }).eq("id", id);
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (!ADMIN_TOKEN) return json({ error: "not_configured" }, 500);
   const token = req.headers.get("x-admin-token") || "";
   if (token !== ADMIN_TOKEN) return json({ error: "unauthorized" }, 401);
 
-  if (req.method !== "GET") return json({ error: "method_not_allowed" }, 405);
-
   const url = new URL(req.url);
   const action = url.searchParams.get("action") || "list";
+
+  // ---- POST actions ----
+  if (req.method === "POST") {
+    let body: Record<string, unknown> = {};
+    try { body = await req.json(); } catch { /* ignore */ }
+
+    if (action === "retry_sync" || action === "backfill") {
+      const limit = Math.min(Number(body.limit ?? url.searchParams.get("limit") ?? 200), 500);
+      let query = admin
+        .from("marketing_optin")
+        .select("id, created_at, telefone, status, campaign_source, ultimo_template_enviado, origem_url, ip, user_agent, data_aceite, sheet_attempts, sheet_sync_status")
+        .order("created_at", { ascending: true })
+        .limit(limit);
+
+      const ids = Array.isArray(body.ids) ? (body.ids as string[]) : null;
+      const telefones = Array.isArray(body.telefones)
+        ? (body.telefones as string[]).map((t) => String(t).replace(/\D/g, "")).filter(Boolean)
+        : null;
+      const from = body.from as string | undefined;
+      const to = body.to as string | undefined;
+      const onlyErrors = body.only_errors !== false; // default true
+
+      if (action === "backfill") {
+        // sync everything not yet ok
+        query = query.neq("sheet_sync_status", "ok");
+      } else if (ids && ids.length) {
+        query = query.in("id", ids);
+      } else if (telefones && telefones.length) {
+        query = query.in("telefone", telefones);
+      } else {
+        if (onlyErrors) query = query.neq("sheet_sync_status", "ok");
+        if (from) query = query.gte("created_at", from);
+        if (to) query = query.lte("created_at", to);
+      }
+
+      const { data, error } = await query;
+      if (error) return json({ error: "query_failed", message: error.message }, 500);
+      const rows = (data ?? []) as OptinRow[];
+      if (!rows.length) return json({ ok: true, processed: 0, succeeded: 0, failed: 0, message: "Nada a reprocessar." });
+
+      // Try in chunks of 50 to keep payload sane
+      let succeeded = 0;
+      let failed = 0;
+      let lastError: string | undefined;
+      for (let i = 0; i < rows.length; i += 50) {
+        const chunk = rows.slice(i, i + 50);
+        const res = await appendBatchToSheet(chunk);
+        await markSyncBatch(chunk.map((r) => r.id), res.ok, res.error);
+        if (res.ok) succeeded += chunk.length;
+        else { failed += chunk.length; lastError = res.error; }
+      }
+      return json({ ok: failed === 0, processed: rows.length, succeeded, failed, error: lastError });
+    }
+
+    return json({ error: "unknown_action" }, 400);
+  }
+
+  if (req.method !== "GET") return json({ error: "method_not_allowed" }, 405);
+
   const status = url.searchParams.get("status");
   const campaign = url.searchParams.get("campaign_source");
+  const syncStatus = url.searchParams.get("sync_status");
   const from = url.searchParams.get("from");
   const to = url.searchParams.get("to");
   const q = url.searchParams.get("q");
@@ -42,12 +182,13 @@ Deno.serve(async (req) => {
   if (action === "metrics") {
     let query = admin
       .from("marketing_optin")
-      .select("status, campaign_source, ultimo_template_enviado, quantidade_campanhas, created_at, data_aceite")
+      .select("status, campaign_source, ultimo_template_enviado, quantidade_campanhas, created_at, data_aceite, sheet_sync_status")
       .limit(20000);
     if (from) query = query.gte("created_at", from);
     if (to) query = query.lte("created_at", to);
     if (status) query = query.eq("status", status);
     if (campaign) query = query.eq("campaign_source", campaign);
+    if (syncStatus) query = query.eq("sheet_sync_status", syncStatus);
 
     const { data, error } = await query;
     if (error) return json({ error: "query_failed", message: error.message }, 500);
@@ -58,6 +199,7 @@ Deno.serve(async (req) => {
     const byCampaign: Record<string, { optins: number; retorno: number; taxa: number }> = {};
     const byTemplate: Record<string, number> = {};
     const byDay: Record<string, number> = {};
+    const bySync: Record<string, number> = { ok: 0, pending: 0, error: 0 };
 
     for (const r of rows) {
       const st = r.status || "indefinido";
@@ -74,13 +216,16 @@ Deno.serve(async (req) => {
 
       const day = new Date(r.created_at as string).toISOString().slice(0, 10);
       byDay[day] = (byDay[day] || 0) + 1;
+
+      const s = (r.sheet_sync_status as string) || "pending";
+      bySync[s] = (bySync[s] || 0) + 1;
     }
     for (const c of Object.keys(byCampaign)) {
       const row = byCampaign[c];
       row.taxa = row.optins ? row.retorno / row.optins : 0;
     }
 
-    return json({ total, byStatus, byCampaign, byTemplate, byDay });
+    return json({ total, byStatus, byCampaign, byTemplate, byDay, bySync });
   }
 
   // list
@@ -92,6 +237,7 @@ Deno.serve(async (req) => {
     .limit(limit);
   if (status) query = query.eq("status", status);
   if (campaign) query = query.eq("campaign_source", campaign);
+  if (syncStatus) query = query.eq("sheet_sync_status", syncStatus);
   if (from) query = query.gte("created_at", from);
   if (to) query = query.lte("created_at", to);
   if (q) query = query.ilike("telefone", `%${q.replace(/\D/g, "")}%`);
