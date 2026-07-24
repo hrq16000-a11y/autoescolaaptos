@@ -15,8 +15,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
 import { whatsappLink } from "@/lib/whatsapp";
 import { track, trackConversion } from "@/lib/analytics";
@@ -164,7 +162,7 @@ const UmContato = () => {
     }
   }, [done]);
 
-  // Foco sempre no topo ao entrar na página + autoscroll suave até o card em mobile
+  // Foco sempre no topo ao entrar na página
   useEffect(() => {
     if (viewedRef.current) return;
     viewedRef.current = true;
@@ -172,22 +170,12 @@ const UmContato = () => {
     window.scrollTo({ top: 0, behavior: "auto" });
     track("ViewContent", { content_name: "1contato_triagem", page_path: "/1contato" });
     track("StartTriagem", { funnel: "1contato" });
-
-    // Em mobile, rola suavemente até a primeira pergunta após um pequeno delay
-    if (typeof window !== "undefined" && window.innerWidth < 768) {
-      setTimeout(() => {
-        cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 500);
-    }
   }, []);
 
-  // Track cada mudança de etapa + foco suave no topo do card
+  // Sempre rola pro TOPO da página em cada mudança de etapa
   useEffect(() => {
-    if (step === 0) return;
     track(`Step${step}`, { funnel: "1contato", step });
-    setTimeout(() => {
-      cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 100);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [step]);
 
   // Auto-avanço da etapa 1 quando todas as respostas obrigatórias estiverem prontas
@@ -236,16 +224,22 @@ const UmContato = () => {
   const buildMessage = (r: Respostas) => {
     const servicoLinha = r.categoria ? `${r.servico} — Categoria ${r.categoria}` : r.servico;
     return (
-      `Olá! 😊\n\n` +
-      `Acabei de concluir a triagem no site da Autoescola APTOS. Segue meu resumo:\n\n` +
+      `Olá, Autoescola APTOS! 😊\n` +
+      `Acabei de concluir minha triagem pelo site.\n` +
+      `\n` +
+      `👤 *Meus dados*\n` +
       `• Nome: ${r.nome}\n` +
       `• WhatsApp: ${r.telefone}\n` +
-      (r.email ? `• Email: ${r.email}\n` : "") +
+      `\n` +
+      `🎯 *O que eu preciso*\n` +
       `• Serviço: ${servicoLinha}\n` +
       `• Experiência: ${r.experiencia}\n` +
+      `\n` +
+      `📋 *Sobre o processo*\n` +
       `• Conhece o novo procedimento da CNH: ${r.conhece}\n` +
-      `• Pretendo iniciar: ${r.prazo}\n\n` +
-      `Gostaria de receber meu orçamento e os próximos passos, por favor.`
+      `• Quando quero iniciar: ${r.prazo}\n` +
+      `\n` +
+      `Gostaria de agilizar meu atendimento e receber orçamento e próximos passos. Obrigado! 🙏`
     );
   };
 
@@ -351,13 +345,16 @@ const UmContato = () => {
 
     setSubmitting(false);
     setDone(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
 
-    // Redireciona imediatamente ao WhatsApp — sem clique extra.
+    // Pequeno delay para o usuário ler o pop-up "aguarde um instante"
     trackConversion("WhatsAppClick", {
       source: "1contato_auto_redirect",
       servico: payload.servico,
     });
-    window.location.href = whatsappLink(buildMessage(resp), "funil");
+    setTimeout(() => {
+      window.location.href = whatsappLink(buildMessage(resp), "funil");
+    }, 2600);
   };
 
   const copyMessage = async () => {
@@ -418,9 +415,9 @@ const UmContato = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:image" content="https://autoescolaaptos.com.br/og-1contato.jpg" />
       </Helmet>
-      <Navbar />
 
-      <main id="main" className="flex-1 pt-20 md:pt-24 pb-10">
+      <main id="main" className="flex-1 pt-4 pb-10">
+
         <div className="container mx-auto px-3 sm:px-4 max-w-3xl">
           {/* HERO — compacto para mobile */}
           <div className="text-center mb-4 md:mb-6">
@@ -704,23 +701,6 @@ const UmContato = () => {
                     <FieldError id="err-tel" message={errors.telefone} />
                   </div>
 
-                  <div className="max-w-md mx-auto mb-6 text-left">
-                    <label htmlFor="email-triagem" className="block text-sm font-semibold mb-2">
-                      E-mail <span className="text-muted-foreground font-normal">(opcional)</span>
-                    </label>
-                    <input
-                      id="email-triagem"
-                      type="email"
-                      value={resp.email || ""}
-                      onChange={(e) => setResp({ ...resp, email: e.target.value.slice(0, 150) })}
-                      placeholder="seu@email.com"
-                      autoComplete="email"
-                      aria-invalid={!!errors.email}
-                      aria-describedby={errors.email ? "err-email" : undefined}
-                      className="w-full h-12 px-4 rounded-lg border-2 border-border bg-background focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 transition-colors"
-                    />
-                    <FieldError id="err-email" message={errors.email} />
-                  </div>
 
                   <div className="max-w-md mx-auto mb-6 text-left rounded-lg border border-amber-300/60 bg-amber-50 dark:bg-amber-900/20 p-4">
                     <label className="flex items-start gap-3 cursor-pointer">
@@ -772,7 +752,7 @@ const UmContato = () => {
                     onClick={finalize}
                   >
                     <MessageCircle className="w-5 h-5 mr-2" aria-hidden="true" />
-                    {submitting ? "Enviando…" : "Finalizar Triagem"}
+                    {submitting ? "Enviando…" : "Quero agilizar meu atendimento"}
                   </Button>
                   <p className="text-xs text-muted-foreground mt-4">
                     Atendimento humano de segunda a sábado · Resposta em minutos no horário comercial.
@@ -791,13 +771,19 @@ const UmContato = () => {
                     <CheckCircle2 className="w-14 h-14 text-emerald-600" aria-hidden="true" />
                   </div>
                   <h2 className="text-2xl md:text-3xl font-heading font-black mb-3">
-                    Triagem concluída! 🎉
+                    Tudo pronto! 🎉
                   </h2>
-                  <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-                    Recebemos suas informações. Agora um consultor da <strong>Autoescola APTOS</strong>{" "}
-                    vai analisar sua necessidade. Clique abaixo para continuar pelo WhatsApp
-                    com o seu resumo já preenchido.
+                  <p className="text-foreground/90 mb-3 max-w-lg mx-auto text-base">
+                    Agora que você preencheu o cadastro, ficou <strong>mais fácil entender as suas necessidades</strong>. 😊
                   </p>
+                  <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
+                    Por favor, aguarde um instante — estamos abrindo o WhatsApp com o seu resumo pronto.
+                  </p>
+                  <div className="flex items-center justify-center gap-2 mb-6 text-sm text-primary font-semibold">
+                    <span className="inline-block w-2 h-2 rounded-full bg-primary animate-pulse" />
+                    Redirecionando ao WhatsApp…
+                  </div>
+
 
                   <div className="bg-muted/40 rounded-xl p-4 text-left mb-6 max-w-md mx-auto text-sm space-y-2">
                     <SummaryRow ok label={resp.servico} />
@@ -885,9 +871,8 @@ const UmContato = () => {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
+
   );
 };
 

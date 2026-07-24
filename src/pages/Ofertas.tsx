@@ -164,10 +164,21 @@ export default function Ofertas() {
                 <h1 className="text-2xl font-bold text-foreground mb-3">
                   Cadastro realizado com sucesso!
                 </h1>
-                <p className="text-foreground/90 mb-3">
+                <p className="text-foreground/90 mb-4">
                   Agora você poderá receber campanhas promocionais exclusivas da Autoescola APTOS
                   quando houver disponibilidade.
                 </p>
+
+                <a
+                  href={`https://api.whatsapp.com/send?phone=554133833627&text=${encodeURIComponent("Quero participar das promoções!")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center w-full h-14 rounded-lg bg-[#25D366] hover:bg-[#20BA5A] text-white font-bold text-lg shadow-lg transition mb-4 gap-2"
+                >
+                  <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d="M20.52 3.48A11.94 11.94 0 0012.05 0C5.5 0 .18 5.32.18 11.87c0 2.09.55 4.13 1.6 5.93L0 24l6.36-1.67a11.86 11.86 0 005.69 1.45h.01c6.55 0 11.87-5.32 11.87-11.87 0-3.17-1.24-6.15-3.41-8.43zM12.06 21.5h-.01a9.6 9.6 0 01-4.9-1.34l-.35-.21-3.77.99 1.01-3.67-.23-.38a9.6 9.6 0 01-1.48-5.11c0-5.31 4.32-9.63 9.63-9.63 2.57 0 4.98 1 6.8 2.82a9.55 9.55 0 012.82 6.8c0 5.31-4.32 9.63-9.63 9.63z"/></svg>
+                  Quero participar das promoções!
+                </a>
+
                 <p className="text-sm text-foreground/70 mb-2">
                   As promoções possuem regras próprias, prazo de utilização e poderão ser limitadas
                   a uma utilização por participante quando informado na campanha.
@@ -176,6 +187,7 @@ export default function Ofertas() {
                   Você poderá cancelar essa autorização a qualquer momento.
                 </p>
               </div>
+
             )}
           </div>
         </div>

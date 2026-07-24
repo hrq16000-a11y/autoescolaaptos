@@ -8,3 +8,7 @@ verify_jwt = false
 
 [functions.admin-optin]
 verify_jwt = false
+
+[functions.optin-sync-worker]
+verify_jwt = false
+
