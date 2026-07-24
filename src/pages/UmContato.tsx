@@ -771,13 +771,19 @@ const UmContato = () => {
                     <CheckCircle2 className="w-14 h-14 text-emerald-600" aria-hidden="true" />
                   </div>
                   <h2 className="text-2xl md:text-3xl font-heading font-black mb-3">
-                    Triagem concluída! 🎉
+                    Tudo pronto! 🎉
                   </h2>
-                  <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-                    Recebemos suas informações. Agora um consultor da <strong>Autoescola APTOS</strong>{" "}
-                    vai analisar sua necessidade. Clique abaixo para continuar pelo WhatsApp
-                    com o seu resumo já preenchido.
+                  <p className="text-foreground/90 mb-3 max-w-lg mx-auto text-base">
+                    Agora que você preencheu o cadastro, ficou <strong>mais fácil entender as suas necessidades</strong>. 😊
                   </p>
+                  <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
+                    Por favor, aguarde um instante — estamos abrindo o WhatsApp com o seu resumo pronto.
+                  </p>
+                  <div className="flex items-center justify-center gap-2 mb-6 text-sm text-primary font-semibold">
+                    <span className="inline-block w-2 h-2 rounded-full bg-primary animate-pulse" />
+                    Redirecionando ao WhatsApp…
+                  </div>
+
 
                   <div className="bg-muted/40 rounded-xl p-4 text-left mb-6 max-w-md mx-auto text-sm space-y-2">
                     <SummaryRow ok label={resp.servico} />
