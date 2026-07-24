@@ -43,6 +43,7 @@ const HabilitacaoPCD = lazy(() => import("./pages/HabilitacaoPCD"));
 const GrowthDashboard = lazy(() => import("./pages/admin/GrowthDashboard"));
 const AdminLeads = lazy(() => import("./pages/admin/AdminLeads"));
 const AdminMetricas = lazy(() => import("./pages/admin/AdminMetricas"));
+const AdminOptin = lazy(() => import("./pages/admin/AdminOptin"));
 const Login = lazy(() => import("./pages/Login"));
 const OAuthConsent = lazy(() => import("./pages/OAuthConsent"));
 const Ofertas = lazy(() => import("./pages/Ofertas"));
