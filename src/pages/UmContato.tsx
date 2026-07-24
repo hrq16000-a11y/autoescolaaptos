@@ -698,23 +698,6 @@ const UmContato = () => {
                     <FieldError id="err-tel" message={errors.telefone} />
                   </div>
 
-                  <div className="max-w-md mx-auto mb-6 text-left">
-                    <label htmlFor="email-triagem" className="block text-sm font-semibold mb-2">
-                      E-mail <span className="text-muted-foreground font-normal">(opcional)</span>
-                    </label>
-                    <input
-                      id="email-triagem"
-                      type="email"
-                      value={resp.email || ""}
-                      onChange={(e) => setResp({ ...resp, email: e.target.value.slice(0, 150) })}
-                      placeholder="seu@email.com"
-                      autoComplete="email"
-                      aria-invalid={!!errors.email}
-                      aria-describedby={errors.email ? "err-email" : undefined}
-                      className="w-full h-12 px-4 rounded-lg border-2 border-border bg-background focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 transition-colors"
-                    />
-                    <FieldError id="err-email" message={errors.email} />
-                  </div>
 
                   <div className="max-w-md mx-auto mb-6 text-left rounded-lg border border-amber-300/60 bg-amber-50 dark:bg-amber-900/20 p-4">
                     <label className="flex items-start gap-3 cursor-pointer">
