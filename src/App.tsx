@@ -44,6 +44,7 @@ const GrowthDashboard = lazy(() => import("./pages/admin/GrowthDashboard"));
 const AdminLeads = lazy(() => import("./pages/admin/AdminLeads"));
 const AdminMetricas = lazy(() => import("./pages/admin/AdminMetricas"));
 const AdminOptin = lazy(() => import("./pages/admin/AdminOptin"));
+const AdminIndex = lazy(() => import("./pages/admin/AdminIndex"));
 const Login = lazy(() => import("./pages/Login"));
 const OAuthConsent = lazy(() => import("./pages/OAuthConsent"));
 const Ofertas = lazy(() => import("./pages/Ofertas"));
@@ -103,6 +104,7 @@ const AppRoutes = () => {
         <Route path="/pcd" element={<HabilitacaoPCD />} />
         <Route path="/habilitacao-pcd" element={<Navigate to="/pcd" replace />} />
         <Route path="/autoescola-pcd" element={<Navigate to="/pcd" replace />} />
+        <Route path="/admin" element={<AdminIndex />} />
         <Route path="/admin/growth" element={<GrowthDashboard />} />
         <Route path="/admin/leads" element={<AdminLeads />} />
         <Route path="/admin/metricas" element={<AdminMetricas />} />
