@@ -47,7 +47,13 @@ export default function Ofertas() {
     setError(null);
     try {
       const { data, error: fnError } = await supabase.functions.invoke("marketing-optin", {
-        body: { telefone, campaign_source: campaignSource },
+        body: {
+          telefone,
+          campaign_source: campaignSource,
+          ultimo_template_enviado: template,
+          origem_url: origemUrl,
+          lgpd_aceite: true,
+        },
       });
       if (fnError) throw fnError;
       const res = data as { success?: boolean; message?: string; duplicate?: boolean };
