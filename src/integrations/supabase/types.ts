@@ -30,6 +30,7 @@ export type Database = {
           sheet_sync_error: string | null
           sheet_sync_status: string
           sheet_synced_at: string | null
+          sheet_updated_range: string | null
           status: string
           telefone: string
           tipo: string
@@ -53,6 +54,7 @@ export type Database = {
           sheet_sync_error?: string | null
           sheet_sync_status?: string
           sheet_synced_at?: string | null
+          sheet_updated_range?: string | null
           status?: string
           telefone: string
           tipo?: string
@@ -76,6 +78,7 @@ export type Database = {
           sheet_sync_error?: string | null
           sheet_sync_status?: string
           sheet_synced_at?: string | null
+          sheet_updated_range?: string | null
           status?: string
           telefone?: string
           tipo?: string
@@ -85,6 +88,50 @@ export type Database = {
           user_agent?: string | null
         }
         Relationships: []
+      }
+      marketing_optin_sync_attempts: {
+        Row: {
+          attempted_at: string
+          error: string | null
+          http_status: number | null
+          id: number
+          ok: boolean
+          optin_id: string
+          source: string | null
+          telefone: string
+          updated_range: string | null
+        }
+        Insert: {
+          attempted_at?: string
+          error?: string | null
+          http_status?: number | null
+          id?: number
+          ok: boolean
+          optin_id: string
+          source?: string | null
+          telefone: string
+          updated_range?: string | null
+        }
+        Update: {
+          attempted_at?: string
+          error?: string | null
+          http_status?: number | null
+          id?: number
+          ok?: boolean
+          optin_id?: string
+          source?: string | null
+          telefone?: string
+          updated_range?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketing_optin_sync_attempts_optin_id_fkey"
+            columns: ["optin_id"]
+            isOneToOne: false
+            referencedRelation: "marketing_optin"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       triagem_leads: {
         Row: {
