@@ -183,6 +183,42 @@ const AdminOptin = () => {
 
   const retryOne = (r: OptinRow) => callAction("retry_sync", { ids: [r.id] });
 
+  const testConnection = async () => {
+    setTestResult(null); setError(null); setInfo(null);
+    try {
+      const res = await fetch(`${FN_URL}?action=test_sheets`, { headers: { "x-admin-token": token } });
+      const j = await res.json();
+      if (res.ok) {
+        const title = j?.body?.properties?.title || "Planilha";
+        const tabs = (j?.body?.sheets || []).map((s: { properties: { title: string } }) => s.properties.title).join(", ");
+        setTestResult(`✅ Conexão OK — "${title}" · Abas: ${tabs || "—"}`);
+      } else {
+        setTestResult(`❌ Falha [${j.status ?? res.status}] — ${JSON.stringify(j.body ?? j.error).slice(0, 200)}`);
+      }
+    } catch (e) {
+      setTestResult(`❌ Erro: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  };
+
+  const toggleHistory = async (r: OptinRow) => {
+    const open = !historyOpen[r.id];
+    setHistoryOpen((h) => ({ ...h, [r.id]: open }));
+    if (open && !historyData[r.id]) {
+      setHistoryLoading((h) => ({ ...h, [r.id]: true }));
+      try {
+        const res = await fetch(`${FN_URL}?action=history&optin_id=${r.id}&limit=50`, {
+          headers: { "x-admin-token": token },
+        });
+        const j = await res.json();
+        setHistoryData((h) => ({ ...h, [r.id]: j.attempts || [] }));
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Falha ao carregar histórico");
+      } finally {
+        setHistoryLoading((h) => ({ ...h, [r.id]: false }));
+      }
+    }
+  };
+
   const backfill = () => {
     if (!window.confirm("Enviar TODOS os opt-ins ainda não sincronizados para a planilha?")) return;
     callAction("backfill", { limit: 500 });
