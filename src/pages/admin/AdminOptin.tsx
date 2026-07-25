@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, RefreshCw, Loader2, Download, Gift, TrendingUp, CloudUpload, RotateCw } from "lucide-react";
+import { ArrowLeft, RefreshCw, Loader2, Download, Gift, TrendingUp, CloudUpload, RotateCw, Plug, History, ChevronDown, ChevronRight } from "lucide-react";
 
 interface OptinRow {
   id: string;
@@ -23,6 +23,19 @@ interface OptinRow {
   sheet_last_attempt_at?: string | null;
   sheet_attempts?: number | null;
   sheet_sync_error?: string | null;
+  sheet_updated_range?: string | null;
+}
+
+interface SyncAttempt {
+  id: number;
+  optin_id: string;
+  telefone: string;
+  attempted_at: string;
+  ok: boolean;
+  http_status: number | null;
+  error: string | null;
+  updated_range: string | null;
+  source: string | null;
 }
 
 interface Metrics {
