@@ -271,7 +271,7 @@ Deno.serve(async (req) => {
     .limit(limit);
   if (status) query = query.eq("status", status);
   if (campaign) query = query.eq("campaign_source", campaign);
-  if (syncStatus) query = query.eq("sync_status" as never, syncStatus).eq("sheet_sync_status", syncStatus);
+  if (syncStatus) query = query.eq("sheet_sync_status", syncStatus);
   if (from) query = query.gte("created_at", from);
   if (to) query = query.lte("created_at", to);
   if (q) query = query.ilike("telefone", `%${q.replace(/\D/g, "")}%`);
