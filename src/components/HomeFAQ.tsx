@@ -30,8 +30,8 @@ const HOME_FAQS = [
     a: "Pela Resolução 1020/2025, o mínimo é de apenas 2 horas de aulas práticas. Na prática, recomendamos entre 10 e 20 aulas para chegar totalmente preparado ao exame do DETRAN — o número exato depende da sua evolução.",
   },
   {
-    q: "A APTOS atende alunos de Curitiba e da região metropolitana?",
-    a: "Sim. Nossa sede fica em São José dos Pinhais, próxima ao DETRAN, e atendemos alunos de Curitiba, Pinhais, Piraquara e toda a Região Metropolitana. Muitos alunos escolhem a APTOS pela agilidade nos agendamentos e proximidade dos pátios de exame.",
+    q: "Onde fica a APTOS e quais bairros vocês atendem?",
+    a: "Nossa sede fica em São José dos Pinhais, próxima ao DETRAN-PR. Atendemos todos os bairros da cidade — Centro, Afonso Pena, Cidade Jardim, Guatupê, Costeira, São Marcos, Borda do Campo, Rio Pequeno e demais.",
   },
   {
     q: "Vocês fazem renovação, reciclagem e mudança de categoria?",

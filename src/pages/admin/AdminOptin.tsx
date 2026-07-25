@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, RefreshCw, Loader2, Download, Gift, TrendingUp, CloudUpload, RotateCw } from "lucide-react";
+import { ArrowLeft, RefreshCw, Loader2, Download, Gift, TrendingUp, CloudUpload, RotateCw, Plug, History, ChevronDown, ChevronRight } from "lucide-react";
 
 interface OptinRow {
   id: string;
@@ -23,6 +23,19 @@ interface OptinRow {
   sheet_last_attempt_at?: string | null;
   sheet_attempts?: number | null;
   sheet_sync_error?: string | null;
+  sheet_updated_range?: string | null;
+}
+
+interface SyncAttempt {
+  id: number;
+  optin_id: string;
+  telefone: string;
+  attempted_at: string;
+  ok: boolean;
+  http_status: number | null;
+  error: string | null;
+  updated_range: string | null;
+  source: string | null;
 }
 
 interface Metrics {
@@ -67,6 +80,10 @@ const AdminOptin = () => {
   const [syncing, setSyncing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
+  const [testResult, setTestResult] = useState<string | null>(null);
+  const [historyOpen, setHistoryOpen] = useState<Record<string, boolean>>({});
+  const [historyData, setHistoryData] = useState<Record<string, SyncAttempt[]>>({});
+  const [historyLoading, setHistoryLoading] = useState<Record<string, boolean>>({});
   const [filters, setFilters] = useState({
     from: defaultFrom(),
     to: new Date().toISOString().slice(0, 10),
@@ -165,6 +182,42 @@ const AdminOptin = () => {
   };
 
   const retryOne = (r: OptinRow) => callAction("retry_sync", { ids: [r.id] });
+
+  const testConnection = async () => {
+    setTestResult(null); setError(null); setInfo(null);
+    try {
+      const res = await fetch(`${FN_URL}?action=test_sheets`, { headers: { "x-admin-token": token } });
+      const j = await res.json();
+      if (res.ok) {
+        const title = j?.body?.properties?.title || "Planilha";
+        const tabs = (j?.body?.sheets || []).map((s: { properties: { title: string } }) => s.properties.title).join(", ");
+        setTestResult(`✅ Conexão OK — "${title}" · Abas: ${tabs || "—"}`);
+      } else {
+        setTestResult(`❌ Falha [${j.status ?? res.status}] — ${JSON.stringify(j.body ?? j.error).slice(0, 200)}`);
+      }
+    } catch (e) {
+      setTestResult(`❌ Erro: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  };
+
+  const toggleHistory = async (r: OptinRow) => {
+    const open = !historyOpen[r.id];
+    setHistoryOpen((h) => ({ ...h, [r.id]: open }));
+    if (open && !historyData[r.id]) {
+      setHistoryLoading((h) => ({ ...h, [r.id]: true }));
+      try {
+        const res = await fetch(`${FN_URL}?action=history&optin_id=${r.id}&limit=50`, {
+          headers: { "x-admin-token": token },
+        });
+        const j = await res.json();
+        setHistoryData((h) => ({ ...h, [r.id]: j.attempts || [] }));
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Falha ao carregar histórico");
+      } finally {
+        setHistoryLoading((h) => ({ ...h, [r.id]: false }));
+      }
+    }
+  };
 
   const backfill = () => {
     if (!window.confirm("Enviar TODOS os opt-ins ainda não sincronizados para a planilha?")) return;
@@ -267,6 +320,9 @@ const AdminOptin = () => {
             </div>
           </div>
           <div className="flex gap-2 flex-wrap">
+            <Button variant="outline" size="sm" onClick={testConnection}>
+              <Plug className="w-4 h-4 mr-2" /> Testar conexão
+            </Button>
             <Button variant="outline" size="sm" onClick={exportCsv} disabled={!rows.length}>
               <Download className="w-4 h-4 mr-2" /> CSV (filtrado)
             </Button>
@@ -365,6 +421,11 @@ const AdminOptin = () => {
             {info}
           </div>
         )}
+        {testResult && (
+          <div className="p-3 text-sm bg-card border border-border rounded-lg font-mono whitespace-pre-wrap break-all">
+            {testResult}
+          </div>
+        )}
 
         {metrics && (
           <>
@@ -455,26 +516,81 @@ const AdminOptin = () => {
               </tr>
             </thead>
             <tbody>
-              {rows.map((r) => (
-                <tr key={r.id} className="border-b last:border-0 align-top">
-                  <td className="py-2 pr-3 whitespace-nowrap">{new Date(r.created_at).toLocaleString("pt-BR")}</td>
-                  <td className="py-2 pr-3 font-mono">{r.telefone}</td>
-                  <td className="py-2 pr-3">{r.status}</td>
-                  <td className="py-2 pr-3">{syncBadge(r.sheet_sync_status)}</td>
-                  <td className="py-2 pr-3 tabular-nums">{r.sheet_attempts ?? 0}</td>
-                  <td className="py-2 pr-3">{r.campaign_source || "—"}</td>
-                  <td className="py-2 pr-3">{r.ultimo_template_enviado || "—"}</td>
-                  <td className="py-2 pr-3 max-w-[220px] truncate" title={r.origem_url || ""}>{r.origem_url || "—"}</td>
-                  <td className="py-2 pr-3 max-w-[220px] truncate text-destructive" title={r.sheet_sync_error || ""}>{r.sheet_sync_error || "—"}</td>
-                  <td className="py-2 pr-3">
-                    {r.sheet_sync_status !== "ok" && (
-                      <Button size="sm" variant="outline" onClick={() => retryOne(r)} disabled={syncing}>
-                        Reenviar
-                      </Button>
+              {rows.map((r) => {
+                const open = !!historyOpen[r.id];
+                const attempts = historyData[r.id] || [];
+                return (
+                  <Fragment key={r.id}>
+                    <tr className="border-b last:border-0 align-top">
+                      <td className="py-2 pr-3 whitespace-nowrap">{new Date(r.created_at).toLocaleString("pt-BR")}</td>
+                      <td className="py-2 pr-3 font-mono">{r.telefone}</td>
+                      <td className="py-2 pr-3">{r.status}</td>
+                      <td className="py-2 pr-3">
+                        {syncBadge(r.sheet_sync_status)}
+                        {r.sheet_updated_range && (
+                          <div className="text-[10px] text-muted-foreground mt-1 font-mono truncate max-w-[140px]" title={r.sheet_updated_range}>
+                            {r.sheet_updated_range}
+                          </div>
+                        )}
+                      </td>
+                      <td className="py-2 pr-3 tabular-nums">{r.sheet_attempts ?? 0}</td>
+                      <td className="py-2 pr-3">{r.campaign_source || "—"}</td>
+                      <td className="py-2 pr-3">{r.ultimo_template_enviado || "—"}</td>
+                      <td className="py-2 pr-3 max-w-[220px] truncate" title={r.origem_url || ""}>{r.origem_url || "—"}</td>
+                      <td className="py-2 pr-3 max-w-[220px] truncate text-destructive" title={r.sheet_sync_error || ""}>{r.sheet_sync_error || "—"}</td>
+                      <td className="py-2 pr-3 flex gap-1">
+                        <Button size="sm" variant="ghost" onClick={() => toggleHistory(r)} title="Histórico de tentativas">
+                          {open ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                          <History className="w-3.5 h-3.5 ml-1" />
+                        </Button>
+                        {r.sheet_sync_status !== "ok" && (
+                          <Button size="sm" variant="outline" onClick={() => retryOne(r)} disabled={syncing}>
+                            Reenviar
+                          </Button>
+                        )}
+                      </td>
+                    </tr>
+                    {open && (
+                      <tr className="bg-muted/30">
+                        <td colSpan={10} className="p-3">
+                          {historyLoading[r.id] ? (
+                            <div className="text-muted-foreground text-xs flex items-center gap-2">
+                              <Loader2 className="w-3 h-3 animate-spin" /> Carregando histórico…
+                            </div>
+                          ) : attempts.length === 0 ? (
+                            <div className="text-xs text-muted-foreground">Sem tentativas registradas.</div>
+                          ) : (
+                            <table className="w-full text-[11px]">
+                              <thead className="text-left text-muted-foreground border-b">
+                                <tr>
+                                  <th className="py-1 pr-2">Quando</th>
+                                  <th className="py-1 pr-2">Origem</th>
+                                  <th className="py-1 pr-2">Resultado</th>
+                                  <th className="py-1 pr-2">HTTP</th>
+                                  <th className="py-1 pr-2">Range</th>
+                                  <th className="py-1 pr-2">Erro</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {attempts.map((a) => (
+                                  <tr key={a.id} className="border-b last:border-0">
+                                    <td className="py-1 pr-2 whitespace-nowrap">{new Date(a.attempted_at).toLocaleString("pt-BR")}</td>
+                                    <td className="py-1 pr-2">{a.source || "—"}</td>
+                                    <td className="py-1 pr-2">{a.ok ? "✅ ok" : "❌ erro"}</td>
+                                    <td className="py-1 pr-2 tabular-nums">{a.http_status ?? "—"}</td>
+                                    <td className="py-1 pr-2 font-mono">{a.updated_range || "—"}</td>
+                                    <td className="py-1 pr-2 text-destructive max-w-[380px] truncate" title={a.error || ""}>{a.error || "—"}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          )}
+                        </td>
+                      </tr>
                     )}
-                  </td>
-                </tr>
-              ))}
+                  </Fragment>
+                );
+              })}
               {!rows.length && (
                 <tr><td colSpan={10} className="py-6 text-center text-muted-foreground">Sem registros.</td></tr>
               )}

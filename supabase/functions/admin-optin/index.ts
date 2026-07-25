@@ -3,9 +3,11 @@
 // Ações GET:
 //  - ?action=list&limit=500&status=&campaign_source=&sync_status=&from=&to=&q=
 //  - ?action=metrics&from=&to=
-// Ações POST (mesma auth):
-//  - ?action=retry_sync         body: { ids?: string[], telefones?: string[], from?, to?, only_errors?: boolean, limit?: number }
-//  - ?action=backfill           body: { limit?: number }  (envia todos ok=false ainda não sincronizados)
+//  - ?action=history&optin_id=&telefone=&limit=50
+//  - ?action=test_sheets
+// Ações POST:
+//  - ?action=retry_sync   body: { ids?, telefones?, from?, to?, only_errors?, limit? }
+//  - ?action=backfill     body: { limit? }
 // Auth: header `x-admin-token` = ADMIN_LEADS_TOKEN.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
@@ -44,21 +46,15 @@ type OptinRow = {
   sheet_attempts?: number | null;
 };
 
-async function appendBatchToSheet(rows: OptinRow[]): Promise<{ ok: boolean; error?: string }> {
+async function appendBatchToSheet(rows: OptinRow[]): Promise<{ ok: boolean; error?: string; updatedRange?: string; status?: number }> {
   if (!rows.length) return { ok: true };
   if (!SHEET_ID || !LOVABLE_API_KEY || !GOOGLE_SHEETS_API_KEY) {
     return { ok: false, error: "missing_sheet_config" };
   }
   const values = rows.map((row) => [
-    row.created_at,
-    row.id,
-    row.telefone,
-    row.status,
-    row.campaign_source ?? "",
-    row.ultimo_template_enviado ?? "",
-    row.origem_url ?? "",
-    row.ip ?? "",
-    row.user_agent ?? "",
+    row.created_at, row.id, row.telefone, row.status,
+    row.campaign_source ?? "", row.ultimo_template_enviado ?? "",
+    row.origem_url ?? "", row.ip ?? "", row.user_agent ?? "",
     row.data_aceite ?? row.created_at,
   ]);
   try {
@@ -74,18 +70,19 @@ async function appendBatchToSheet(rows: OptinRow[]): Promise<{ ok: boolean; erro
     });
     if (!resp.ok) {
       const txt = await resp.text();
-      return { ok: false, error: `[${resp.status}] ${txt.slice(0, 400)}` };
+      return { ok: false, status: resp.status, error: `[${resp.status}] ${txt.slice(0, 400)}` };
     }
-    return { ok: true };
+    const j = await resp.json().catch(() => ({}));
+    return { ok: true, updatedRange: j?.updates?.updatedRange, status: resp.status };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : String(e) };
   }
 }
 
-async function markSyncBatch(ids: string[], ok: boolean, error?: string) {
-  if (!ids.length) return;
+async function markSyncBatch(rows: OptinRow[], res: { ok: boolean; error?: string; updatedRange?: string; status?: number }) {
+  if (!rows.length) return;
   const now = new Date().toISOString();
-  // Fetch attempts to increment
+  const ids = rows.map((r) => r.id);
   const { data: current } = await admin
     .from("marketing_optin")
     .select("id, sheet_attempts")
@@ -93,15 +90,25 @@ async function markSyncBatch(ids: string[], ok: boolean, error?: string) {
   const attemptsMap = new Map<string, number>();
   (current ?? []).forEach((r) => attemptsMap.set(r.id, (r.sheet_attempts ?? 0) + 1));
 
-  // Update per row (batch of small size — acceptable for admin flow)
-  for (const id of ids) {
-    await admin.from("marketing_optin").update({
+  for (const r of rows) {
+    const patch: Record<string, unknown> = {
       sheet_last_attempt_at: now,
-      sheet_attempts: attemptsMap.get(id) ?? 1,
-      sheet_sync_status: ok ? "ok" : "error",
-      sheet_synced_at: ok ? now : null,
-      sheet_sync_error: ok ? null : (error ?? "unknown"),
-    }).eq("id", id);
+      sheet_attempts: attemptsMap.get(r.id) ?? 1,
+      sheet_sync_status: res.ok ? "ok" : "error",
+      sheet_synced_at: res.ok ? now : null,
+      sheet_sync_error: res.ok ? null : (res.error ?? "unknown"),
+    };
+    if (res.ok && res.updatedRange) patch.sheet_updated_range = res.updatedRange;
+    await admin.from("marketing_optin").update(patch).eq("id", r.id);
+    await admin.from("marketing_optin_sync_attempts").insert({
+      optin_id: r.id,
+      telefone: r.telefone,
+      ok: res.ok,
+      http_status: res.status ?? null,
+      error: res.ok ? null : (res.error ?? "unknown"),
+      updated_range: res.updatedRange ?? null,
+      source: "admin",
+    });
   }
 }
 
@@ -133,10 +140,9 @@ Deno.serve(async (req) => {
         : null;
       const from = body.from as string | undefined;
       const to = body.to as string | undefined;
-      const onlyErrors = body.only_errors !== false; // default true
+      const onlyErrors = body.only_errors !== false;
 
       if (action === "backfill") {
-        // sync everything not yet ok
         query = query.neq("sheet_sync_status", "ok");
       } else if (ids && ids.length) {
         query = query.in("id", ids);
@@ -153,16 +159,15 @@ Deno.serve(async (req) => {
       const rows = (data ?? []) as OptinRow[];
       if (!rows.length) return json({ ok: true, processed: 0, succeeded: 0, failed: 0, message: "Nada a reprocessar." });
 
-      // Try in chunks of 50 to keep payload sane
       let succeeded = 0;
       let failed = 0;
       let lastError: string | undefined;
-      for (let i = 0; i < rows.length; i += 50) {
-        const chunk = rows.slice(i, i + 50);
-        const res = await appendBatchToSheet(chunk);
-        await markSyncBatch(chunk.map((r) => r.id), res.ok, res.error);
-        if (res.ok) succeeded += chunk.length;
-        else { failed += chunk.length; lastError = res.error; }
+      // Um-a-um para capturar updated_range individual
+      for (const r of rows) {
+        const res = await appendBatchToSheet([r]);
+        await markSyncBatch([r], res);
+        if (res.ok) succeeded += 1;
+        else { failed += 1; lastError = res.error; }
       }
       return json({ ok: failed === 0, processed: rows.length, succeeded, failed, error: lastError });
     }
@@ -171,6 +176,42 @@ Deno.serve(async (req) => {
   }
 
   if (req.method !== "GET") return json({ error: "method_not_allowed" }, 405);
+
+  // ---- GET: test_sheets ----
+  if (action === "test_sheets") {
+    if (!SHEET_ID || !LOVABLE_API_KEY || !GOOGLE_SHEETS_API_KEY) {
+      return json({ ok: false, error: "missing_sheet_config" }, 500);
+    }
+    const testUrl = `https://connector-gateway.lovable.dev/google_sheets/v4/spreadsheets/${SHEET_ID}?fields=properties.title,sheets.properties.title`;
+    const r = await fetch(testUrl, {
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "X-Connection-Api-Key": GOOGLE_SHEETS_API_KEY,
+      },
+    });
+    const bodyText = await r.text();
+    let parsed: unknown = null;
+    try { parsed = JSON.parse(bodyText); } catch { /* noop */ }
+    return json({
+      ok: r.ok, status: r.status, sheet_id: SHEET_ID, tab: SHEET_TAB, body: parsed ?? bodyText.slice(0, 500),
+    }, r.ok ? 200 : 502);
+  }
+
+  // ---- GET: history ----
+  if (action === "history") {
+    const optinId = url.searchParams.get("optin_id");
+    const telefone = url.searchParams.get("telefone");
+    const lim = Math.min(Number(url.searchParams.get("limit") ?? 100), 500);
+    let q = admin.from("marketing_optin_sync_attempts")
+      .select("id, optin_id, telefone, attempted_at, ok, http_status, error, updated_range, source")
+      .order("attempted_at", { ascending: false })
+      .limit(lim);
+    if (optinId) q = q.eq("optin_id", optinId);
+    if (telefone) q = q.eq("telefone", String(telefone).replace(/\D/g, ""));
+    const { data, error } = await q;
+    if (error) return json({ error: "query_failed", message: error.message }, 500);
+    return json({ attempts: data ?? [] });
+  }
 
   const status = url.searchParams.get("status");
   const campaign = url.searchParams.get("campaign_source");
@@ -204,19 +245,13 @@ Deno.serve(async (req) => {
     for (const r of rows) {
       const st = r.status || "indefinido";
       byStatus[st] = (byStatus[st] || 0) + 1;
-
       const c = r.campaign_source || "(sem campanha)";
       if (!byCampaign[c]) byCampaign[c] = { optins: 0, retorno: 0, taxa: 0 };
       byCampaign[c].optins += 1;
       if ((r.quantidade_campanhas ?? 0) > 0) byCampaign[c].retorno += 1;
-
-      if (r.ultimo_template_enviado) {
-        byTemplate[r.ultimo_template_enviado] = (byTemplate[r.ultimo_template_enviado] || 0) + 1;
-      }
-
+      if (r.ultimo_template_enviado) byTemplate[r.ultimo_template_enviado] = (byTemplate[r.ultimo_template_enviado] || 0) + 1;
       const day = new Date(r.created_at as string).toISOString().slice(0, 10);
       byDay[day] = (byDay[day] || 0) + 1;
-
       const s = (r.sheet_sync_status as string) || "pending";
       bySync[s] = (bySync[s] || 0) + 1;
     }
@@ -224,7 +259,6 @@ Deno.serve(async (req) => {
       const row = byCampaign[c];
       row.taxa = row.optins ? row.retorno / row.optins : 0;
     }
-
     return json({ total, byStatus, byCampaign, byTemplate, byDay, bySync });
   }
 

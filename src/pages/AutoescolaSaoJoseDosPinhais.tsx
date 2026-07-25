@@ -33,7 +33,7 @@ const faqs = [
   },
   {
     q: "A APTOS atende quais bairros de São José dos Pinhais?",
-    a: "Atendemos toda a cidade — Centro, Afonso Pena, Cidade Jardim, Guatupê, Costeira, São Marcos, Borda do Campo, Rio Pequeno e demais bairros, além da região metropolitana de Curitiba.",
+    a: "Atendemos toda a cidade — Centro, Afonso Pena, Cidade Jardim, Guatupê, Costeira, São Marcos, Borda do Campo, Rio Pequeno e demais bairros de São José dos Pinhais.",
   },
 ];
 
@@ -61,7 +61,7 @@ const AutoescolaSaoJoseDosPinhais = () => {
                 "addressCountry": "BR",
               },
               "geo": { "@type": "GeoCoordinates", "latitude": -25.5304, "longitude": -49.2089 },
-              "areaServed": "São José dos Pinhais e região metropolitana de Curitiba",
+              "areaServed": "São José dos Pinhais",
               "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "320" },
             },
             {

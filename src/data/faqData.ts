@@ -391,13 +391,8 @@ export const faqData: FAQItem[] = [
   },
   {
     category: "São José dos Pinhais",
-    question: "É melhor tirar CNH em São José dos Pinhais ou em Curitiba?",
-    answer: "Para moradores de SJP, fazer aqui é mais prático: trânsito menos congestionado para treinar, exames no DETRAN-PR local (Joaquim Nabuco) e instrutores que conhecem cada rua do circuito."
-  },
-  {
-    category: "São José dos Pinhais",
-    question: "Vocês atendem moradores de Curitiba?",
-    answer: "Sim, atendemos alunos da Grande Curitiba que preferem fazer o processo em São José dos Pinhais — geralmente por preço mais competitivo e atendimento mais próximo."
+    question: "Por que tirar CNH em São José dos Pinhais com a APTOS?",
+    answer: "Trânsito menos congestionado para treinar, exames no DETRAN-PR local (Joaquim Nabuco), instrutores que conhecem cada rua do circuito e atendimento próximo a você."
   },
   {
     category: "São José dos Pinhais",

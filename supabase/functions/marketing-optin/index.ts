@@ -4,6 +4,7 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { sendAlert, shouldFire } from "../_shared/alerts.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -16,7 +17,7 @@ const admin = createClient(SUPABASE_URL, SERVICE_KEY, {
   auth: { persistSession: false, autoRefreshToken: false },
 });
 
-export async function appendOptinToSheet(row: {
+type OptinRow = {
   id: string;
   created_at: string;
   telefone: string;
@@ -27,7 +28,9 @@ export async function appendOptinToSheet(row: {
   ip: string | null;
   user_agent: string | null;
   data_aceite: string | null;
-}): Promise<{ ok: boolean; error?: string }> {
+};
+
+export async function appendOptinToSheet(row: OptinRow): Promise<{ ok: boolean; error?: string; updatedRange?: string; status?: number }> {
   if (!SHEET_ID || !LOVABLE_API_KEY || !GOOGLE_SHEETS_API_KEY) {
     return { ok: false, error: "missing_sheet_config" };
   }
@@ -56,34 +59,83 @@ export async function appendOptinToSheet(row: {
     });
     if (!resp.ok) {
       const txt = await resp.text();
-      return { ok: false, error: `[${resp.status}] ${txt.slice(0, 400)}` };
+      return { ok: false, status: resp.status, error: `[${resp.status}] ${txt.slice(0, 400)}` };
     }
-    return { ok: true };
+    const j = await resp.json().catch(() => ({}));
+    const updatedRange = j?.updates?.updatedRange as string | undefined;
+    return { ok: true, updatedRange, status: resp.status };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : String(e) };
   }
 }
 
-async function markSync(id: string, ok: boolean, error?: string) {
-  const patch: Record<string, unknown> = {
-    sheet_last_attempt_at: new Date().toISOString(),
-  };
-  // increment attempts via RPC-less update: fetch current + 1
+async function markSync(row: OptinRow, res: { ok: boolean; error?: string; updatedRange?: string; status?: number }, source = "realtime") {
+  const now = new Date().toISOString();
   const { data: current } = await admin
     .from("marketing_optin")
     .select("sheet_attempts")
-    .eq("id", id)
+    .eq("id", row.id)
     .maybeSingle();
-  patch.sheet_attempts = (current?.sheet_attempts ?? 0) + 1;
-  if (ok) {
+  const attempts = (current?.sheet_attempts ?? 0) + 1;
+  const patch: Record<string, unknown> = {
+    sheet_last_attempt_at: now,
+    sheet_attempts: attempts,
+  };
+  if (res.ok) {
     patch.sheet_sync_status = "ok";
-    patch.sheet_synced_at = new Date().toISOString();
+    patch.sheet_synced_at = now;
     patch.sheet_sync_error = null;
+    if (res.updatedRange) patch.sheet_updated_range = res.updatedRange;
   } else {
     patch.sheet_sync_status = "error";
-    patch.sheet_sync_error = error ?? "unknown";
+    patch.sheet_sync_error = res.error ?? "unknown";
   }
-  await admin.from("marketing_optin").update(patch).eq("id", id);
+  await admin.from("marketing_optin").update(patch).eq("id", row.id);
+  await admin.from("marketing_optin_sync_attempts").insert({
+    optin_id: row.id,
+    telefone: row.telefone,
+    ok: res.ok,
+    http_status: res.status ?? null,
+    error: res.ok ? null : (res.error ?? "unknown"),
+    updated_range: res.updatedRange ?? null,
+    source,
+  });
+}
+
+async function checkAlertsAndMaybeFire() {
+  // Fila de pendentes/erros
+  const { count: pendingCount } = await admin
+    .from("marketing_optin")
+    .select("id", { count: "exact", head: true })
+    .neq("sheet_sync_status", "ok");
+  const threshold = Number(Deno.env.get("ALERT_QUEUE_THRESHOLD") ?? 25);
+  if ((pendingCount ?? 0) >= threshold && shouldFire("queue_high")) {
+    await sendAlert({
+      title: "Fila de sincronização acima do limite",
+      message: `Há ${pendingCount} opt-ins pendentes/erro na fila do Google Sheets (limite: ${threshold}).`,
+      severity: "warning",
+      meta: { pendingCount, threshold },
+    });
+  }
+
+  // Taxa de erro nas últimas 15 min
+  const since = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+  const { data: recent } = await admin
+    .from("marketing_optin_sync_attempts")
+    .select("ok, error")
+    .gte("attempted_at", since)
+    .limit(500);
+  const total = recent?.length ?? 0;
+  const errors = (recent ?? []).filter((r) => !r.ok).length;
+  const errorRate = total ? errors / total : 0;
+  if (total >= 5 && errorRate >= 0.5 && shouldFire("error_rate_high")) {
+    await sendAlert({
+      title: "Taxa de erro alta na sincronização com Google Sheets",
+      message: `${errors} de ${total} tentativas falharam nos últimos 15 min (${(errorRate * 100).toFixed(0)}%).`,
+      severity: "critical",
+      meta: { total, errors, errorRate, sample: (recent ?? []).slice(0, 3) },
+    });
+  }
 }
 
 function json(body: unknown, status = 200) {
@@ -132,16 +184,7 @@ Deno.serve(async (req) => {
     return json({ success: false, message: "Dados inválidos.", errors }, 400);
   }
 
-  const payload = {
-    telefone,
-    campaign_source,
-    origem_url,
-    ultimo_template_enviado,
-    ip,
-    user_agent,
-    lgpd_aceite: true,
-  };
-
+  const payload = { telefone, campaign_source, origem_url, ultimo_template_enviado, ip, user_agent, lgpd_aceite: true };
   const { data, error } = await admin.rpc("submit_marketing_optin", { payload });
 
   if (error) {
@@ -164,7 +207,6 @@ Deno.serve(async (req) => {
     }, 200);
   }
 
-  // Fetch full row to sync to Sheets
   if (result?.id) {
     const { data: row } = await admin
       .from("marketing_optin")
@@ -172,9 +214,11 @@ Deno.serve(async (req) => {
       .eq("id", result.id)
       .maybeSingle();
     if (row) {
-      const res = await appendOptinToSheet(row);
-      await markSync(row.id, res.ok, res.error);
+      const res = await appendOptinToSheet(row as OptinRow);
+      await markSync(row as OptinRow, res, "realtime");
       if (!res.ok) console.warn("sheet_append_failed", res.error);
+      // Alertas (não bloqueia resposta)
+      checkAlertsAndMaybeFire().catch((e) => console.warn("alert_check_failed", e));
     }
   }
 
