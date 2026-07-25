@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -520,7 +520,7 @@ const AdminOptin = () => {
                 const open = !!historyOpen[r.id];
                 const attempts = historyData[r.id] || [];
                 return (
-                  <FragmentWithKey key={r.id}>
+                  <Fragment key={r.id}>
                     <tr className="border-b last:border-0 align-top">
                       <td className="py-2 pr-3 whitespace-nowrap">{new Date(r.created_at).toLocaleString("pt-BR")}</td>
                       <td className="py-2 pr-3 font-mono">{r.telefone}</td>
@@ -588,7 +588,7 @@ const AdminOptin = () => {
                         </td>
                       </tr>
                     )}
-                  </FragmentWithKey>
+                  </Fragment>
                 );
               })}
               {!rows.length && (
