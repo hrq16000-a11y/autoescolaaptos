@@ -222,7 +222,7 @@ const MestreDosServicos = () => {
                   </div>
                   <h3 className="font-heading font-bold text-xl mb-3">Atendimento Regional</h3>
                   <p className="text-muted-foreground">
-                    Atendemos toda a região de São José dos Pinhais e Curitiba.
+                    Atendemos toda a região de São José dos Pinhais.
                   </p>
                 </Card>
               </motion.div>

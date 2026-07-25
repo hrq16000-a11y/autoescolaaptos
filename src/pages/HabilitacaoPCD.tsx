@@ -98,7 +98,7 @@ const HabilitacaoPCD = () => {
             addressCountry: "BR",
           },
         },
-        areaServed: ["São José dos Pinhais", "Curitiba", "Região Metropolitana"],
+        areaServed: ["São José dos Pinhais"],
       },
       {
         "@type": "FAQPage",

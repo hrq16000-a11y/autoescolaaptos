@@ -28,18 +28,18 @@ const PrimeiraHabilitacao = () => {
       {
         "@type": "Service",
         "name": "Primeira Habilitação - Autoescola APTOS",
-        "description": "Serviço completo de primeira habilitação categorias A e B em Curitiba e São José dos Pinhais, conforme Resolução CONTRAN 1020/2025.",
+        "description": "Serviço completo de primeira habilitação categorias A e B em São José dos Pinhais, conforme Resolução CONTRAN 1020/2025.",
         "provider": {
           "@type": "DrivingSchool",
           "name": "Autoescola APTOS",
           "address": { "@type": "PostalAddress", "addressLocality": "São José dos Pinhais", "addressRegion": "PR", "addressCountry": "BR" }
         },
-        "areaServed": ["Curitiba", "São José dos Pinhais"]
+        "areaServed": ["São José dos Pinhais"]
       },
       {
         "@type": "FAQPage",
         "mainEntity": [
-          { "@type": "Question", "name": "Quanto custa tirar a primeira habilitação em Curitiba?", "acceptedAnswer": { "@type": "Answer", "text": "O valor varia conforme a categoria (A, B ou AB) e inclui taxas do DETRAN-PR (exames médico e psicológico R$ 404), aulas práticas e materiais. Fale no WhatsApp (41) 99145-3627 para o orçamento atualizado." } },
+          { "@type": "Question", "name": "Quanto custa tirar a primeira habilitação em São José dos Pinhais?", "acceptedAnswer": { "@type": "Answer", "text": "O valor varia conforme a categoria (A, B ou AB) e inclui taxas do DETRAN-PR (exames médico e psicológico R$ 404), aulas práticas e materiais. Fale no WhatsApp (41) 99145-3627 para o orçamento atualizado." } },
           { "@type": "Question", "name": "Quanto tempo leva para tirar a CNH com a Resolução 1020/2025?", "acceptedAnswer": { "@type": "Answer", "text": "Depende do seu ritmo: o teórico é 100% online pelo app CNH do Brasil, sem carga horária mínima, e a prática exige apenas 2 horas obrigatórias. Não há mais prazo de 12 meses para concluir." } },
           { "@type": "Question", "name": "Preciso fazer aulas presenciais?", "acceptedAnswer": { "@type": "Answer", "text": "O curso teórico pode ser 100% online pelo app CNH do Brasil. As 2 horas de prática são obrigatoriamente presenciais com instrutor credenciado." } },
           { "@type": "Question", "name": "Qual a idade mínima para tirar CNH?", "acceptedAnswer": { "@type": "Answer", "text": "18 anos completos, saber ler e escrever e possuir CPF." } }
@@ -102,8 +102,8 @@ const PrimeiraHabilitacao = () => {
   return (
     <>
       <SEO
-        title="Primeira Habilitação em Curitiba | CNH Categoria A e B | APTOS"
-        description="Primeira habilitação em Curitiba e São José dos Pinhais pela Res. 1020/2025: teórico 100% online no app CNH do Brasil, só 2h de prática obrigatória, sem prazo de 12 meses."
+        title="Primeira Habilitação em São José dos Pinhais | CNH Cat. A e B | APTOS"
+        description="Primeira habilitação em São José dos Pinhais pela Res. 1020/2025: teórico 100% online no app CNH do Brasil, só 2h de prática obrigatória, sem prazo de 12 meses."
         canonical="/primeira-habilitacao"
         jsonLd={jsonLd}
       />
