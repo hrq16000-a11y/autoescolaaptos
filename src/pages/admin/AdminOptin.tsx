@@ -588,7 +588,7 @@ const AdminOptin = () => {
                         </td>
                       </tr>
                     )}
-                  </>
+                  </FragmentWithKey>
                 );
               })}
               {!rows.length && (
