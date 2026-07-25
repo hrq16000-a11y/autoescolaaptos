@@ -421,6 +421,11 @@ const AdminOptin = () => {
             {info}
           </div>
         )}
+        {testResult && (
+          <div className="p-3 text-sm bg-card border border-border rounded-lg font-mono whitespace-pre-wrap break-all">
+            {testResult}
+          </div>
+        )}
 
         {metrics && (
           <>
