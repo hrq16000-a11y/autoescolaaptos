@@ -320,6 +320,9 @@ const AdminOptin = () => {
             </div>
           </div>
           <div className="flex gap-2 flex-wrap">
+            <Button variant="outline" size="sm" onClick={testConnection}>
+              <Plug className="w-4 h-4 mr-2" /> Testar conexão
+            </Button>
             <Button variant="outline" size="sm" onClick={exportCsv} disabled={!rows.length}>
               <Download className="w-4 h-4 mr-2" /> CSV (filtrado)
             </Button>
