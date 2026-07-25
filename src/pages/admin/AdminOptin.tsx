@@ -516,26 +516,81 @@ const AdminOptin = () => {
               </tr>
             </thead>
             <tbody>
-              {rows.map((r) => (
-                <tr key={r.id} className="border-b last:border-0 align-top">
-                  <td className="py-2 pr-3 whitespace-nowrap">{new Date(r.created_at).toLocaleString("pt-BR")}</td>
-                  <td className="py-2 pr-3 font-mono">{r.telefone}</td>
-                  <td className="py-2 pr-3">{r.status}</td>
-                  <td className="py-2 pr-3">{syncBadge(r.sheet_sync_status)}</td>
-                  <td className="py-2 pr-3 tabular-nums">{r.sheet_attempts ?? 0}</td>
-                  <td className="py-2 pr-3">{r.campaign_source || "—"}</td>
-                  <td className="py-2 pr-3">{r.ultimo_template_enviado || "—"}</td>
-                  <td className="py-2 pr-3 max-w-[220px] truncate" title={r.origem_url || ""}>{r.origem_url || "—"}</td>
-                  <td className="py-2 pr-3 max-w-[220px] truncate text-destructive" title={r.sheet_sync_error || ""}>{r.sheet_sync_error || "—"}</td>
-                  <td className="py-2 pr-3">
-                    {r.sheet_sync_status !== "ok" && (
-                      <Button size="sm" variant="outline" onClick={() => retryOne(r)} disabled={syncing}>
-                        Reenviar
-                      </Button>
+              {rows.map((r) => {
+                const open = !!historyOpen[r.id];
+                const attempts = historyData[r.id] || [];
+                return (
+                  <>
+                    <tr key={r.id} className="border-b last:border-0 align-top">
+                      <td className="py-2 pr-3 whitespace-nowrap">{new Date(r.created_at).toLocaleString("pt-BR")}</td>
+                      <td className="py-2 pr-3 font-mono">{r.telefone}</td>
+                      <td className="py-2 pr-3">{r.status}</td>
+                      <td className="py-2 pr-3">
+                        {syncBadge(r.sheet_sync_status)}
+                        {r.sheet_updated_range && (
+                          <div className="text-[10px] text-muted-foreground mt-1 font-mono truncate max-w-[140px]" title={r.sheet_updated_range}>
+                            {r.sheet_updated_range}
+                          </div>
+                        )}
+                      </td>
+                      <td className="py-2 pr-3 tabular-nums">{r.sheet_attempts ?? 0}</td>
+                      <td className="py-2 pr-3">{r.campaign_source || "—"}</td>
+                      <td className="py-2 pr-3">{r.ultimo_template_enviado || "—"}</td>
+                      <td className="py-2 pr-3 max-w-[220px] truncate" title={r.origem_url || ""}>{r.origem_url || "—"}</td>
+                      <td className="py-2 pr-3 max-w-[220px] truncate text-destructive" title={r.sheet_sync_error || ""}>{r.sheet_sync_error || "—"}</td>
+                      <td className="py-2 pr-3 flex gap-1">
+                        <Button size="sm" variant="ghost" onClick={() => toggleHistory(r)} title="Histórico de tentativas">
+                          {open ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                          <History className="w-3.5 h-3.5 ml-1" />
+                        </Button>
+                        {r.sheet_sync_status !== "ok" && (
+                          <Button size="sm" variant="outline" onClick={() => retryOne(r)} disabled={syncing}>
+                            Reenviar
+                          </Button>
+                        )}
+                      </td>
+                    </tr>
+                    {open && (
+                      <tr className="bg-muted/30">
+                        <td colSpan={10} className="p-3">
+                          {historyLoading[r.id] ? (
+                            <div className="text-muted-foreground text-xs flex items-center gap-2">
+                              <Loader2 className="w-3 h-3 animate-spin" /> Carregando histórico…
+                            </div>
+                          ) : attempts.length === 0 ? (
+                            <div className="text-xs text-muted-foreground">Sem tentativas registradas.</div>
+                          ) : (
+                            <table className="w-full text-[11px]">
+                              <thead className="text-left text-muted-foreground border-b">
+                                <tr>
+                                  <th className="py-1 pr-2">Quando</th>
+                                  <th className="py-1 pr-2">Origem</th>
+                                  <th className="py-1 pr-2">Resultado</th>
+                                  <th className="py-1 pr-2">HTTP</th>
+                                  <th className="py-1 pr-2">Range</th>
+                                  <th className="py-1 pr-2">Erro</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {attempts.map((a) => (
+                                  <tr key={a.id} className="border-b last:border-0">
+                                    <td className="py-1 pr-2 whitespace-nowrap">{new Date(a.attempted_at).toLocaleString("pt-BR")}</td>
+                                    <td className="py-1 pr-2">{a.source || "—"}</td>
+                                    <td className="py-1 pr-2">{a.ok ? "✅ ok" : "❌ erro"}</td>
+                                    <td className="py-1 pr-2 tabular-nums">{a.http_status ?? "—"}</td>
+                                    <td className="py-1 pr-2 font-mono">{a.updated_range || "—"}</td>
+                                    <td className="py-1 pr-2 text-destructive max-w-[380px] truncate" title={a.error || ""}>{a.error || "—"}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          )}
+                        </td>
+                      </tr>
                     )}
-                  </td>
-                </tr>
-              ))}
+                  </>
+                );
+              })}
               {!rows.length && (
                 <tr><td colSpan={10} className="py-6 text-center text-muted-foreground">Sem registros.</td></tr>
               )}
