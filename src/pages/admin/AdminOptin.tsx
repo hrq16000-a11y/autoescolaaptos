@@ -80,6 +80,10 @@ const AdminOptin = () => {
   const [syncing, setSyncing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
+  const [testResult, setTestResult] = useState<string | null>(null);
+  const [historyOpen, setHistoryOpen] = useState<Record<string, boolean>>({});
+  const [historyData, setHistoryData] = useState<Record<string, SyncAttempt[]>>({});
+  const [historyLoading, setHistoryLoading] = useState<Record<string, boolean>>({});
   const [filters, setFilters] = useState({
     from: defaultFrom(),
     to: new Date().toISOString().slice(0, 10),
