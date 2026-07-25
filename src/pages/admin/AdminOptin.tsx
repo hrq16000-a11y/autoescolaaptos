@@ -520,8 +520,8 @@ const AdminOptin = () => {
                 const open = !!historyOpen[r.id];
                 const attempts = historyData[r.id] || [];
                 return (
-                  <>
-                    <tr key={r.id} className="border-b last:border-0 align-top">
+                  <FragmentWithKey key={r.id}>
+                    <tr className="border-b last:border-0 align-top">
                       <td className="py-2 pr-3 whitespace-nowrap">{new Date(r.created_at).toLocaleString("pt-BR")}</td>
                       <td className="py-2 pr-3 font-mono">{r.telefone}</td>
                       <td className="py-2 pr-3">{r.status}</td>
