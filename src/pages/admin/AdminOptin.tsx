@@ -140,9 +140,63 @@ const AdminOptin = () => {
   };
 
   useEffect(() => {
-    if (token) fetchAll();
+    if (token) { fetchAll(); loadConfig(); }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
+
+  const loadConfig = async () => {
+    try {
+      const res = await fetch(`${FN_URL}?action=get_config`, { headers: { "x-admin-token": token } });
+      const j = await res.json();
+      if (res.ok && j.config) setConfig(j.config);
+    } catch { /* silent */ }
+  };
+
+  const saveConfig = async () => {
+    if (!config) return;
+    setConfigSaving(true); setError(null); setInfo(null);
+    try {
+      const res = await fetch(`${FN_URL}?action=update_config`, {
+        method: "POST",
+        headers: { "x-admin-token": token, "Content-Type": "application/json" },
+        body: JSON.stringify(config),
+      });
+      const j = await res.json();
+      if (!res.ok) throw new Error(j.message || j.error || "Falha ao salvar");
+      setInfo("Configuração de alertas salva.");
+      if (j.config) setConfig(j.config);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Falha ao salvar configuração");
+    } finally {
+      setConfigSaving(false);
+    }
+  };
+
+  const exportHistoryCsv = async (mode: "phone" | "period") => {
+    const params = new URLSearchParams({ action: "history_csv", limit: "5000" });
+    if (mode === "phone") {
+      const raw = window.prompt("Telefone (apenas dígitos):");
+      if (!raw) return;
+      params.set("telefone", raw.replace(/\D/g, ""));
+    } else {
+      if (filters.from) params.set("from", filters.from);
+      if (filters.to) params.set("to", `${filters.to}T23:59:59`);
+    }
+    try {
+      const res = await fetch(`${FN_URL}?${params.toString()}`, { headers: { "x-admin-token": token } });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `sync_attempts_${mode}_${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      setInfo("Histórico exportado.");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Falha ao exportar histórico");
+    }
+  };
 
   const callAction = async (action: "retry_sync" | "backfill", body: Record<string, unknown>) => {
     setSyncing(true);
