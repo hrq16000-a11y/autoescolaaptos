@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, RefreshCw, Loader2, Download, Gift, TrendingUp, CloudUpload, RotateCw, Plug, History, ChevronDown, ChevronRight } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { ArrowLeft, RefreshCw, Loader2, Download, Gift, TrendingUp, CloudUpload, RotateCw, Plug, History, ChevronDown, ChevronRight, Bell, Save, FileDown } from "lucide-react";
 
 interface OptinRow {
   id: string;
