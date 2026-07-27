@@ -85,6 +85,8 @@ const AdminOptin = () => {
   const [historyOpen, setHistoryOpen] = useState<Record<string, boolean>>({});
   const [historyData, setHistoryData] = useState<Record<string, SyncAttempt[]>>({});
   const [historyLoading, setHistoryLoading] = useState<Record<string, boolean>>({});
+  const [config, setConfig] = useState<{ alert_queue_threshold: number; email_enabled: boolean; slack_enabled: boolean } | null>(null);
+  const [configSaving, setConfigSaving] = useState(false);
   const [filters, setFilters] = useState({
     from: defaultFrom(),
     to: new Date().toISOString().slice(0, 10),
