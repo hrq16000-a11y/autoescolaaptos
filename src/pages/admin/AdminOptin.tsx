@@ -407,6 +407,51 @@ const AdminOptin = () => {
       </header>
 
       <main className="container mx-auto px-4 py-6 space-y-6">
+        {/* Configuração de alertas */}
+        <section className="bg-card border border-border rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Bell className="w-4 h-4 text-primary" />
+            <h2 className="font-heading font-bold">Alertas de sincronização</h2>
+            <span className="text-[11px] text-muted-foreground">Ajuste sem mexer em secrets</span>
+          </div>
+          {!config ? (
+            <div className="text-xs text-muted-foreground flex items-center gap-2">
+              <Loader2 className="w-3 h-3 animate-spin" /> Carregando configuração…
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground">Limite da fila (pendentes/erro)</label>
+                <Input
+                  type="number"
+                  min={1}
+                  value={config.alert_queue_threshold}
+                  onChange={(e) => setConfig({ ...config, alert_queue_threshold: Number(e.target.value) })}
+                />
+                <p className="text-[11px] text-muted-foreground mt-1">Dispara alerta quando a fila &gt;= este valor.</p>
+              </div>
+              <label className="flex items-center gap-3 text-sm">
+                <Switch
+                  checked={config.email_enabled}
+                  onCheckedChange={(v) => setConfig({ ...config, email_enabled: v })}
+                />
+                <span>Alertas por e-mail</span>
+              </label>
+              <label className="flex items-center gap-3 text-sm">
+                <Switch
+                  checked={config.slack_enabled}
+                  onCheckedChange={(v) => setConfig({ ...config, slack_enabled: v })}
+                />
+                <span>Alertas por Slack</span>
+              </label>
+              <Button onClick={saveConfig} disabled={configSaving}>
+                {configSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                Salvar
+              </Button>
+            </div>
+          )}
+        </section>
+
         {/* Filtros */}
         <div className="bg-card border border-border rounded-xl p-4">
           <div className="grid grid-cols-1 md:grid-cols-7 gap-3">
