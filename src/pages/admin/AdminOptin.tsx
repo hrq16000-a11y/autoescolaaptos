@@ -383,6 +383,12 @@ const AdminOptin = () => {
             <Button variant="outline" size="sm" onClick={exportCsv} disabled={!rows.length}>
               <Download className="w-4 h-4 mr-2" /> CSV (filtrado)
             </Button>
+            <Button variant="outline" size="sm" onClick={() => exportHistoryCsv("period")}>
+              <FileDown className="w-4 h-4 mr-2" /> Histórico CSV (período)
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => exportHistoryCsv("phone")}>
+              <FileDown className="w-4 h-4 mr-2" /> Histórico CSV (telefone)
+            </Button>
             <Button variant="outline" size="sm" onClick={retryByPhone} disabled={syncing}>
               <RotateCw className="w-4 h-4 mr-2" /> Reprocessar por telefone
             </Button>
