@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      alert_config: {
+        Row: {
+          alert_queue_threshold: number
+          email_enabled: boolean
+          id: number
+          slack_enabled: boolean
+          updated_at: string
+        }
+        Insert: {
+          alert_queue_threshold?: number
+          email_enabled?: boolean
+          id?: number
+          slack_enabled?: boolean
+          updated_at?: string
+        }
+        Update: {
+          alert_queue_threshold?: number
+          email_enabled?: boolean
+          id?: number
+          slack_enabled?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       marketing_optin: {
         Row: {
           campaign_source: string | null
@@ -96,7 +120,7 @@ export type Database = {
           http_status: number | null
           id: number
           ok: boolean
-          optin_id: string
+          optin_id: string | null
           source: string | null
           telefone: string
           updated_range: string | null
@@ -107,7 +131,7 @@ export type Database = {
           http_status?: number | null
           id?: number
           ok: boolean
-          optin_id: string
+          optin_id?: string | null
           source?: string | null
           telefone: string
           updated_range?: string | null
@@ -118,7 +142,7 @@ export type Database = {
           http_status?: number | null
           id?: number
           ok?: boolean
-          optin_id?: string
+          optin_id?: string | null
           source?: string | null
           telefone?: string
           updated_range?: string | null

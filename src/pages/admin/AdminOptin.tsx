@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, RefreshCw, Loader2, Download, Gift, TrendingUp, CloudUpload, RotateCw, Plug, History, ChevronDown, ChevronRight } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { ArrowLeft, RefreshCw, Loader2, Download, Gift, TrendingUp, CloudUpload, RotateCw, Plug, History, ChevronDown, ChevronRight, Bell, Save, FileDown } from "lucide-react";
 
 interface OptinRow {
   id: string;
@@ -84,6 +85,8 @@ const AdminOptin = () => {
   const [historyOpen, setHistoryOpen] = useState<Record<string, boolean>>({});
   const [historyData, setHistoryData] = useState<Record<string, SyncAttempt[]>>({});
   const [historyLoading, setHistoryLoading] = useState<Record<string, boolean>>({});
+  const [config, setConfig] = useState<{ alert_queue_threshold: number; email_enabled: boolean; slack_enabled: boolean } | null>(null);
+  const [configSaving, setConfigSaving] = useState(false);
   const [filters, setFilters] = useState({
     from: defaultFrom(),
     to: new Date().toISOString().slice(0, 10),
@@ -137,9 +140,63 @@ const AdminOptin = () => {
   };
 
   useEffect(() => {
-    if (token) fetchAll();
+    if (token) { fetchAll(); loadConfig(); }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
+
+  const loadConfig = async () => {
+    try {
+      const res = await fetch(`${FN_URL}?action=get_config`, { headers: { "x-admin-token": token } });
+      const j = await res.json();
+      if (res.ok && j.config) setConfig(j.config);
+    } catch { /* silent */ }
+  };
+
+  const saveConfig = async () => {
+    if (!config) return;
+    setConfigSaving(true); setError(null); setInfo(null);
+    try {
+      const res = await fetch(`${FN_URL}?action=update_config`, {
+        method: "POST",
+        headers: { "x-admin-token": token, "Content-Type": "application/json" },
+        body: JSON.stringify(config),
+      });
+      const j = await res.json();
+      if (!res.ok) throw new Error(j.message || j.error || "Falha ao salvar");
+      setInfo("Configuração de alertas salva.");
+      if (j.config) setConfig(j.config);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Falha ao salvar configuração");
+    } finally {
+      setConfigSaving(false);
+    }
+  };
+
+  const exportHistoryCsv = async (mode: "phone" | "period") => {
+    const params = new URLSearchParams({ action: "history_csv", limit: "5000" });
+    if (mode === "phone") {
+      const raw = window.prompt("Telefone (apenas dígitos):");
+      if (!raw) return;
+      params.set("telefone", raw.replace(/\D/g, ""));
+    } else {
+      if (filters.from) params.set("from", filters.from);
+      if (filters.to) params.set("to", `${filters.to}T23:59:59`);
+    }
+    try {
+      const res = await fetch(`${FN_URL}?${params.toString()}`, { headers: { "x-admin-token": token } });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `sync_attempts_${mode}_${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      setInfo("Histórico exportado.");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Falha ao exportar histórico");
+    }
+  };
 
   const callAction = async (action: "retry_sync" | "backfill", body: Record<string, unknown>) => {
     setSyncing(true);
@@ -326,6 +383,12 @@ const AdminOptin = () => {
             <Button variant="outline" size="sm" onClick={exportCsv} disabled={!rows.length}>
               <Download className="w-4 h-4 mr-2" /> CSV (filtrado)
             </Button>
+            <Button variant="outline" size="sm" onClick={() => exportHistoryCsv("period")}>
+              <FileDown className="w-4 h-4 mr-2" /> Histórico CSV (período)
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => exportHistoryCsv("phone")}>
+              <FileDown className="w-4 h-4 mr-2" /> Histórico CSV (telefone)
+            </Button>
             <Button variant="outline" size="sm" onClick={retryByPhone} disabled={syncing}>
               <RotateCw className="w-4 h-4 mr-2" /> Reprocessar por telefone
             </Button>
@@ -344,6 +407,51 @@ const AdminOptin = () => {
       </header>
 
       <main className="container mx-auto px-4 py-6 space-y-6">
+        {/* Configuração de alertas */}
+        <section className="bg-card border border-border rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Bell className="w-4 h-4 text-primary" />
+            <h2 className="font-heading font-bold">Alertas de sincronização</h2>
+            <span className="text-[11px] text-muted-foreground">Ajuste sem mexer em secrets</span>
+          </div>
+          {!config ? (
+            <div className="text-xs text-muted-foreground flex items-center gap-2">
+              <Loader2 className="w-3 h-3 animate-spin" /> Carregando configuração…
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground">Limite da fila (pendentes/erro)</label>
+                <Input
+                  type="number"
+                  min={1}
+                  value={config.alert_queue_threshold}
+                  onChange={(e) => setConfig({ ...config, alert_queue_threshold: Number(e.target.value) })}
+                />
+                <p className="text-[11px] text-muted-foreground mt-1">Dispara alerta quando a fila &gt;= este valor.</p>
+              </div>
+              <label className="flex items-center gap-3 text-sm">
+                <Switch
+                  checked={config.email_enabled}
+                  onCheckedChange={(v) => setConfig({ ...config, email_enabled: v })}
+                />
+                <span>Alertas por e-mail</span>
+              </label>
+              <label className="flex items-center gap-3 text-sm">
+                <Switch
+                  checked={config.slack_enabled}
+                  onCheckedChange={(v) => setConfig({ ...config, slack_enabled: v })}
+                />
+                <span>Alertas por Slack</span>
+              </label>
+              <Button onClick={saveConfig} disabled={configSaving}>
+                {configSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                Salvar
+              </Button>
+            </div>
+          )}
+        </section>
+
         {/* Filtros */}
         <div className="bg-card border border-border rounded-xl p-4">
           <div className="grid grid-cols-1 md:grid-cols-7 gap-3">

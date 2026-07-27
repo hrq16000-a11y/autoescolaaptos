@@ -126,6 +126,28 @@ Deno.serve(async (req) => {
     let body: Record<string, unknown> = {};
     try { body = await req.json(); } catch { /* ignore */ }
 
+    if (action === "update_config") {
+      const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
+      if (body.alert_queue_threshold !== undefined) {
+        const n = Number(body.alert_queue_threshold);
+        if (!Number.isFinite(n) || n < 1 || n > 100000) {
+          return json({ error: "invalid_threshold" }, 400);
+        }
+        patch.alert_queue_threshold = Math.floor(n);
+      }
+      if (typeof body.email_enabled === "boolean") patch.email_enabled = body.email_enabled;
+      if (typeof body.slack_enabled === "boolean") patch.slack_enabled = body.slack_enabled;
+
+      const { data, error } = await admin
+        .from("alert_config")
+        .update(patch)
+        .eq("id", 1)
+        .select()
+        .maybeSingle();
+      if (error) return json({ error: "update_failed", message: error.message }, 500);
+      return json({ ok: true, config: data });
+    }
+
     if (action === "retry_sync" || action === "backfill") {
       const limit = Math.min(Number(body.limit ?? url.searchParams.get("limit") ?? 200), 500);
       let query = admin
@@ -162,7 +184,6 @@ Deno.serve(async (req) => {
       let succeeded = 0;
       let failed = 0;
       let lastError: string | undefined;
-      // Um-a-um para capturar updated_range individual
       for (const r of rows) {
         const res = await appendBatchToSheet([r]);
         await markSyncBatch([r], res);
@@ -197,19 +218,57 @@ Deno.serve(async (req) => {
     }, r.ok ? 200 : 502);
   }
 
-  // ---- GET: history ----
-  if (action === "history") {
+  // ---- GET: config ----
+  if (action === "get_config") {
+    const { data, error } = await admin
+      .from("alert_config")
+      .select("alert_queue_threshold, email_enabled, slack_enabled, updated_at")
+      .eq("id", 1)
+      .maybeSingle();
+    if (error) return json({ error: "query_failed", message: error.message }, 500);
+    return json({ config: data ?? { alert_queue_threshold: 25, email_enabled: true, slack_enabled: true } });
+  }
+
+  // ---- GET: history / history_csv ----
+  if (action === "history" || action === "history_csv") {
     const optinId = url.searchParams.get("optin_id");
     const telefone = url.searchParams.get("telefone");
-    const lim = Math.min(Number(url.searchParams.get("limit") ?? 100), 500);
+    const source = url.searchParams.get("source");
+    const from = url.searchParams.get("from");
+    const to = url.searchParams.get("to");
+    const okOnly = url.searchParams.get("ok");
+    const lim = Math.min(Number(url.searchParams.get("limit") ?? (action === "history_csv" ? 5000 : 100)), 20000);
     let q = admin.from("marketing_optin_sync_attempts")
       .select("id, optin_id, telefone, attempted_at, ok, http_status, error, updated_range, source")
       .order("attempted_at", { ascending: false })
       .limit(lim);
     if (optinId) q = q.eq("optin_id", optinId);
     if (telefone) q = q.eq("telefone", String(telefone).replace(/\D/g, ""));
+    if (source) q = q.eq("source", source);
+    if (from) q = q.gte("attempted_at", from);
+    if (to) q = q.lte("attempted_at", to);
+    if (okOnly === "true") q = q.eq("ok", true);
+    if (okOnly === "false") q = q.eq("ok", false);
     const { data, error } = await q;
     if (error) return json({ error: "query_failed", message: error.message }, 500);
+
+    if (action === "history_csv") {
+      const headers = ["attempted_at","optin_id","telefone","source","ok","http_status","updated_range","error"];
+      const esc = (v: unknown) => `"${(v === null || v === undefined ? "" : String(v)).replace(/"/g, '""')}"`;
+      const csv = [
+        headers.join(","),
+        ...(data ?? []).map((r) => headers.map((h) => esc((r as Record<string, unknown>)[h])).join(",")),
+      ].join("\n");
+      return new Response("\ufeff" + csv, {
+        status: 200,
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "text/csv;charset=utf-8",
+          "Content-Disposition": `attachment; filename="sync_attempts_${new Date().toISOString().slice(0,10)}.csv"`,
+        },
+      });
+    }
+
     return json({ attempts: data ?? [] });
   }
 
