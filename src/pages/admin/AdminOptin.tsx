@@ -524,7 +524,143 @@ const AdminOptin = () => {
           )}
         </section>
 
-        {/* Filtros */}
+        {/* Gráfico de sincronização */}
+        <section className="bg-card border border-border rounded-xl p-4">
+          <div className="flex items-center justify-between flex-wrap gap-3 mb-3">
+            <div className="flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-primary" />
+              <h2 className="font-heading font-bold">Sincronização por dia</h2>
+              <span className="text-[11px] text-muted-foreground">ok · erro · total</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Select value={chartSourceFilter || "all"} onValueChange={(v) => setChartSourceFilter(v === "all" ? "" : v)}>
+                <SelectTrigger className="w-[180px] h-9"><SelectValue placeholder="Todas origens" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas origens</SelectItem>
+                  {chartSources.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <Button size="sm" variant="outline" onClick={loadChart} disabled={chartLoading}>
+                {chartLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
+              </Button>
+            </div>
+          </div>
+          <div className="h-64">
+            {chartData.length === 0 ? (
+              <div className="h-full flex items-center justify-center text-xs text-muted-foreground">Sem tentativas no período/filtro.</div>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                  <XAxis dataKey="day" fontSize={11} />
+                  <YAxis fontSize={11} allowDecimals={false} />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="ok" name="OK" fill="#16a34a" stackId="a" />
+                  <Bar dataKey="error" name="Erro" fill="#dc2626" stackId="a" />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+        </section>
+
+        {/* Reprocessamento em lote com dry-run */}
+        <section className="bg-card border border-border rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <PlayCircle className="w-4 h-4 text-primary" />
+            <h2 className="font-heading font-bold">Reprocessamento em lote</h2>
+            <span className="text-[11px] text-muted-foreground">use o período dos filtros acima · simule antes de rodar</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground">Incluir status</label>
+              <div className="flex gap-3 mt-2 text-sm">
+                {["error", "pending"].map((s) => (
+                  <label key={s} className="flex items-center gap-1 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={batchStatuses.includes(s)}
+                      onChange={(e) =>
+                        setBatchStatuses((prev) =>
+                          e.target.checked ? Array.from(new Set([...prev, s])) : prev.filter((x) => x !== s)
+                        )
+                      }
+                    />
+                    {s}
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground">Limite</label>
+              <Input type="number" min={1} max={2000} value={batchLimit} onChange={(e) => setBatchLimit(Number(e.target.value))} />
+            </div>
+            <Button variant="outline" onClick={() => runBatch(true)} disabled={batchRunning || !batchStatuses.length}>
+              {batchRunning ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <BarChart3 className="w-4 h-4 mr-2" />}
+              Simular (dry-run)
+            </Button>
+            <Button
+              onClick={() => {
+                if (!window.confirm(`Reprocessar ${batchPreview?.would_process ?? "?"} registro(s) para o Google Sheets?`)) return;
+                runBatch(false);
+              }}
+              disabled={batchRunning || !batchStatuses.length}
+            >
+              {batchRunning ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <PlayCircle className="w-4 h-4 mr-2" />}
+              Executar reprocessamento
+            </Button>
+          </div>
+          {batchPreview && (
+            <div className="mt-3 p-3 rounded-lg bg-muted/40 text-xs">
+              <strong>Prévia:</strong> {batchPreview.would_process} registro(s) —{" "}
+              {Object.entries(batchPreview.by_status).map(([k, v]) => `${k}: ${v}`).join(" · ") || "sem detalhamento"}
+            </div>
+          )}
+        </section>
+
+        {/* Audit log */}
+        <section className="bg-card border border-border rounded-xl p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-primary" />
+              <h2 className="font-heading font-bold">Histórico de alterações (alertas)</h2>
+              <span className="text-[11px] text-muted-foreground">quem mudou, quando e o quê</span>
+            </div>
+            <Button size="sm" variant="outline" onClick={loadAudit} disabled={auditLoading}>
+              {auditLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
+            </Button>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs min-w-[720px]">
+              <thead className="text-left text-muted-foreground border-b">
+                <tr>
+                  <th className="py-2 pr-3">Quando</th>
+                  <th className="py-2 pr-3">Autor</th>
+                  <th className="py-2 pr-3">Campos</th>
+                  <th className="py-2 pr-3">Antes</th>
+                  <th className="py-2 pr-3">Depois</th>
+                  <th className="py-2 pr-3">IP</th>
+                </tr>
+              </thead>
+              <tbody>
+                {auditEntries.map((e) => (
+                  <tr key={e.id} className="border-b last:border-0 align-top">
+                    <td className="py-2 pr-3 whitespace-nowrap">{new Date(e.changed_at).toLocaleString("pt-BR")}</td>
+                    <td className="py-2 pr-3">{e.actor || "—"}</td>
+                    <td className="py-2 pr-3 font-mono">{(e.changed_fields || []).join(", ")}</td>
+                    <td className="py-2 pr-3 font-mono text-muted-foreground">{JSON.stringify(e.old_values)}</td>
+                    <td className="py-2 pr-3 font-mono">{JSON.stringify(e.new_values)}</td>
+                    <td className="py-2 pr-3 font-mono text-muted-foreground">{e.source || "—"}</td>
+                  </tr>
+                ))}
+                {!auditEntries.length && (
+                  <tr><td colSpan={6} className="py-4 text-center text-muted-foreground">Nenhuma alteração registrada ainda.</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
         <div className="bg-card border border-border rounded-xl p-4">
           <div className="grid grid-cols-1 md:grid-cols-7 gap-3">
             <div>
