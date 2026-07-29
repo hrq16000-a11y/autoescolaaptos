@@ -138,6 +138,12 @@ Deno.serve(async (req) => {
       if (typeof body.email_enabled === "boolean") patch.email_enabled = body.email_enabled;
       if (typeof body.slack_enabled === "boolean") patch.slack_enabled = body.slack_enabled;
 
+      const { data: before } = await admin
+        .from("alert_config")
+        .select("alert_queue_threshold, email_enabled, slack_enabled")
+        .eq("id", 1)
+        .maybeSingle();
+
       const { data, error } = await admin
         .from("alert_config")
         .update(patch)
@@ -145,7 +151,74 @@ Deno.serve(async (req) => {
         .select()
         .maybeSingle();
       if (error) return json({ error: "update_failed", message: error.message }, 500);
-      return json({ ok: true, config: data });
+
+      const changedFields: string[] = [];
+      const oldVals: Record<string, unknown> = {};
+      const newVals: Record<string, unknown> = {};
+      for (const k of ["alert_queue_threshold", "email_enabled", "slack_enabled"] as const) {
+        if (patch[k] !== undefined && before && (before as Record<string, unknown>)[k] !== patch[k]) {
+          changedFields.push(k);
+          oldVals[k] = (before as Record<string, unknown>)[k];
+          newVals[k] = patch[k];
+        }
+      }
+      if (changedFields.length) {
+        await admin.from("alert_config_audit_log").insert({
+          actor: (body.actor as string) || req.headers.get("x-admin-actor") || "admin",
+          source: "admin_panel",
+          ip: req.headers.get("x-forwarded-for") || req.headers.get("cf-connecting-ip"),
+          user_agent: req.headers.get("user-agent"),
+          old_values: oldVals,
+          new_values: newVals,
+          changed_fields: changedFields,
+        });
+      }
+      return json({ ok: true, config: data, changed_fields: changedFields });
+    }
+
+    if (action === "batch_reprocess") {
+      const from = body.from as string | undefined;
+      const to = body.to as string | undefined;
+      const statuses = Array.isArray(body.statuses) && (body.statuses as string[]).length
+        ? (body.statuses as string[])
+        : ["error", "pending"];
+      const dryRun = body.dry_run !== false;
+      const limit = Math.min(Number(body.limit ?? 500), 2000);
+
+      let query = admin
+        .from("marketing_optin")
+        .select("id, created_at, telefone, status, campaign_source, ultimo_template_enviado, origem_url, ip, user_agent, data_aceite, sheet_attempts, sheet_sync_status")
+        .in("sheet_sync_status", statuses)
+        .order("created_at", { ascending: true })
+        .limit(limit);
+      if (from) query = query.gte("created_at", from);
+      if (to) query = query.lte("created_at", to);
+
+      const { data, error } = await query;
+      if (error) return json({ error: "query_failed", message: error.message }, 500);
+      const rows = (data ?? []) as (OptinRow & { sheet_sync_status?: string })[];
+
+      if (dryRun) {
+        const byStatus: Record<string, number> = {};
+        for (const r of rows) {
+          const s = r.sheet_sync_status || "pending";
+          byStatus[s] = (byStatus[s] || 0) + 1;
+        }
+        return json({
+          ok: true, dry_run: true, would_process: rows.length,
+          by_status: byStatus, from, to, statuses, limit,
+        });
+      }
+
+      let succeeded = 0, failed = 0;
+      let lastError: string | undefined;
+      for (const r of rows) {
+        const res = await appendBatchToSheet([r]);
+        await markSyncBatch([r], res);
+        if (res.ok) succeeded += 1;
+        else { failed += 1; lastError = res.error; }
+      }
+      return json({ ok: failed === 0, dry_run: false, processed: rows.length, succeeded, failed, error: lastError });
     }
 
     if (action === "retry_sync" || action === "backfill") {
