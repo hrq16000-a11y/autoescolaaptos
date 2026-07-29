@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft, RefreshCw, Loader2, Download, Gift, TrendingUp, CloudUpload, RotateCw, Plug, History, ChevronDown, ChevronRight, Bell, Save, FileDown } from "lucide-react";
+import { ArrowLeft, RefreshCw, Loader2, Download, Gift, TrendingUp, CloudUpload, RotateCw, Plug, History, ChevronDown, ChevronRight, Bell, Save, FileDown, BarChart3, ShieldCheck, PlayCircle } from "lucide-react";
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from "recharts";
 
 interface OptinRow {
   id: string;
