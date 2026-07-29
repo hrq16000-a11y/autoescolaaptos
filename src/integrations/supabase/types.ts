@@ -38,6 +38,42 @@ export type Database = {
         }
         Relationships: []
       }
+      alert_config_audit_log: {
+        Row: {
+          actor: string | null
+          changed_at: string
+          changed_fields: string[] | null
+          id: number
+          ip: string | null
+          new_values: Json | null
+          old_values: Json | null
+          source: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          actor?: string | null
+          changed_at?: string
+          changed_fields?: string[] | null
+          id?: number
+          ip?: string | null
+          new_values?: Json | null
+          old_values?: Json | null
+          source?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          actor?: string | null
+          changed_at?: string
+          changed_fields?: string[] | null
+          id?: number
+          ip?: string | null
+          new_values?: Json | null
+          old_values?: Json | null
+          source?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       marketing_optin: {
         Row: {
           campaign_source: string | null
