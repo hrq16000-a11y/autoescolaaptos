@@ -88,6 +88,18 @@ const AdminOptin = () => {
   const [historyLoading, setHistoryLoading] = useState<Record<string, boolean>>({});
   const [config, setConfig] = useState<{ alert_queue_threshold: number; email_enabled: boolean; slack_enabled: boolean } | null>(null);
   const [configSaving, setConfigSaving] = useState(false);
+
+  // Chart / audit / batch state
+  const [chartData, setChartData] = useState<{ day: string; ok: number; error: number; total: number }[]>([]);
+  const [chartSources, setChartSources] = useState<string[]>([]);
+  const [chartSourceFilter, setChartSourceFilter] = useState<string>("");
+  const [chartLoading, setChartLoading] = useState(false);
+  const [auditEntries, setAuditEntries] = useState<Array<{ id: number; changed_at: string; actor: string | null; source: string | null; old_values: Record<string, unknown>; new_values: Record<string, unknown>; changed_fields: string[] }>>([]);
+  const [auditLoading, setAuditLoading] = useState(false);
+  const [batchStatuses, setBatchStatuses] = useState<string[]>(["error", "pending"]);
+  const [batchLimit, setBatchLimit] = useState(500);
+  const [batchRunning, setBatchRunning] = useState(false);
+  const [batchPreview, setBatchPreview] = useState<{ would_process: number; by_status: Record<string, number> } | null>(null);
   const [filters, setFilters] = useState({
     from: defaultFrom(),
     to: new Date().toISOString().slice(0, 10),
