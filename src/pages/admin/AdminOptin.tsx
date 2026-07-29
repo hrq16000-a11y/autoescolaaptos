@@ -153,7 +153,7 @@ const AdminOptin = () => {
   };
 
   useEffect(() => {
-    if (token) { fetchAll(); loadConfig(); }
+    if (token) { fetchAll(); loadConfig(); loadChart(); loadAudit(); }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
