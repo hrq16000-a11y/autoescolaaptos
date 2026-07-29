@@ -84,7 +84,7 @@ const SmartAssistant = () => {
         >
           <Sparkles className="w-4 h-4" aria-hidden="true" />
           <span className="hidden sm:inline text-sm font-semibold">Tire dúvidas</span>
-          <span className="sm:hidden text-sm font-semibold">IA</span>
+          <span className="sm:hidden text-sm font-semibold">Ajuda</span>
         </button>
       )}
 
