@@ -185,6 +185,65 @@ const AdminOptin = () => {
     }
   };
 
+  const loadChart = async () => {
+    if (!token) return;
+    setChartLoading(true);
+    try {
+      const p = new URLSearchParams();
+      if (filters.from) p.set("from", filters.from);
+      if (filters.to) p.set("to", `${filters.to}T23:59:59`);
+      if (chartSourceFilter) p.set("source", chartSourceFilter);
+      const res = await fetch(`${FN_URL}?action=history_stats&${p.toString()}`, { headers: { "x-admin-token": token } });
+      const j = await res.json();
+      if (res.ok) {
+        setChartData(j.days || []);
+        setChartSources(j.sources || []);
+      }
+    } catch { /* silent */ } finally { setChartLoading(false); }
+  };
+
+  const loadAudit = async () => {
+    if (!token) return;
+    setAuditLoading(true);
+    try {
+      const res = await fetch(`${FN_URL}?action=audit_log&limit=50`, { headers: { "x-admin-token": token } });
+      const j = await res.json();
+      if (res.ok) setAuditEntries(j.entries || []);
+    } catch { /* silent */ } finally { setAuditLoading(false); }
+  };
+
+  const runBatch = async (dryRun: boolean) => {
+    setBatchRunning(true); setError(null); setInfo(null); setBatchPreview(null);
+    try {
+      const res = await fetch(`${FN_URL}?action=batch_reprocess`, {
+        method: "POST",
+        headers: { "x-admin-token": token, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          from: filters.from || undefined,
+          to: filters.to ? `${filters.to}T23:59:59` : undefined,
+          statuses: batchStatuses,
+          limit: batchLimit,
+          dry_run: dryRun,
+        }),
+      });
+      const j = await res.json();
+      if (!res.ok) throw new Error(j.message || j.error || "Falha");
+      if (dryRun) {
+        setBatchPreview({ would_process: j.would_process ?? 0, by_status: j.by_status ?? {} });
+        setInfo(`Prévia: ${j.would_process ?? 0} registro(s) seriam reprocessados.`);
+      } else {
+        setInfo(`Reprocessamento em lote: ${j.succeeded ?? 0} enviados, ${j.failed ?? 0} falharam.`);
+        await Promise.all([fetchAll(), loadChart()]);
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Falha ao reprocessar em lote");
+    } finally {
+      setBatchRunning(false);
+    }
+  };
+
+
+
   const exportHistoryCsv = async (mode: "phone" | "period") => {
     const params = new URLSearchParams({ action: "history_csv", limit: "5000" });
     if (mode === "phone") {
