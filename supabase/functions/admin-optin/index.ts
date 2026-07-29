@@ -302,6 +302,53 @@ Deno.serve(async (req) => {
     return json({ config: data ?? { alert_queue_threshold: 25, email_enabled: true, slack_enabled: true } });
   }
 
+  // ---- GET: audit_log ----
+  if (action === "audit_log") {
+    const lim = Math.min(Number(url.searchParams.get("limit") ?? 100), 1000);
+    const from = url.searchParams.get("from");
+    const to = url.searchParams.get("to");
+    let q = admin.from("alert_config_audit_log")
+      .select("id, changed_at, actor, source, ip, user_agent, old_values, new_values, changed_fields")
+      .order("changed_at", { ascending: false })
+      .limit(lim);
+    if (from) q = q.gte("changed_at", from);
+    if (to) q = q.lte("changed_at", to);
+    const { data, error } = await q;
+    if (error) return json({ error: "query_failed", message: error.message }, 500);
+    return json({ entries: data ?? [] });
+  }
+
+  // ---- GET: history_stats (chart) ----
+  if (action === "history_stats") {
+    const source = url.searchParams.get("source");
+    const from = url.searchParams.get("from");
+    const to = url.searchParams.get("to");
+    let q = admin.from("marketing_optin_sync_attempts")
+      .select("attempted_at, ok, source")
+      .order("attempted_at", { ascending: true })
+      .limit(20000);
+    if (source) q = q.eq("source", source);
+    if (from) q = q.gte("attempted_at", from);
+    if (to) q = q.lte("attempted_at", to);
+    const { data, error } = await q;
+    if (error) return json({ error: "query_failed", message: error.message }, 500);
+    const byDay = new Map<string, { day: string; total: number; ok: number; error: number }>();
+    const sources = new Set<string>();
+    for (const r of (data ?? []) as { attempted_at: string; ok: boolean; source: string | null }[]) {
+      const day = new Date(r.attempted_at).toISOString().slice(0, 10);
+      const cur = byDay.get(day) ?? { day, total: 0, ok: 0, error: 0 };
+      cur.total += 1;
+      if (r.ok) cur.ok += 1; else cur.error += 1;
+      byDay.set(day, cur);
+      if (r.source) sources.add(r.source);
+    }
+    return json({
+      days: Array.from(byDay.values()),
+      sources: Array.from(sources).sort(),
+    });
+  }
+
+
   // ---- GET: history / history_csv ----
   if (action === "history" || action === "history_csv") {
     const optinId = url.searchParams.get("optin_id");
