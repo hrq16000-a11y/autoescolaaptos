@@ -172,6 +172,8 @@ const Comparador = () => {
             * Inclusão pode exigir reavaliação médica conforme caso. Confirme no atendimento.
           </p>
         </div>
+
+        <SavingsHighlights source="comparador" />
       </main>
       <Footer />
       <FloatingWhatsApp />
