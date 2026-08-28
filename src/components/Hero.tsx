@@ -4,6 +4,7 @@ import { MessageCircle, CheckCircle, Award, Users, ChevronLeft, ChevronRight } f
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
+import { useVariant, trackExperimentConversion } from "@/lib/featureFlags";
 import Autoplay from "embla-carousel-autoplay";
 
 // Import slide images
@@ -33,6 +34,10 @@ const slides = [
 
 const Hero = () => {
   const { trackEnrollmentClick, trackEvent } = useAnalytics();
+  // A/B do CTA principal do Hero — exposição/conversão registradas no dataLayer.
+  const ctaVariant = useVariant("hero_cta", ["controle", "urgencia"] as const);
+  const ctaLabel =
+    ctaVariant === "urgencia" ? "Quero minha CNH agora" : "Simular meu Orçamento";
   const [selectedIndex, setSelectedIndex] = useState(0);
   
   const [emblaRef, emblaApi] = useEmblaCarousel(
@@ -218,9 +223,15 @@ const Hero = () => {
               className="text-lg h-14 px-8 shadow-glow hover:scale-105 transition-transform"
               asChild
             >
-              <a href="/orcamento" onClick={() => trackEnrollmentClick()}>
+              <a
+                href="/orcamento"
+                onClick={() => {
+                  trackEnrollmentClick();
+                  trackExperimentConversion("hero_cta", "cta_click");
+                }}
+              >
                 <MessageCircle className="w-5 h-5 mr-2" />
-                Simular meu Orçamento
+                {ctaLabel}
               </a>
             </Button>
             <Button
