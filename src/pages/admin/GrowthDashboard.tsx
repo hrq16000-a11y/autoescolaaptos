@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { ArrowLeft, TrendingUp, Users, Target, Clock, MousePointerClick, AlertTriangle } from "lucide-react";
 import { getLeadProfile, classifyLead } from "@/lib/leadScore";
+import AdminGate from "@/components/admin/AdminGate";
 
 /**
  * Dashboard interno de Growth — /admin/growth
@@ -277,4 +278,10 @@ const GrowthDashboard = () => {
   );
 };
 
-export default GrowthDashboard;
+const GuardedGrowthDashboard = () => (
+  <AdminGate title="Growth Dashboard | APTOS Admin">
+    <GrowthDashboard />
+  </AdminGate>
+);
+
+export default GuardedGrowthDashboard;
