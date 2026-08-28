@@ -5,6 +5,8 @@ import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import MobileStickyBar from "@/components/MobileStickyBar";
 import SEO from "@/components/SEO";
 import CTAButton from "@/components/CTAButton";
+import SavingsHighlights from "@/components/SavingsHighlights";
+import { buildComparisonSchema, buildSavingsSchema } from "@/data/savingsData";
 
 type Coluna = {
   key: string;
@@ -78,7 +80,26 @@ const Comparador = () => {
       <SEO
         title="Comparador de CNH: A, B, AB e Inclusão — Autoescola APTOS"
         description="Compare lado a lado as categorias A, B, AB e Inclusão de categoria. Tempo, requisitos e benefícios para decidir qual habilitação tirar em São José dos Pinhais."
-        canonical="https://autoescolaaptos.com.br/comparador"
+        canonical="/comparador"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@graph": [
+            buildComparisonSchema(
+              colunas.map((c) => ({
+                name: `${c.titulo} (${c.badge})`,
+                description: `Tempo médio: ${c.tempo}. Requisito: ${c.idade}. ${c.beneficios
+                  .filter((b) => b.ok)
+                  .map((b) => b.label)
+                  .join("; ")}.`,
+              })),
+              {
+                name: "Comparativo de categorias de CNH — Autoescola APTOS",
+                url: "https://autoescolaaptos.com.br/comparador",
+              },
+            ),
+            buildSavingsSchema(),
+          ],
+        }}
       />
       <Navbar />
       <main className="pt-24 pb-20">
@@ -151,6 +172,8 @@ const Comparador = () => {
             * Inclusão pode exigir reavaliação médica conforme caso. Confirme no atendimento.
           </p>
         </div>
+
+        <SavingsHighlights source="comparador" />
       </main>
       <Footer />
       <FloatingWhatsApp />
