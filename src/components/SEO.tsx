@@ -20,7 +20,13 @@ const SEO = ({
   noIndex = false
 }: SEOProps) => {
   const siteUrl = "https://autoescolaaptos.com.br";
-  const fullCanonical = canonical ? `${siteUrl}${canonical}` : siteUrl;
+  // Aceita tanto caminho relativo ("/comparador") quanto URL absoluta.
+  const fullCanonical = canonical
+    ? canonical.startsWith("http")
+      ? canonical
+      : `${siteUrl}${canonical.startsWith("/") ? canonical : `/${canonical}`}`
+    : siteUrl;
+  const fullImage = image.startsWith("http") ? image : `${siteUrl}${image}`;
   
   const defaultJsonLd = {
     "@context": "https://schema.org",
