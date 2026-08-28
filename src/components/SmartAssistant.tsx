@@ -4,6 +4,7 @@ import { resolve, SUGGESTED_QUESTIONS, type AssistantResponse } from "@/lib/smar
 import { whatsappLink } from "@/lib/whatsapp";
 import { track, trackConversion } from "@/lib/analytics";
 import { addSignal } from "@/lib/leadScore";
+import { trackAssistant, trackWhatsAppSubmit } from "@/lib/events";
 
 interface Message {
   role: "user" | "assistant";
@@ -30,6 +31,7 @@ const SmartAssistant = () => {
   useEffect(() => {
     if (open) {
       track("smart_assistant_open", {});
+      trackAssistant("open");
       setTimeout(() => inputRef.current?.focus(), 120);
     }
   }, [open]);
@@ -48,6 +50,7 @@ const SmartAssistant = () => {
       { role: "assistant", content: response.answer, response, ts: Date.now() + 1 },
     ]);
     setInput("");
+    if (messages.length === 0) trackAssistant("start", { first_question: question.slice(0, 120) });
     track("smart_assistant_query", {
       question: question.slice(0, 120),
       intent: response.intent,
@@ -64,6 +67,11 @@ const SmartAssistant = () => {
     const message = context
       ? `Olá! Vim pelo site. Minha dúvida: ${context}`
       : `Olá! Vim pelo site. Já conversei com o assistente sobre:\n${historyText || "(sem histórico)"}\n\nPode me ajudar a fechar minha matrícula?`;
+    trackWhatsAppSubmit({
+      source: "smart_assistant",
+      kind: "direto",
+      extra_context: (context ?? historyText).slice(0, 200),
+    });
     trackConversion("smart_assistant_handoff", {
       messages_count: messages.length,
       utm_medium: "whatsapp_direto",
@@ -103,7 +111,10 @@ const SmartAssistant = () => {
             </div>
             <button
               type="button"
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                trackAssistant("close", { messages_count: messages.length });
+                setOpen(false);
+              }}
               aria-label="Fechar assistente"
               className="p-1 rounded hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
             >
