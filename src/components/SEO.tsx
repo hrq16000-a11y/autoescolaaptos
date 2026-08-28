@@ -76,7 +76,7 @@ const SEO = ({
       <meta property="og:description" content={description} />
       <meta property="og:type" content={type} />
       <meta property="og:url" content={fullCanonical} />
-      <meta property="og:image" content={`${siteUrl}${image}`} />
+      <meta property="og:image" content={fullImage} />
       <meta property="og:site_name" content="Autoescola APTOS" />
       <meta property="og:locale" content="pt_BR" />
       
@@ -84,7 +84,7 @@ const SEO = ({
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={`${siteUrl}${image}`} />
+      <meta name="twitter:image" content={fullImage} />
       
       {/* Additional SEO */}
       <meta name="robots" content={noIndex ? "noindex, nofollow" : "index, follow"} />
