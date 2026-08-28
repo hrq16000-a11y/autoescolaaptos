@@ -5,6 +5,8 @@ import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import MobileStickyBar from "@/components/MobileStickyBar";
 import SEO from "@/components/SEO";
 import CTAButton from "@/components/CTAButton";
+import SavingsHighlights from "@/components/SavingsHighlights";
+import { buildComparisonSchema, buildSavingsSchema } from "@/data/savingsData";
 
 type Coluna = {
   key: string;
