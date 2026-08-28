@@ -13,8 +13,25 @@ const PromoAniversario = () => {
   return (
     <main className="min-h-screen">
       <SEO
-        title="Promoção de Aniversário - Autoescola APTOS"
-        description="No mês do seu aniversário, ganhe uma aula grátis de presente na Autoescola APTOS. Consulte condições."
+        title="Promoção de Aniversário — Aula Grátis | Autoescola APTOS"
+        description="No mês do seu aniversário, ganhe uma aula prática de presente na Autoescola APTOS em São José dos Pinhais. Consulte condições."
+        canonical="/promocao-aniversario"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Offer",
+          name: "Promoção de Aniversário — aula prática grátis",
+          description:
+            "No mês do seu aniversário, ganhe uma aula prática de presente na Autoescola APTOS.",
+          url: "https://autoescolaaptos.com.br/promocao-aniversario",
+          availability: "https://schema.org/InStock",
+          priceCurrency: "BRL",
+          areaServed: "São José dos Pinhais, PR",
+          seller: {
+            "@type": "DrivingSchool",
+            name: "Autoescola APTOS",
+            url: "https://autoescolaaptos.com.br",
+          },
+        }}
       />
       <Navbar />
 
