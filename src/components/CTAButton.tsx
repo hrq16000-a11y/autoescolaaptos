@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { whatsappLink, type WhatsAppKind } from "@/lib/whatsapp";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useFunnelModal } from "@/hooks/useFunnelModal";
+import { trackWhatsAppClick as trackWaClick } from "@/lib/events";
 
 /**
  * <CTAButton /> — Centralized CTA component for the entire site.
@@ -72,13 +73,16 @@ const CTAButton = forwardRef<HTMLButtonElement, CTAButtonProps>(
         case "whatsapp":
           trackEvent("whatsapp_direto", { source: trackingSource, label });
           trackWhatsAppClick(trackingSource, service);
+          trackWaClick({ source: trackingSource, kind: "direto", service });
           break;
         case "whatsapp-funil":
           trackEvent("whatsapp_funil_direct", { source: trackingSource, label });
           trackWhatsAppClick(trackingSource, service);
+          trackWaClick({ source: trackingSource, kind: "funil", service });
           break;
         case "telefone":
           trackPhoneClick(trackingSource);
+          trackWaClick({ source: trackingSource, kind: "funil", service });
           break;
         case "funil":
           trackEvent("cta_funil_click", { source: trackingSource, label });

@@ -2,6 +2,7 @@ import { MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { whatsappLink, DEFAULT_MESSAGES } from "@/lib/whatsapp";
+import { trackWhatsAppClick as trackWaClick } from "@/lib/events";
 
 /**
  * Global floating WhatsApp button (DIRETO).
@@ -14,6 +15,7 @@ const FloatingWhatsApp = () => {
 
   const handleClick = () => {
     trackWhatsAppClick("floating_button");
+    trackWaClick({ source: "floating_button", kind: "direto" });
     if (typeof window !== "undefined") {
       const w = window as unknown as { dataLayer?: unknown[] };
       w.dataLayer?.push({
