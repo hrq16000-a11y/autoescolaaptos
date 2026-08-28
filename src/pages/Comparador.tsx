@@ -78,7 +78,26 @@ const Comparador = () => {
       <SEO
         title="Comparador de CNH: A, B, AB e Inclusão — Autoescola APTOS"
         description="Compare lado a lado as categorias A, B, AB e Inclusão de categoria. Tempo, requisitos e benefícios para decidir qual habilitação tirar em São José dos Pinhais."
-        canonical="https://autoescolaaptos.com.br/comparador"
+        canonical="/comparador"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@graph": [
+            buildComparisonSchema(
+              colunas.map((c) => ({
+                name: `${c.titulo} (${c.badge})`,
+                description: `Tempo médio: ${c.tempo}. Requisito: ${c.idade}. ${c.beneficios
+                  .filter((b) => b.ok)
+                  .map((b) => b.label)
+                  .join("; ")}.`,
+              })),
+              {
+                name: "Comparativo de categorias de CNH — Autoescola APTOS",
+                url: "https://autoescolaaptos.com.br/comparador",
+              },
+            ),
+            buildSavingsSchema(),
+          ],
+        }}
       />
       <Navbar />
       <main className="pt-24 pb-20">
