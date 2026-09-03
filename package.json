@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node scripts/check-no-curitiba.mjs",
+    "prebuild": "node scripts/check-no-curitiba.mjs && node scripts/seo-audit.mjs",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "check:no-curitiba": "node scripts/check-no-curitiba.mjs",
+    "seo:audit": "node scripts/seo-audit.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

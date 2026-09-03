@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { ArrowLeft, TrendingUp, Users, Target, Clock, MousePointerClick, AlertTriangle } from "lucide-react";
+import { ArrowLeft, TrendingUp, Users, Target, Clock, MousePointerClick, AlertTriangle, Gauge, FileSearch } from "lucide-react";
+import { readVitals, rateVital, type VitalSample } from "@/lib/webVitals";
+import { readEventLog } from "@/lib/analytics";
 import { getLeadProfile, classifyLead } from "@/lib/leadScore";
 import AdminGate from "@/components/admin/AdminGate";
 
@@ -66,12 +68,51 @@ const read = <T,>(key: string, fallback: T): T => {
   }
 };
 
+interface AuditSummary {
+  errors: number;
+  warnings: number;
+  sitemapUrls: number;
+  pagesChecked: number;
+  pagesOk: number;
+}
+
+interface AuditReport {
+  generatedAt: string;
+  summary: AuditSummary;
+  previous: { generatedAt: string; summary: AuditSummary } | null;
+  issues: { severity: string; area: string; message: string }[];
+}
+
 const GrowthDashboard = () => {
   const [events, setEvents] = useState<StoredEvent[]>([]);
   const [refreshTick, setRefreshTick] = useState(0);
+  const [vitals, setVitals] = useState<VitalSample[]>([]);
+  const [audit, setAudit] = useState<AuditReport | null>(null);
 
   useEffect(() => {
     setEvents(readEvents());
+    setVitals(readVitals());
+  }, [refreshTick]);
+
+  useEffect(() => {
+    let alive = true;
+    fetch("/seo-audit.json", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => alive && setAudit(d))
+      .catch(() => alive && setAudit(null));
+    return () => {
+      alive = false;
+    };
+  }, [refreshTick]);
+
+  const savingsByRoute = useMemo(() => {
+    const log = readEventLog().filter((e) => e.event === "savings_click");
+    const grouped = log.reduce<Record<string, number>>((acc, e) => {
+      const key = `${e.path} · ${String(e.payload.savings_code ?? "—")}`;
+      acc[key] = (acc[key] ?? 0) + 1;
+      return acc;
+    }, {});
+    return Object.entries(grouped).sort((a, b) => b[1] - a[1]).slice(0, 12);
   }, [refreshTick]);
 
   const stats = useMemo(() => {
@@ -253,6 +294,114 @@ const GrowthDashboard = () => {
           )}
         </section>
 
+        {/* Core Web Vitals */}
+        <section aria-labelledby="cwv-heading" className="rounded-xl border border-border bg-card p-5">
+          <h2 id="cwv-heading" className="font-semibold mb-3 flex items-center gap-2">
+            <Gauge className="w-4 h-4 text-primary" /> Core Web Vitals (medidos no navegador)
+          </h2>
+          {vitals.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Nenhuma amostra ainda. Navegue pelo site e volte aqui — as métricas são
+              coletadas ao sair de cada página.
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              {(["LCP", "INP", "CLS"] as const).map((metric) => {
+                const rows = vitals.filter((v) => v.metric === metric);
+                const avg = rows.length
+                  ? rows.reduce((a, v) => a + v.value, 0) / rows.length
+                  : 0;
+                const rating = rateVital(metric, avg);
+                const color =
+                  rating === "bom" ? "text-green-600" : rating === "regular" ? "text-yellow-600" : "text-destructive";
+                return (
+                  <div key={metric} className="rounded-lg border border-border p-4">
+                    <p className="text-xs uppercase text-muted-foreground">{metric}</p>
+                    <p className={`text-2xl font-bold ${color}`}>
+                      {rows.length === 0 ? "—" : metric === "CLS" ? avg.toFixed(3) : `${Math.round(avg)} ms`}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {rows.length} amostra(s) · {rating}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
+
+        {/* Savings clicks por rota */}
+        <section className="rounded-xl border border-border bg-card p-5">
+          <h3 className="font-semibold mb-3">Cliques em savings/cashback por rota</h3>
+          {savingsByRoute.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Nenhum clique registrado ainda.</p>
+          ) : (
+            <ul className="space-y-2 text-sm">
+              {savingsByRoute.map(([key, count]) => (
+                <li key={key} className="flex justify-between border-b border-border pb-1.5 last:border-0">
+                  <span className="font-mono truncate mr-2">{key}</span>
+                  <span className="font-mono text-muted-foreground">{count}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        {/* Auditoria SEO Antes/Depois */}
+        <section className="rounded-xl border border-border bg-card p-5">
+          <h3 className="font-semibold mb-3 flex items-center gap-2">
+            <FileSearch className="w-4 h-4 text-primary" /> Auditoria de SEO (build)
+          </h3>
+          {!audit ? (
+            <p className="text-sm text-muted-foreground">
+              Relatório indisponível. Rode <code>npm run seo:audit</code> (executa também no prebuild).
+            </p>
+          ) : (
+            <div className="space-y-4 text-sm">
+              <p className="text-xs text-muted-foreground">
+                Gerado em {new Date(audit.generatedAt).toLocaleString("pt-BR")}
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                {[
+                  ["Erros", audit.summary.errors, audit.previous?.summary.errors],
+                  ["Avisos", audit.summary.warnings, audit.previous?.summary.warnings],
+                  ["URLs sitemap", audit.summary.sitemapUrls, audit.previous?.summary.sitemapUrls],
+                  ["Páginas OK", audit.summary.pagesOk, audit.previous?.summary.pagesOk],
+                  ["Páginas totais", audit.summary.pagesChecked, audit.previous?.summary.pagesChecked],
+                ].map(([label, now, before]) => (
+                  <div key={String(label)} className="rounded-lg border border-border p-3">
+                    <p className="text-xs text-muted-foreground">{label}</p>
+                    <p className="text-xl font-bold">{String(now)}</p>
+                    <p className="text-[11px] text-muted-foreground">
+                      antes: {before === undefined || before === null ? "—" : String(before)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              {audit.issues.length > 0 && (
+                <ul className="space-y-1 max-h-64 overflow-y-auto">
+                  {audit.issues.map((i, idx) => (
+                    <li key={idx} className="flex gap-2">
+                      <span
+                        className={`text-[10px] uppercase font-bold px-1.5 rounded ${
+                          i.severity === "error"
+                            ? "bg-destructive/10 text-destructive"
+                            : "bg-yellow-500/10 text-yellow-700"
+                        }`}
+                      >
+                        {i.severity}
+                      </span>
+                      <span className="text-muted-foreground">
+                        <strong className="text-foreground">{i.area}</strong> — {i.message}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+        </section>
+
         {/* 404s */}
         <section className="rounded-xl border border-border bg-card p-5">
           <h3 className="font-semibold mb-3 flex items-center gap-2">
@@ -274,6 +423,7 @@ const GrowthDashboard = () => {
           )}
         </section>
       </main>
+
     </div>
   );
 };
