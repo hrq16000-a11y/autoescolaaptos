@@ -1,17 +1,26 @@
 {
-  "generatedAt": "2026-09-03T21:52:25.892Z",
+  "generatedAt": "2026-09-03T21:52:43.343Z",
   "summary": {
-    "errors": 1,
+    "errors": 0,
     "warnings": 2,
     "sitemapUrls": 46,
     "pagesChecked": 39,
     "pagesOk": 32
   },
-  "previous": null,
+  "previous": {
+    "generatedAt": "2026-09-03T21:52:25.892Z",
+    "summary": {
+      "errors": 1,
+      "warnings": 2,
+      "sitemapUrls": 46,
+      "pagesChecked": 39,
+      "pagesOk": 32
+    }
+  },
   "head": {
     "title": "Autoescola em São José dos Pinhais | APTOS CFC",
-    "description": "",
-    "canonical": ""
+    "description": "Autoescola APTOS em São José dos Pinhais: 1ª habilitação, renovação de CNH, reciclagem e aulas práticas. Fale agora no WhatsApp (41) 99145-3627.",
+    "canonical": "https://autoescolaaptos.com.br/"
   },
   "robots": {
     "present": true,
@@ -45,11 +54,6 @@
     ]
   },
   "issues": [
-    {
-      "severity": "error",
-      "area": "metatags",
-      "message": "index.html sem meta description."
-    },
     {
       "severity": "warn",
       "area": "paginas",

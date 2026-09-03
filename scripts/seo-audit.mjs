@@ -28,9 +28,9 @@ const add = (severity, area, message) => issues.push({ severity, area, message }
 const html = read(join(ROOT, "index.html")) ?? "";
 const title = html.match(/<title>([\s\S]*?)<\/title>/i)?.[1]?.trim() ?? "";
 const description =
-  html.match(/<meta\s+name=["']description["']\s+content=["']([\s\S]*?)["']/i)?.[1]?.trim() ?? "";
+  html.match(/<meta[^>]*\sname=["']description["'][^>]*\scontent=["']([\s\S]*?)["']/i)?.[1]?.trim() ?? "";
 const canonical =
-  html.match(/<link\s+rel=["']canonical["']\s+href=["']([^"']+)["']/i)?.[1] ?? "";
+  html.match(/<link[^>]*\srel=["']canonical["'][^>]*\shref=["']([^"']+)["']/i)?.[1] ?? "";
 
 if (!title) add("error", "metatags", "index.html sem <title>.");
 else if (/lovable app/i.test(title)) add("error", "metatags", "Title padrão do template.");
