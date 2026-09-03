@@ -1,0 +1,456 @@
+{
+  "generatedAt": "2026-09-03T21:52:25.892Z",
+  "summary": {
+    "errors": 1,
+    "warnings": 2,
+    "sitemapUrls": 46,
+    "pagesChecked": 39,
+    "pagesOk": 32
+  },
+  "previous": null,
+  "head": {
+    "title": "Autoescola em São José dos Pinhais | APTOS CFC",
+    "description": "",
+    "canonical": ""
+  },
+  "robots": {
+    "present": true,
+    "disallowed": [
+      "/site",
+      "/site/",
+      "/modelo1",
+      "/modelo1/",
+      "/1",
+      "/1/",
+      "/home",
+      "/index.html",
+      "/obrigado",
+      "/diagnostico-seo",
+      "/admin/",
+      "/*?utm_",
+      "/*?fbclid=",
+      "/*?gclid=",
+      "/site/",
+      "/modelo1/",
+      "/1/",
+      "/obrigado",
+      "/diagnostico-seo",
+      "/admin/",
+      "/site/",
+      "/modelo1/",
+      "/1/",
+      "/obrigado",
+      "/diagnostico-seo",
+      "/admin/"
+    ]
+  },
+  "issues": [
+    {
+      "severity": "error",
+      "area": "metatags",
+      "message": "index.html sem meta description."
+    },
+    {
+      "severity": "warn",
+      "area": "paginas",
+      "message": "src/pages/Login.tsx: faltam title, description, canonical."
+    },
+    {
+      "severity": "warn",
+      "area": "paginas",
+      "message": "src/pages/OAuthConsent.tsx: faltam title, description, canonical."
+    }
+  ],
+  "pages": [
+    {
+      "file": "src/pages/Aprovados.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/AulasPraticasDirecao.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/AutoescolaSaoJoseDosPinhais.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/Blog.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/BlogPost.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/CalculadoraCnh.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/Campanha.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/Categoria.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/Comparador.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/DiagnosticoSeo.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": true,
+      "ok": true
+    },
+    {
+      "file": "src/pages/ExamesDetran.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/FAQ.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/FormasEstudoTeorico.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/HabilitacaoPCD.tsx",
+      "hasSeo": false,
+      "hasHelmet": true,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/Index.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/Login.tsx",
+      "hasSeo": false,
+      "hasHelmet": false,
+      "hasTitle": false,
+      "hasDesc": false,
+      "hasCanonical": false,
+      "noindex": false,
+      "ok": false
+    },
+    {
+      "file": "src/pages/MestreDosServicos.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/NeighborhoodPage.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/NeighborhoodsIndex.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/NotFound.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": true,
+      "ok": true
+    },
+    {
+      "file": "src/pages/OAuthConsent.tsx",
+      "hasSeo": false,
+      "hasHelmet": false,
+      "hasTitle": false,
+      "hasDesc": false,
+      "hasCanonical": false,
+      "noindex": false,
+      "ok": false
+    },
+    {
+      "file": "src/pages/Obrigado.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": true,
+      "ok": true
+    },
+    {
+      "file": "src/pages/Ofertas.tsx",
+      "hasSeo": false,
+      "hasHelmet": true,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": true,
+      "ok": true
+    },
+    {
+      "file": "src/pages/Orcamento.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/PingSolucoes.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/PorQueAutoescola.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/PrecisoDeTecnico.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/PrimeiraHabilitacao.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/PromoAniversario.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/PromoIndiqueAmigo.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/Resolucao1020.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/Servico.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/SimuladoDetranPr.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/UmContato.tsx",
+      "hasSeo": true,
+      "hasHelmet": true,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/admin/AdminIndex.tsx",
+      "hasSeo": false,
+      "hasHelmet": true,
+      "hasTitle": true,
+      "hasDesc": false,
+      "hasCanonical": false,
+      "noindex": true,
+      "ok": false
+    },
+    {
+      "file": "src/pages/admin/AdminLeads.tsx",
+      "hasSeo": false,
+      "hasHelmet": true,
+      "hasTitle": true,
+      "hasDesc": false,
+      "hasCanonical": false,
+      "noindex": true,
+      "ok": false
+    },
+    {
+      "file": "src/pages/admin/AdminMetricas.tsx",
+      "hasSeo": false,
+      "hasHelmet": true,
+      "hasTitle": true,
+      "hasDesc": false,
+      "hasCanonical": false,
+      "noindex": true,
+      "ok": false
+    },
+    {
+      "file": "src/pages/admin/AdminOptin.tsx",
+      "hasSeo": false,
+      "hasHelmet": true,
+      "hasTitle": true,
+      "hasDesc": false,
+      "hasCanonical": false,
+      "noindex": true,
+      "ok": false
+    },
+    {
+      "file": "src/pages/admin/GrowthDashboard.tsx",
+      "hasSeo": false,
+      "hasHelmet": true,
+      "hasTitle": true,
+      "hasDesc": false,
+      "hasCanonical": false,
+      "noindex": true,
+      "ok": false
+    }
+  ]
+}

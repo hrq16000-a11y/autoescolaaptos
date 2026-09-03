@@ -49,6 +49,7 @@ const AdminIndex = lazy(() => import("./pages/admin/AdminIndex"));
 const Login = lazy(() => import("./pages/Login"));
 const OAuthConsent = lazy(() => import("./pages/OAuthConsent"));
 const Ofertas = lazy(() => import("./pages/Ofertas"));
+const Campanha = lazy(() => import("./pages/Campanha"));
 import ScrollToTop from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
@@ -117,6 +118,7 @@ const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
         <Route path="/ofertas" element={<Ofertas />} />
+        <Route path="/campanha" element={<Campanha />} />
         {/* Legacy URL redirects — mapa central em src/lib/legacyRedirects.ts */}
         {LEGACY_REDIRECTS.map((r) => (
           <Route key={r.from} path={r.from} element={<Navigate to={r.to} replace />} />
