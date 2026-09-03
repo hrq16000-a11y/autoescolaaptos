@@ -57,7 +57,7 @@ const Campanha = () => {
             alt="Aluno da Autoescola APTOS durante aula prática em São José dos Pinhais"
             className="absolute inset-0 w-full h-full object-cover"
             loading="eager"
-            fetchPriority="high"
+            {...({ fetchpriority: "high" } as Record<string, string>)}
           />
           <div aria-hidden className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/90 to-background/70" />
           <div className="relative container mx-auto px-4 py-14 md:py-24 max-w-3xl">
