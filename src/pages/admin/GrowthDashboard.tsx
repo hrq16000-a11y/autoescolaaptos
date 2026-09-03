@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { ArrowLeft, TrendingUp, Users, Target, Clock, MousePointerClick, AlertTriangle } from "lucide-react";
+import { ArrowLeft, TrendingUp, Users, Target, Clock, MousePointerClick, AlertTriangle, Gauge, FileSearch } from "lucide-react";
+import { readVitals, rateVital, type VitalSample } from "@/lib/webVitals";
+import { readEventLog } from "@/lib/analytics";
 import { getLeadProfile, classifyLead } from "@/lib/leadScore";
 import AdminGate from "@/components/admin/AdminGate";
 
@@ -66,12 +68,51 @@ const read = <T,>(key: string, fallback: T): T => {
   }
 };
 
+interface AuditSummary {
+  errors: number;
+  warnings: number;
+  sitemapUrls: number;
+  pagesChecked: number;
+  pagesOk: number;
+}
+
+interface AuditReport {
+  generatedAt: string;
+  summary: AuditSummary;
+  previous: { generatedAt: string; summary: AuditSummary } | null;
+  issues: { severity: string; area: string; message: string }[];
+}
+
 const GrowthDashboard = () => {
   const [events, setEvents] = useState<StoredEvent[]>([]);
   const [refreshTick, setRefreshTick] = useState(0);
+  const [vitals, setVitals] = useState<VitalSample[]>([]);
+  const [audit, setAudit] = useState<AuditReport | null>(null);
 
   useEffect(() => {
     setEvents(readEvents());
+    setVitals(readVitals());
+  }, [refreshTick]);
+
+  useEffect(() => {
+    let alive = true;
+    fetch("/seo-audit.json", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => alive && setAudit(d))
+      .catch(() => alive && setAudit(null));
+    return () => {
+      alive = false;
+    };
+  }, [refreshTick]);
+
+  const savingsByRoute = useMemo(() => {
+    const log = readEventLog().filter((e) => e.event === "savings_click");
+    const grouped = log.reduce<Record<string, number>>((acc, e) => {
+      const key = `${e.path} · ${String(e.payload.savings_code ?? "—")}`;
+      acc[key] = (acc[key] ?? 0) + 1;
+      return acc;
+    }, {});
+    return Object.entries(grouped).sort((a, b) => b[1] - a[1]).slice(0, 12);
   }, [refreshTick]);
 
   const stats = useMemo(() => {
