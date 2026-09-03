@@ -18,6 +18,42 @@ declare global {
 
 export type TrackPayload = Record<string, unknown>;
 
+const EVENT_LOG_KEY = "aptos_event_log_v1";
+const EVENT_LOG_MAX = 400;
+
+export interface LoggedEvent {
+  event: string;
+  ts: number;
+  path: string;
+  payload: TrackPayload;
+}
+
+/** Log local de eventos (usado pelo painel interno /admin/growth). */
+export function readEventLog(): LoggedEvent[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(EVENT_LOG_KEY);
+    return raw ? (JSON.parse(raw) as LoggedEvent[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function persistEvent(eventName: string, payload: TrackPayload) {
+  try {
+    const entry: LoggedEvent = {
+      event: eventName,
+      ts: Date.now(),
+      path: String(payload.page_path ?? window.location.pathname),
+      payload,
+    };
+    const all = [...readEventLog(), entry].slice(-EVENT_LOG_MAX);
+    localStorage.setItem(EVENT_LOG_KEY, JSON.stringify(all));
+  } catch {
+    /* noop */
+  }
+}
+
 export function track(eventName: string, payload: TrackPayload = {}) {
   if (typeof window === "undefined") return;
   try {
@@ -25,10 +61,12 @@ export function track(eventName: string, payload: TrackPayload = {}) {
     window.dataLayer?.push({ event: eventName, ...payload });
     // Clarity custom tag — para filtrar heatmaps por evento
     window.clarity?.("set", eventName, JSON.stringify(payload).slice(0, 240));
+    persistEvent(eventName, payload);
   } catch {
     /* noop */
   }
 }
+
 
 export function trackConversion(name: string, payload: TrackPayload = {}) {
   track(name, { ...payload, is_conversion: true });
