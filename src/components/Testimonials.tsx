@@ -5,10 +5,10 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-import testimonial1 from "@/assets/testimonial-1.jpg";
-import testimonial2 from "@/assets/testimonial-2.jpg";
-import testimonial3 from "@/assets/testimonial-3.jpg";
-import testimonial4 from "@/assets/testimonial-4.jpg";
+import testimonial1 from "@/assets/testimonial-1.webp";
+import testimonial2 from "@/assets/testimonial-2.webp";
+import testimonial3 from "@/assets/testimonial-3.webp";
+import testimonial4 from "@/assets/testimonial-4.webp";
 
 const testimonials = [
   {

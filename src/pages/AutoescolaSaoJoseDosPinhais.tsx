@@ -8,7 +8,7 @@ import SEO from "@/components/SEO";
 import MobileStickyBar from "@/components/MobileStickyBar";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import { whatsappLink } from "@/lib/whatsapp";
-import fachada from "@/assets/fachada-aptos.jpg";
+import fachada from "@/assets/fachada-aptos.webp";
 
 const faqs = [
   {

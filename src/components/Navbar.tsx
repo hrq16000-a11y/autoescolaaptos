@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, MessageCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { whatsappLink } from "@/lib/whatsapp";
-import logo from "@/assets/logo.jpeg";
+import logo from "@/assets/logo.webp";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);

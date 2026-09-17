@@ -2,7 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import SEO from "@/components/SEO";
-import promoIndique from "@/assets/promo-indique-amigo.png";
+import promoIndique from "@/assets/promo-indique-amigo.webp";
 import { Button } from "@/components/ui/button";
 import { Users, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
