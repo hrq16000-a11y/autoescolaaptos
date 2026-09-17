@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { CheckCircle } from "lucide-react";
-import instructorImage from "@/assets/instructor-teaching.jpg";
-import classroomImage from "@/assets/classroom.jpg";
+import instructorImage from "@/assets/instructor-teaching.webp";
+import classroomImage from "@/assets/classroom.webp";
 
 const About = () => {
   const values = [

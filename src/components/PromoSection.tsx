@@ -2,12 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
-import promoAniversario from "@/assets/promo-aniversario.png";
-import promoIndique from "@/assets/promo-indique-amigo.png";
-import promoDiferenciais from "@/assets/promo-diferenciais.jpeg";
-import fachadaAptos from "@/assets/fachada-aptos.jpg";
-import carroAptos from "@/assets/carro-aptos.jpg";
-import cnhSuccess from "@/assets/cnh-success.jpg";
+import promoAniversario from "@/assets/promo-aniversario.webp";
+import promoIndique from "@/assets/promo-indique-amigo.webp";
+import promoDiferenciais from "@/assets/promo-diferenciais.webp";
+import fachadaAptos from "@/assets/fachada-aptos.webp";
+import carroAptos from "@/assets/carro-aptos.webp";
+import cnhSuccess from "@/assets/cnh-success.webp";
 import { Button } from "@/components/ui/button";
 
 const PromoSection = () => {

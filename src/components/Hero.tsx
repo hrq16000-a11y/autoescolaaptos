@@ -8,10 +8,10 @@ import { useVariant, trackExperimentConversion } from "@/lib/featureFlags";
 import Autoplay from "embla-carousel-autoplay";
 
 // Import slide images
-import heroSlide1 from "@/assets/hero-slide-1.png";
-import heroSlide2 from "@/assets/hero-slide-2.jpg";
-import heroSlide3 from "@/assets/hero-slide-3.jpg";
-import heroImage from "@/assets/hero-image.jpg";
+import heroSlide1 from "@/assets/hero-slide-1.webp";
+import heroSlide2 from "@/assets/hero-slide-2.webp";
+import heroSlide3 from "@/assets/hero-slide-3.webp";
+import heroImage from "@/assets/hero-image.webp";
 
 const slides = [
   {

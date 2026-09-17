@@ -5,7 +5,7 @@ import SEO from "@/components/SEO";
 import { track, trackConversion } from "@/lib/analytics";
 import { whatsappLink, DEFAULT_MESSAGES } from "@/lib/whatsapp";
 import { trackWhatsAppClick } from "@/lib/events";
-import heroImage from "@/assets/hero-image.jpg";
+import heroImage from "@/assets/hero-image.webp";
 
 /**
  * Landing page de campanha (tráfego pago) — /campanha

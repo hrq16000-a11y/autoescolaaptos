@@ -2,7 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import SEO from "@/components/SEO";
-import promoAniversario from "@/assets/promo-aniversario.png";
+import promoAniversario from "@/assets/promo-aniversario.webp";
 import { Button } from "@/components/ui/button";
 import { Gift, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
