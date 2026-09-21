@@ -21,12 +21,18 @@ const Footer = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <Link to="/" className="inline-block mb-4">
-              <img 
-                src={logo} 
-                alt="Autoescola APTOS - Centro de Formação de Condutores" 
-                className="h-12 w-auto object-contain brightness-0 invert"
-              />
+            <Link
+              to="/"
+              className="mb-5 inline-flex items-center rounded-lg bg-white px-3 py-2 shadow-sm"
+              aria-label="Autoescola APTOS - Início"
+            >
+              <div className="flex h-14 w-[180px] items-center justify-center overflow-hidden md:h-16 md:w-[210px]">
+                <img
+                  src={logo}
+                  alt="Autoescola APTOS - Centro de Formação de Condutores"
+                  className="h-full w-full origin-center scale-[1.35] object-contain md:scale-[1.45]"
+                />
+              </div>
             </Link>
             <p className="text-background/70 mb-4 max-w-md">
               Mais de 15 anos de experiência formando condutores qualificados em
