@@ -115,6 +115,11 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/carro-automatico" className="text-background/70 hover:text-primary transition-colors">
+                  Carro Automático
+                </Link>
+              </li>
+              <li>
                 <Link to="/exames-detran" className="text-background/70 hover:text-primary transition-colors">
                   Exames do DETRAN
                 </Link>
