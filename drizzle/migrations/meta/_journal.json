@@ -8,6 +8,13 @@
       "when": 1789965906511,
       "tag": "0000_create_campaign_events",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789966039484,
+      "tag": "0001_lock_campaign_events_direct_access",
+      "breakpoints": true
     }
   ]
 }
