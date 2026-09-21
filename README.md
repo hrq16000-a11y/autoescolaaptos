@@ -71,3 +71,8 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+
+## Identidade visual
+
+A identidade visual oficial e as regras de uso da marca estão documentadas em [IDENTIDADE_VISUAL.md](./IDENTIDADE_VISUAL.md). O asset canônico do portal é `src/assets/logo-aptos-2026.webp`.
