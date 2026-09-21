@@ -7,7 +7,7 @@ Priorização com foco em impacto financeiro (matrículas geradas).
 - [x] Publicar e validar `/carro-automatico` em celular e desktop
 - [x] Medir visualizações e cliques por campanha no painel administrativo
 - [x] Atualizar comunicação da frota e chamada da home
-- [ ] Publicar sitemap e testar WhatsApp com UTMs
+- [x] Publicar sitemap e testar WhatsApp com UTMs
 
 ## P0 — Fazer imediatamente (impacto direto em matrículas)
 
