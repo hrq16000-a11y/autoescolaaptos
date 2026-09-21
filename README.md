@@ -75,4 +75,4 @@ Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/c
 
 ## Identidade visual
 
-A identidade visual oficial e as regras de uso da marca estão documentadas em [IDENTIDADE_VISUAL.md](./IDENTIDADE_VISUAL.md). O asset canônico do portal é `src/assets/logo-aptos-2026.webp`.
+A identidade visual oficial e as regras de uso da marca estão documentadas em [IDENTIDADE_VISUAL.md](./IDENTIDADE_VISUAL.md). O asset canônico do portal é `src/assets/logo-aptos-2026-v2.webp`.
