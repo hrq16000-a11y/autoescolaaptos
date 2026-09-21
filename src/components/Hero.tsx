@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { useVariant, trackExperimentConversion } from "@/lib/featureFlags";
 import Autoplay from "embla-carousel-autoplay";
+import { Link } from "react-router-dom";
 
 // Import slide images
 import heroSlide1 from "@/assets/hero-slide-1.webp";
@@ -164,8 +165,21 @@ const Hero = () => {
             transition={{ delay: 0.4 }}
             className="text-xl md:text-2xl text-white/90 mb-8 font-medium"
           >
-            Autoescola APTOS — referência em São José dos Pinhais. Carros novos, curso online e atendimento rápido para tirar sua CNH sem complicação.
+            Autoescola APTOS — referência em São José dos Pinhais. Agora com moto e carro automático, curso online e atendimento rápido para tirar sua CNH sem complicação.
           </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.45 }}
+            className="mb-6"
+          >
+            <Button variant="secondary" asChild className="font-bold shadow-medium hover:-translate-y-0.5">
+              <Link to="/carro-automatico" data-component="HeroAutomaticoCTA" data-intent="internal">
+                Conheça as aulas em carro automático
+              </Link>
+            </Button>
+          </motion.div>
 
           {/* Trust pills */}
           <motion.div
@@ -175,7 +189,7 @@ const Hero = () => {
             className="flex flex-wrap gap-2 mb-8"
           >
             {[
-              "🚗 Carros novos",
+              "🚗 Carro manual e automático",
               "🎮 Simulador / direção elétrica",
               "📍 Próximo ao DETRAN",
               "💻 Curso 100% online",
@@ -202,7 +216,7 @@ const Hero = () => {
             {[
               "Instrutores credenciados pelo DETRAN-PR",
               "Promoções especiais e parcelamento facilitado",
-              "Aulas práticas em carros novos com direção elétrica",
+              "Aulas práticas com opções de carro manual e automático",
             ].map((item, index) => (
               <div key={index} className="flex items-center space-x-3">
                 <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />

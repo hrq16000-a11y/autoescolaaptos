@@ -51,7 +51,7 @@ export const SERVICOS: Record<string, ServicoData> = {
       },
       {
         title: "Aulas práticas com veículos compatíveis",
-        desc: "Motos (manual e automática) para a categoria A e carros manuais para a categoria B.",
+        desc: "Motos para a categoria A e opções de carro manual e automático nas aulas da categoria B.",
       },
       {
         title: "Acompanhamento do processo pelo WhatsApp",
@@ -86,7 +86,7 @@ export const SERVICOS: Record<string, ServicoData> = {
     ],
     diferenciais: [
       "+15 anos de tradição em São José dos Pinhais",
-      "Frota nova: carro manual e motos manual/automática",
+      "Frota nova: opções de carro manual e automático, além de motos",
       "Instrutores credenciados pelo DETRAN-PR",
       "95% de aprovação no DETRAN-PR",
     ],
@@ -403,7 +403,7 @@ export const SERVICOS: Record<string, ServicoData> = {
       },
       {
         q: "Os carros são automáticos ou manuais?",
-        a: "Temos carros manuais (padrão para o exame DETRAN-PR categoria B). Todos com direção elétrica para máximo conforto e segurança.",
+        a: "Temos opções de carro manual e automático. Nossa equipe orienta o veículo adequado ao seu objetivo e às regras do seu processo no DETRAN-PR.",
       },
       {
         q: "Como funciona a aula de baliza?",

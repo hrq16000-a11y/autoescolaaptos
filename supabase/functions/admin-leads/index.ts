@@ -46,6 +46,80 @@ Deno.serve(async (req) => {
     const from = url.searchParams.get("from"); // ISO date
     const to = url.searchParams.get("to");     // ISO date
 
+    if (action === "campaigns") {
+      const definitions = [
+        { campaign: "polo_automatico", label: "Polo automático", aliases: ["polo_automatico", "carro_automatico"] },
+        { campaign: "promocao_aniversario", label: "Promoção de aniversário", aliases: ["promocao_aniversario", "aniversario"] },
+        { campaign: "indique_amigo", label: "Indique um amigo", aliases: ["indique_amigo", "indicacao"] },
+        { campaign: "campanha_geral", label: "Campanha geral", aliases: ["campanha_geral", "campanha"] },
+      ];
+
+      let eventsQuery = admin
+        .from("campaign_events")
+        .select("campaign, event_type, device, utm_source, created_at");
+      let leadsQuery = admin
+        .from("triagem_leads")
+        .select("origem, utm_campaign, device, utm_source, created_at");
+      let optinsQuery = admin
+        .from("marketing_optin")
+        .select("campaign_source, created_at");
+      if (from) {
+        eventsQuery = eventsQuery.gte("created_at", from);
+        leadsQuery = leadsQuery.gte("created_at", from);
+        optinsQuery = optinsQuery.gte("created_at", from);
+      }
+      if (to) {
+        eventsQuery = eventsQuery.lte("created_at", to);
+        leadsQuery = leadsQuery.lte("created_at", to);
+        optinsQuery = optinsQuery.lte("created_at", to);
+      }
+
+      const [eventsResult, leadsResult, optinsResult] = await Promise.all([
+        eventsQuery.limit(20000),
+        leadsQuery.limit(10000),
+        optinsQuery.limit(10000),
+      ]);
+      const readError = eventsResult.error || leadsResult.error || optinsResult.error;
+      if (readError) return json({ error: "query_failed", message: readError.message }, 500);
+
+      const campaigns = definitions.map((definition) => {
+        const matches = (value: unknown) => {
+          const normalized = String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, "_");
+          return definition.aliases.some((alias) => normalized.includes(alias));
+        };
+        const events = (eventsResult.data ?? []).filter((row) => row.campaign === definition.campaign);
+        const leads = (leadsResult.data ?? []).filter((row) => matches(row.utm_campaign) || matches(row.origem));
+        const optins = (optinsResult.data ?? []).filter((row) => matches(row.campaign_source));
+        const views = events.filter((row) => row.event_type === "view").length;
+        const whatsappClicks = events.filter((row) => row.event_type === "whatsapp_click").length;
+        const byDevice: Record<string, number> = {};
+        const bySource: Record<string, number> = {};
+        events.forEach((row) => {
+          const deviceName = row.device || "não identificado";
+          const sourceName = row.utm_source || "direto";
+          byDevice[deviceName] = (byDevice[deviceName] || 0) + 1;
+          bySource[sourceName] = (bySource[sourceName] || 0) + 1;
+        });
+        leads.forEach((row) => {
+          const deviceName = row.device || "não identificado";
+          const sourceName = row.utm_source || "direto";
+          byDevice[deviceName] = (byDevice[deviceName] || 0) + 1;
+          bySource[sourceName] = (bySource[sourceName] || 0) + 1;
+        });
+        return {
+          campaign: definition.campaign,
+          label: definition.label,
+          views,
+          whatsappClicks,
+          leads: leads.length + optins.length,
+          clickRate: views ? whatsappClicks / views : 0,
+          byDevice,
+          bySource,
+        };
+      });
+      return json({ campaigns });
+    }
+
     // ---- Modo métricas: agrega contagens/taxas de conversão ----
     if (action === "metrics") {
       let q = admin.from("triagem_leads").select("status_funil, servico, device, utm_source, utm_campaign, created_at");

@@ -6,6 +6,7 @@ const links = [
   { to: "/admin/metricas", title: "Métricas do Funil", desc: "Conversão por etapa, UTMs e desempenho da triagem." },
   { to: "/admin/ofertas", title: "Programa de Ofertas", desc: "Opt-ins do /ofertas, sincronização com Google Sheets, retry e backfill." },
   { to: "/admin/growth", title: "Growth Dashboard", desc: "Visão consolidada de crescimento e KPIs." },
+  { to: "/admin/campanhas", title: "Campanhas", desc: "Visualizações, cliques no WhatsApp e leads separados por campanha." },
 ];
 
 export default function AdminIndex() {

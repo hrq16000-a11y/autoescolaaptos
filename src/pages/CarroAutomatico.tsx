@@ -5,6 +5,8 @@ import SocialProof from "@/components/SocialProof";
 import { track } from "@/lib/analytics";
 import { trackWhatsAppClick } from "@/lib/events";
 import { whatsappLink } from "@/lib/whatsapp";
+import { recordCampaignEvent, readCampaignUtms } from "@/lib/campaignTracking";
+import { Button } from "@/components/ui/button";
 import carroAptos from "@/assets/carro-aptos.webp";
 
 /**
@@ -48,18 +50,12 @@ const porQueAptos = [
 const CarroAutomatico = () => {
   const utm = useMemo(() => {
     if (typeof window === "undefined") return {};
-    const p = new URLSearchParams(window.location.search);
-    return {
-      utm_source: p.get("utm_source") ?? undefined,
-      utm_medium: p.get("utm_medium") ?? undefined,
-      utm_campaign: p.get("utm_campaign") ?? undefined,
-      utm_content: p.get("utm_content") ?? undefined,
-      utm_term: p.get("utm_term") ?? undefined,
-    };
+    return readCampaignUtms();
   }, []);
 
   useEffect(() => {
     track("campaign_view", { page_path: "/carro-automatico", campaign: "polo_automatico", ...utm });
+    recordCampaignEvent("polo_automatico", "view", "landing");
   }, [utm]);
 
   const waHref = whatsappLink(CAMPAIGN_MESSAGE, "direto");
@@ -67,21 +63,15 @@ const CarroAutomatico = () => {
   const handleWhats = (source: string) => {
     trackWhatsAppClick({ source, kind: "direto", service: "aulas_carro_automatico" });
     track("campaign_whatsapp_click", { source, campaign: "polo_automatico", ...utm });
+    recordCampaignEvent("polo_automatico", "whatsapp_click", source);
   };
 
   const WhatsCTA = ({ source, label = "Falar no WhatsApp", className = "" }: { source: string; label?: string; className?: string }) => (
-    <a
-      href={waHref}
-      target="_blank"
-      rel="noopener noreferrer"
-      onClick={() => handleWhats(source)}
-      data-component="CarroAutomaticoCTA"
-      data-intent="whatsapp"
-      className={`inline-flex items-center justify-center gap-2 min-h-[56px] px-7 rounded-lg bg-primary text-primary-foreground font-bold text-base tracking-wide uppercase hover:brightness-110 active:scale-[0.98] transition ${className}`}
-    >
-      <MessageCircle className="w-5 h-5" aria-hidden />
-      {label}
-    </a>
+    <Button asChild size="lg" className={`min-h-[56px] px-7 text-base font-bold uppercase hover:-translate-y-0.5 hover:shadow-glow active:scale-[0.98] ${className}`}>
+      <a href={waHref} target="_blank" rel="noopener noreferrer" onClick={() => handleWhats(source)} data-component="CarroAutomaticoCTA" data-intent="whatsapp">
+        <MessageCircle className="w-5 h-5" aria-hidden />{label}
+      </a>
+    </Button>
   );
 
   return (
@@ -90,6 +80,26 @@ const CarroAutomatico = () => {
         title="Aulas de direção em carro automático | Autoescola APTOS SJP"
         description="Aulas práticas em carro automático na Autoescola APTOS, em São José dos Pinhais, a 4 quadras do DETRAN. Instrutores credenciados ao DETRAN-PR. Fale agora no WhatsApp."
         canonical="/carro-automatico"
+        image="/og-image.png"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Service",
+              name: "Aulas práticas em carro automático",
+              url: "https://autoescolaaptos.com.br/carro-automatico",
+              areaServed: "São José dos Pinhais, PR",
+              provider: { "@type": "DrivingSchool", name: "Autoescola APTOS", telephone: "+5541991453627" },
+            },
+            {
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                { "@type": "ListItem", position: 1, name: "Início", item: "https://autoescolaaptos.com.br/" },
+                { "@type": "ListItem", position: 2, name: "Carro automático", item: "https://autoescolaaptos.com.br/carro-automatico" },
+              ],
+            },
+          ],
+        }}
       />
 
       <main>
@@ -101,7 +111,7 @@ const CarroAutomatico = () => {
             className="absolute inset-0 w-full h-full object-cover opacity-45"
             loading="eager"
             decoding="async"
-            {...({ fetchpriority: "high" } as Record<string, string>)}
+            fetchPriority="high"
           />
           <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/40" />
           <div className="relative container mx-auto px-4 py-16 md:py-24 max-w-3xl">

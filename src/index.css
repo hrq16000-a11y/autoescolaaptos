@@ -10,7 +10,7 @@
     --background: 0 0% 100%;
     --foreground: 220 15% 20%;
 
-    --primary: 24 95% 53%; /* Laranja vibrante APTOS */
+    --primary: 0 78% 48%; /* Vermelho APTOS — ações e destaques */
     --primary-foreground: 0 0% 100%;
     
     --secondary: 214 84% 56%; /* Azul confiança */
@@ -30,7 +30,7 @@
 
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 24 95% 53%;
+    --ring: 0 78% 48%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
@@ -38,14 +38,14 @@
     --radius: 0.75rem;
     
     /* Custom Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(24 95% 53%) 0%, hsl(14 90% 48%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(0 78% 48%) 0%, hsl(352 78% 38%) 100%);
     --gradient-overlay: linear-gradient(180deg, hsla(220 15% 20% / 0.7) 0%, hsla(220 15% 20% / 0.4) 100%);
     
     /* Shadows */
     --shadow-smooth: 0 2px 8px -2px hsla(220 15% 20% / 0.08);
     --shadow-medium: 0 4px 16px -4px hsla(220 15% 20% / 0.12);
     --shadow-large: 0 8px 32px -8px hsla(220 15% 20% / 0.16);
-    --shadow-glow: 0 0 24px hsla(24 95% 53% / 0.3);
+    --shadow-glow: 0 8px 24px -8px hsl(0 78% 48% / 0.45);
     
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -72,7 +72,7 @@
     --background: 220 18% 12%;
     --foreground: 0 0% 98%;
 
-    --primary: 24 95% 53%;
+    --primary: 0 76% 56%;
     --primary-foreground: 0 0% 100%;
     
     --secondary: 214 84% 56%;
@@ -92,7 +92,7 @@
 
     --border: 220 15% 25%;
     --input: 220 15% 25%;
-    --ring: 24 95% 53%;
+    --ring: 0 76% 56%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;

@@ -69,7 +69,7 @@ export const bestOf: { titulo: string; descricao: string }[] = [
   },
   {
     titulo: "Frota nova e instrutores experientes",
-    descricao: "Carros manuais revisados e motos preparadas para o exame prático.",
+    descricao: "Opções de carro manual e automático, além de motos preparadas para as aulas práticas.",
   },
   {
     titulo: "Alto índice de aprovação",

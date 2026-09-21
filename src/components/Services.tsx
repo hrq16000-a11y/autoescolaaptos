@@ -11,7 +11,7 @@ const Services = () => {
     {
       icon: GraduationCap,
       title: "Primeira Habilitação",
-      description: "Categoria A (moto manual ou automática) e B (carro manual) com aulas práticas e teóricas completas",
+      description: "Categoria A (moto) e B (carro), com opções manual e automática nas aulas práticas",
       features: [
         "Material didático incluso",
         "Curso teórico online (app CNH do Brasil)",
