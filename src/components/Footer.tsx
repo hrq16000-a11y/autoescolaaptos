@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { MapPin, MessageCircle, Facebook, Instagram } from "lucide-react";
 import { whatsappLink } from "@/lib/whatsapp";
-import logo from "@/assets/logo-aptos-2026.webp";
+import logo from "@/assets/logo-aptos-2026-v2.webp";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
