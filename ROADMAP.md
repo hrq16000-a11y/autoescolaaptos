@@ -2,6 +2,13 @@
 
 Priorização com foco em impacto financeiro (matrículas geradas).
 
+## Em execução — Campanha Polo automático
+
+- [ ] Publicar e validar `/carro-automatico` em celular e desktop
+- [ ] Medir visualizações e cliques por campanha no painel administrativo
+- [ ] Atualizar comunicação da frota e chamada da home
+- [ ] Publicar sitemap e testar WhatsApp com UTMs
+
 ## P0 — Fazer imediatamente (impacto direto em matrículas)
 
 | ID | Item | Impacto esperado | Métrica |
