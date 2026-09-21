@@ -4,7 +4,7 @@
 
 A identidade visual oficial do portal passa a usar o arquivo:
 
-`src/assets/logo-aptos-2026.webp`
+`src/assets/logo-aptos-2026-v2.webp`
 
 Esta versão foi aprovada em 21/09/2026 e combina:
 
@@ -14,7 +14,7 @@ Esta versão foi aprovada em 21/09/2026 e combina:
 - um elemento automotivo superior com silhueta e linhas de movimento;
 - composição horizontal otimizada para uso digital.
 
-O arquivo foi preparado em WebP com fundo transparente e dimensões adequadas para uso no portal.
+O arquivo foi preparado em WebP com fundo transparente e dimensões adequadas para uso no portal. Em 21/09/2026 o asset foi republicado como `logo-aptos-2026-v2.webp` após a identificação de corrupção binária no primeiro arquivo versionado; a versão v2 é a fonte canônica válida.
 
 ## Aplicação obrigatória
 
@@ -23,7 +23,7 @@ A logo oficial está aplicada em:
 - `src/components/Navbar.tsx` — cabeçalho global;
 - `src/components/Footer.tsx` — rodapé global.
 
-Novos componentes institucionais devem reutilizar `logo-aptos-2026.webp` em vez de criar cópias ou variantes locais sem necessidade.
+Novos componentes institucionais devem reutilizar `logo-aptos-2026-v2.webp` em vez de criar cópias ou variantes locais sem necessidade.
 
 ## Regras de uso
 
@@ -35,6 +35,7 @@ Novos componentes institucionais devem reutilizar `logo-aptos-2026.webp` em vez 
 6. Não aplicar `brightness-0`, `invert` ou filtros que alterem as cores oficiais.
 7. Não substituir a tipografia do wordmark APTOS por fonte genérica.
 8. Manter o arquivo legado `src/assets/logo.webp` apenas como referência histórica/rollback. Ele não deve ser usado em novas superfícies do portal.
+9. O arquivo quebrado `src/assets/logo-aptos-2026.webp` foi removido para impedir reutilização acidental.
 
 ## Tamanhos atuais
 
@@ -55,7 +56,7 @@ Novos componentes institucionais devem reutilizar `logo-aptos-2026.webp` em vez 
 
 A fonte canônica da identidade visual no código é:
 
-`src/assets/logo-aptos-2026.webp`
+`src/assets/logo-aptos-2026-v2.webp`
 
 Qualquer futura atualização de marca deve:
 
