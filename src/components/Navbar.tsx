@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, MessageCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { whatsappLink } from "@/lib/whatsapp";
-import logo from "@/assets/logo.webp";
+import logo from "@/assets/logo-aptos-2026.webp";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -59,13 +59,11 @@ const Navbar = () => {
             className="flex shrink-0 items-center"
             aria-label="Autoescola APTOS - Início"
           >
-            <div className="flex h-12 w-[132px] items-center justify-center overflow-hidden rounded-md bg-white px-1 shadow-sm md:h-14 md:w-[170px]">
-              <img
-                src={logo}
-                alt="Autoescola APTOS - Centro de Formação de Condutores"
-                className="h-full w-full origin-center scale-[1.35] object-contain md:scale-[1.45]"
-              />
-            </div>
+            <img
+              src={logo}
+              alt="Autoescola APTOS - Centro de Formação de Condutores"
+              className="h-12 w-auto max-w-[150px] object-contain md:h-14 md:max-w-[190px] lg:h-16 lg:max-w-[220px]"
+            />
           </Link>
 
           {/* Desktop Navigation */}
