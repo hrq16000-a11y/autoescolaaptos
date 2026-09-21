@@ -54,12 +54,18 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center">
-            <img 
-              src={logo} 
-              alt="Autoescola APTOS - Centro de Formação de Condutores" 
-              className="h-10 md:h-12 w-auto object-contain"
-            />
+          <Link
+            to="/"
+            className="flex shrink-0 items-center"
+            aria-label="Autoescola APTOS - Início"
+          >
+            <div className="flex h-12 w-[132px] items-center justify-center overflow-hidden rounded-md bg-white px-1 shadow-sm md:h-14 md:w-[170px]">
+              <img
+                src={logo}
+                alt="Autoescola APTOS - Centro de Formação de Condutores"
+                className="h-full w-full origin-center scale-[1.35] object-contain md:scale-[1.45]"
+              />
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
