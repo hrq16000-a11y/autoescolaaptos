@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-09-03T21:52:56.811Z",
+  "generatedAt": "2026-09-21T04:47:05.274Z",
   "summary": {
     "errors": 0,
     "warnings": 2,
-    "sitemapUrls": 47,
-    "pagesChecked": 39,
-    "pagesOk": 32
+    "sitemapUrls": 48,
+    "pagesChecked": 41,
+    "pagesOk": 33
   },
   "previous": {
-    "generatedAt": "2026-09-03T21:52:43.343Z",
+    "generatedAt": "2026-09-03T21:52:56.811Z",
     "summary": {
       "errors": 0,
       "warnings": 2,
-      "sitemapUrls": 46,
+      "sitemapUrls": 47,
       "pagesChecked": 39,
       "pagesOk": 32
     }
@@ -128,6 +128,16 @@
     },
     {
       "file": "src/pages/Campanha.tsx",
+      "hasSeo": true,
+      "hasHelmet": false,
+      "hasTitle": true,
+      "hasDesc": true,
+      "hasCanonical": true,
+      "noindex": false,
+      "ok": true
+    },
+    {
+      "file": "src/pages/CarroAutomatico.tsx",
       "hasSeo": true,
       "hasHelmet": false,
       "hasTitle": true,
@@ -405,6 +415,16 @@
       "hasCanonical": true,
       "noindex": false,
       "ok": true
+    },
+    {
+      "file": "src/pages/admin/AdminCampanhas.tsx",
+      "hasSeo": false,
+      "hasHelmet": true,
+      "hasTitle": true,
+      "hasDesc": false,
+      "hasCanonical": false,
+      "noindex": true,
+      "ok": false
     },
     {
       "file": "src/pages/admin/AdminIndex.tsx",
