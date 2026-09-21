@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { MapPin, MessageCircle, Facebook, Instagram } from "lucide-react";
 import { whatsappLink } from "@/lib/whatsapp";
-import logo from "@/assets/logo.webp";
+import logo from "@/assets/logo-aptos-2026.webp";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -26,13 +26,11 @@ const Footer = () => {
               className="mb-5 inline-flex items-center rounded-lg bg-white px-3 py-2 shadow-sm"
               aria-label="Autoescola APTOS - Início"
             >
-              <div className="flex h-14 w-[180px] items-center justify-center overflow-hidden md:h-16 md:w-[210px]">
-                <img
-                  src={logo}
-                  alt="Autoescola APTOS - Centro de Formação de Condutores"
-                  className="h-full w-full origin-center scale-[1.35] object-contain md:scale-[1.45]"
-                />
-              </div>
+              <img
+                src={logo}
+                alt="Autoescola APTOS - Centro de Formação de Condutores"
+                className="h-auto w-[220px] object-contain md:w-[260px]"
+              />
             </Link>
             <p className="text-background/70 mb-4 max-w-md">
               Mais de 15 anos de experiência formando condutores qualificados em
