@@ -98,7 +98,7 @@ const CarroAutomatico = () => {
             className="absolute inset-0 w-full h-full object-cover opacity-45"
             loading="eager"
             decoding="async"
-            fetchPriority="high"
+            {...({ fetchpriority: "high" } as Record<string, string>)}
           />
           <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/40" />
           <div className="relative container mx-auto px-4 py-16 md:py-24 max-w-3xl">
