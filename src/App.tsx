@@ -50,6 +50,8 @@ const Login = lazy(() => import("./pages/Login"));
 const OAuthConsent = lazy(() => import("./pages/OAuthConsent"));
 const Ofertas = lazy(() => import("./pages/Ofertas"));
 const Campanha = lazy(() => import("./pages/Campanha"));
+const CarroAutomatico = lazy(() => import("./pages/CarroAutomatico"));
+const AdminCampanhas = lazy(() => import("./pages/admin/AdminCampanhas"));
 import ScrollToTop from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
@@ -115,10 +117,12 @@ const AppRoutes = () => {
         <Route path="/admin/leads" element={<AdminLeads />} />
         <Route path="/admin/metricas" element={<AdminMetricas />} />
         <Route path="/admin/ofertas" element={<AdminOptin />} />
+        <Route path="/admin/campanhas" element={<AdminCampanhas />} />
         <Route path="/login" element={<Login />} />
         <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
         <Route path="/ofertas" element={<Ofertas />} />
         <Route path="/campanha" element={<Campanha />} />
+        <Route path="/carro-automatico" element={<CarroAutomatico />} />
         {/* Legacy URL redirects — mapa central em src/lib/legacyRedirects.ts */}
         {LEGACY_REDIRECTS.map((r) => (
           <Route key={r.from} path={r.from} element={<Navigate to={r.to} replace />} />

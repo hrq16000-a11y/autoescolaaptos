@@ -74,6 +74,54 @@ export type Database = {
         }
         Relationships: []
       }
+      campaign_events: {
+        Row: {
+          anon_id: string | null
+          campaign: string
+          created_at: string
+          device: string | null
+          event_type: string
+          id: string
+          page_path: string
+          source: string | null
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+        }
+        Insert: {
+          anon_id?: string | null
+          campaign: string
+          created_at?: string
+          device?: string | null
+          event_type: string
+          id?: string
+          page_path: string
+          source?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+        }
+        Update: {
+          anon_id?: string | null
+          campaign?: string
+          created_at?: string
+          device?: string | null
+          event_type?: string
+          id?: string
+          page_path?: string
+          source?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+        }
+        Relationships: []
+      }
       marketing_optin: {
         Row: {
           campaign_source: string | null

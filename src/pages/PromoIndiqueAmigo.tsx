@@ -6,9 +6,25 @@ import promoIndique from "@/assets/promo-indique-amigo.webp";
 import { Button } from "@/components/ui/button";
 import { Users, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import { useEffect } from "react";
+import { whatsappLink as buildWhatsAppLink } from "@/lib/whatsapp";
+import { track } from "@/lib/analytics";
+import { trackWhatsAppClick } from "@/lib/events";
+import { recordCampaignEvent, readCampaignUtms } from "@/lib/campaignTracking";
 
 const PromoIndiqueAmigo = () => {
-  const whatsappLink = "https://wa.me/5541991453627?text=Olá! Quero saber mais sobre a promoção Indique um Amigo!";
+  const whatsappLink = buildWhatsAppLink("Olá! Quero saber mais sobre a promoção Indique um Amigo!", "direto");
+
+  useEffect(() => {
+    const utms = readCampaignUtms();
+    track("campaign_view", { campaign: "indique_amigo", ...utms });
+    recordCampaignEvent("indique_amigo", "view", "landing");
+  }, []);
+
+  const handleWhatsApp = () => {
+    trackWhatsAppClick({ source: "indique_amigo", kind: "direto", service: "promocao_indicacao" });
+    recordCampaignEvent("indique_amigo", "whatsapp_click", "cta_principal");
+  };
 
   return (
     <main className="min-h-screen">
@@ -74,7 +90,7 @@ const PromoIndiqueAmigo = () => {
               </div>
 
               <Button size="lg" className="text-lg px-8" asChild>
-                <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
+                 <a href={whatsappLink} target="_blank" rel="noopener noreferrer" onClick={handleWhatsApp} data-component="PromoIndiqueAmigoCTA" data-intent="whatsapp">
                   Quero indicar um amigo!
                 </a>
               </Button>

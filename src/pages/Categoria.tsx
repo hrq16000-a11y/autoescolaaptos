@@ -60,11 +60,11 @@ const CATEGORIAS: Record<Slug, CategoriaData> = {
     nome: "Categoria B — Carro",
     icon: Car,
     hero: "CNH Categoria B em São José dos Pinhais",
-    subtitle: "Habilitação para carros, utilitários e veículos de passeio até 3.500 kg. Aulas práticas em carros novos com direção elétrica.",
+    subtitle: "Habilitação para carros, utilitários e veículos de passeio até 3.500 kg. Aulas práticas com opções de carro manual e automático.",
     veiculos: "Carros, SUVs, utilitários e veículos de passeio de até 3.500 kg e até 8 passageiros.",
     idadeMin: "18 anos completos",
     beneficios: [
-      "Aulas em carros novos com direção elétrica",
+      "Opções de aulas em carro manual e automático",
       "Instrutores credenciados pelo DETRAN-PR",
       "Treino de baliza no padrão atual do exame",
       "Curso teórico 100% online pelo app CNH do Brasil",

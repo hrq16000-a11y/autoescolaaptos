@@ -93,7 +93,7 @@ export const faqData: FAQItem[] = [
   {
     category: "Categoria B",
     question: "Os carros de aula são manuais ou automáticos?",
-    answer: "Manuais — pois o exame DETRAN-PR exige veículo manual para categoria B. Carros novos, com direção elétrica."
+    answer: "A APTOS oferece aulas em carro manual e também em carro automático. A equipe orienta qual opção atende ao seu objetivo e às regras aplicáveis ao seu processo."
   },
   {
     category: "Categoria B",
