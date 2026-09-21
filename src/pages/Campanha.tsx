@@ -6,6 +6,7 @@ import { track, trackConversion } from "@/lib/analytics";
 import { whatsappLink, DEFAULT_MESSAGES } from "@/lib/whatsapp";
 import { trackWhatsAppClick } from "@/lib/events";
 import heroImage from "@/assets/hero-image.webp";
+import { recordCampaignEvent, readCampaignUtms } from "@/lib/campaignTracking";
 
 /**
  * Landing page de campanha (tráfego pago) — /campanha
@@ -34,7 +35,9 @@ const planos = [
 
 const Campanha = () => {
   useEffect(() => {
-    track("campaign_view", { page_path: "/campanha" });
+    const utms = readCampaignUtms();
+    track("campaign_view", { page_path: "/campanha", campaign: "campanha_geral", ...utms });
+    recordCampaignEvent("campanha_geral", "view", "landing");
   }, []);
 
   const goOfertas = (source: string) => {
@@ -84,7 +87,10 @@ const Campanha = () => {
                 href={whatsappLink(DEFAULT_MESSAGES.funil, "funil")}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => trackWhatsAppClick({ source: "campanha_hero", kind: "funil" })}
+                onClick={() => {
+                  trackWhatsAppClick({ source: "campanha_hero", kind: "funil" });
+                  recordCampaignEvent("campanha_geral", "whatsapp_click", "hero");
+                }}
                 className="inline-flex items-center justify-center gap-2 min-h-[56px] px-7 rounded-xl bg-[#25D366] hover:bg-[#20BA5A] text-white font-bold text-base transition"
               >
                 Falar com a APTOS

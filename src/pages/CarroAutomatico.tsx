@@ -19,19 +19,6 @@ import carroAptos from "@/assets/carro-aptos.webp";
 const CAMPAIGN_MESSAGE =
   "Olá! Vim pelo anúncio do Polo automático da Autoescola APTOS e gostaria de saber mais sobre as aulas.";
 
-/** Tokens da campanha — sobrescrevem o tema apenas dentro desta página. */
-const campaignTheme = {
-  "--background": "0 0% 7%",
-  "--foreground": "0 0% 100%",
-  "--card": "0 0% 11%",
-  "--card-foreground": "0 0% 100%",
-  "--primary": "0 84% 48%",
-  "--primary-foreground": "0 0% 100%",
-  "--muted": "0 0% 14%",
-  "--muted-foreground": "0 0% 72%",
-  "--border": "0 0% 20%",
-} as React.CSSProperties;
-
 const diferenciaisCarro = [
   { icon: Car, titulo: "Câmbio automático", texto: "Aulas práticas em veículo de câmbio automático, sem embreagem e sem troca de marchas." },
   { icon: GraduationCap, titulo: "Instrutores credenciados", texto: "Acompanhamento de instrutores credenciados ao DETRAN-PR durante todas as aulas." },
@@ -75,7 +62,7 @@ const CarroAutomatico = () => {
   );
 
   return (
-    <div style={campaignTheme} className="bg-background text-foreground">
+    <div className="campaign-automatico bg-background text-foreground">
       <SEO
         title="Aulas de direção em carro automático | Autoescola APTOS SJP"
         description="Aulas práticas em carro automático na Autoescola APTOS, em São José dos Pinhais, a 4 quadras do DETRAN. Instrutores credenciados ao DETRAN-PR. Fale agora no WhatsApp."

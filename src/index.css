@@ -130,6 +130,18 @@
 }
 
 @layer utilities {
+  .campaign-automatico {
+    --background: 0 0% 7%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 11%;
+    --card-foreground: 0 0% 100%;
+    --primary: 0 84% 48%;
+    --primary-foreground: 0 0% 100%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 72%;
+    --border: 0 0% 20%;
+  }
+
   .gradient-hero {
     background: var(--gradient-hero);
   }
