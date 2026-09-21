@@ -97,7 +97,7 @@ const campaignFaq = [
   {
     question: "Como saber se o carro automático se aplica ao meu processo?",
     answer:
-      "As regras podem variar conforme o tipo e a etapa do processo. A equipe da APTOS orienta seu caso antes do agendamento, sem inventar promessa de aprovação ou resultado.",
+      "As regras podem variar conforme o tipo e a etapa do processo. A equipe da APTOS orienta seu caso antes do agendamento e confirma a opção de veículo adequada ao seu processo.",
   },
 ];
 
@@ -377,10 +377,10 @@ const CarroAutomatico = () => {
                 Uma opção a mais dentro das suas aulas práticas
               </h2>
               <p className="mt-4 text-muted-foreground">
-                A página do carro automático não é um serviço separado da Autoescola
-                APTOS. Ela apresenta uma das opções de veículo disponíveis dentro da
-                estrutura de aulas práticas e direciona você para as demais etapas do
-                site quando necessário.
+                O carro automático faz parte das opções de aulas práticas da Autoescola
+                APTOS. Você pode conhecer esta modalidade aqui e continuar pelas páginas
+                de primeira habilitação, aulas práticas, reteste ou orçamento conforme o
+                que precisar.
               </p>
             </div>
 
