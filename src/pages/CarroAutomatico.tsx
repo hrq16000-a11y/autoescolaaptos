@@ -1,28 +1,48 @@
 import { useEffect, useMemo } from "react";
-import { MessageCircle, MapPin, ShieldCheck, Car, GraduationCap, CalendarClock, Star } from "lucide-react";
+import { Link } from "react-router-dom";
+import {
+  ArrowRight,
+  BookOpen,
+  CalendarClock,
+  Car,
+  CheckCircle2,
+  GraduationCap,
+  MapPin,
+  MessageCircle,
+  RefreshCw,
+  ShieldCheck,
+} from "lucide-react";
 import SEO from "@/components/SEO";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import RelatedLinks from "@/components/RelatedLinks";
 import SocialProof from "@/components/SocialProof";
+import { Button } from "@/components/ui/button";
 import { track } from "@/lib/analytics";
 import { trackWhatsAppClick } from "@/lib/events";
 import { whatsappLink } from "@/lib/whatsapp";
 import { recordCampaignEvent, readCampaignUtms } from "@/lib/campaignTracking";
-import { Button } from "@/components/ui/button";
 import carroAptos from "@/assets/carro-aptos.webp";
-
-/**
- * Landing page de tráfego pago (Meta Ads) — /carro-automatico
- * Objetivo único: converter o clique do anúncio em conversa no WhatsApp.
- * Reutiliza SEO, SocialProof, camada de analytics e o WhatsApp oficial do projeto.
- * Paleta da campanha (vermelho/preto/branco) aplicada via tokens escopados nesta rota.
- */
 
 const CAMPAIGN_MESSAGE =
   "Olá! Vim pelo anúncio do Polo automático da Autoescola APTOS e gostaria de saber mais sobre as aulas.";
 
 const diferenciaisCarro = [
-  { icon: Car, titulo: "Câmbio automático", texto: "Aulas práticas em veículo de câmbio automático, sem embreagem e sem troca de marchas." },
-  { icon: GraduationCap, titulo: "Instrutores credenciados", texto: "Acompanhamento de instrutores credenciados ao DETRAN-PR durante todas as aulas." },
-  { icon: CalendarClock, titulo: "Agenda flexível", texto: "Aulas nos períodos manhã, tarde e noite, conforme disponibilidade da agenda." },
+  {
+    icon: Car,
+    titulo: "Câmbio automático",
+    texto: "Aulas práticas em veículo de câmbio automático, sem pedal de embreagem e sem troca manual de marchas.",
+  },
+  {
+    icon: GraduationCap,
+    titulo: "Instrutores credenciados",
+    texto: "Acompanhamento de instrutores credenciados ao DETRAN-PR durante as aulas.",
+  },
+  {
+    icon: CalendarClock,
+    titulo: "Agenda flexível",
+    texto: "Aulas nos períodos manhã, tarde e noite, conforme disponibilidade da agenda.",
+  },
 ];
 
 const porQueAptos = [
@@ -31,7 +51,77 @@ const porQueAptos = [
   "Aulas práticas com instrutores credenciados",
   "Acompanhamento de cada etapa do processo pelo WhatsApp",
   "Atendimento em São José dos Pinhais, a 4 quadras do DETRAN",
-  "Também atendemos aulas avulsas e reteste prático",
+  "Aulas avulsas e preparação para reteste prático",
+];
+
+const caminhos = [
+  {
+    icon: BookOpen,
+    titulo: "Primeira habilitação",
+    texto: "Conheça o processo completo e confirme com a equipe como a opção de carro automático se aplica ao seu caso.",
+    href: "/primeira-habilitacao",
+    cta: "Ver primeira habilitação",
+  },
+  {
+    icon: Car,
+    titulo: "Aulas práticas",
+    texto: "Veja como funcionam as aulas, horários, preparação e as opções de veículo disponíveis na APTOS.",
+    href: "/aulas-praticas-direcao",
+    cta: "Ver aulas práticas",
+  },
+  {
+    icon: RefreshCw,
+    titulo: "Reteste prático",
+    texto: "Se o foco é se preparar para um reteste, consulte o serviço e confirme com a equipe o veículo aplicável ao seu processo.",
+    href: "/reteste-pratico",
+    cta: "Ver reteste prático",
+  },
+];
+
+const campaignFaq = [
+  {
+    question: "A APTOS oferece carro manual e automático?",
+    answer:
+      "Sim. A APTOS oferece opções de carro manual e automático nas aulas práticas. A equipe orienta qual alternativa atende ao seu objetivo e às regras aplicáveis ao seu processo.",
+  },
+  {
+    question: "Posso fazer aulas em carro automático mesmo já sendo habilitado?",
+    answer:
+      "A APTOS também atende aulas avulsas. Fale com a equipe pelo WhatsApp para explicar seu objetivo e confirmar agenda e disponibilidade.",
+  },
+  {
+    question: "Onde ficam as aulas da APTOS?",
+    answer:
+      "A Autoescola APTOS atende em São José dos Pinhais, PR, e fica a 4 quadras do DETRAN.",
+  },
+  {
+    question: "Como saber se o carro automático se aplica ao meu processo?",
+    answer:
+      "As regras podem variar conforme o tipo e a etapa do processo. A equipe da APTOS orienta seu caso antes do agendamento, sem inventar promessa de aprovação ou resultado.",
+  },
+];
+
+const relatedLinks = [
+  {
+    title: "Aulas práticas de direção",
+    href: "/aulas-praticas-direcao",
+    description: "Entenda a metodologia, horários e preparação para as aulas práticas.",
+  },
+  {
+    title: "Primeira habilitação",
+    href: "/primeira-habilitacao",
+    description: "Veja as etapas do processo para conquistar a primeira CNH.",
+  },
+  {
+    title: "Autoescola em São José dos Pinhais",
+    href: "/autoescola-sao-jose-dos-pinhais",
+    description: "Conheça a APTOS, localização e serviços disponíveis na cidade.",
+  },
+  {
+    title: "Simular orçamento",
+    href: "/orcamento",
+    description: "Informe o que você precisa e avance para um atendimento mais direcionado.",
+  },
 ];
 
 const CarroAutomatico = () => {
@@ -41,186 +131,471 @@ const CarroAutomatico = () => {
   }, []);
 
   useEffect(() => {
-    track("campaign_view", { page_path: "/carro-automatico", campaign: "polo_automatico", ...utm });
+    track("campaign_view", {
+      page_path: "/carro-automatico",
+      campaign: "polo_automatico",
+      ...utm,
+    });
     recordCampaignEvent("polo_automatico", "view", "landing");
   }, [utm]);
 
   const waHref = whatsappLink(CAMPAIGN_MESSAGE, "direto");
 
   const handleWhats = (source: string) => {
-    trackWhatsAppClick({ source, kind: "direto", service: "aulas_carro_automatico" });
-    track("campaign_whatsapp_click", { source, campaign: "polo_automatico", ...utm });
+    trackWhatsAppClick({
+      source,
+      kind: "direto",
+      service: "aulas_carro_automatico",
+    });
+    track("campaign_whatsapp_click", {
+      source,
+      campaign: "polo_automatico",
+      ...utm,
+    });
     recordCampaignEvent("polo_automatico", "whatsapp_click", source);
   };
 
-  const WhatsCTA = ({ source, label = "Falar no WhatsApp", className = "" }: { source: string; label?: string; className?: string }) => (
-    <Button asChild size="lg" className={`min-h-[56px] px-7 text-base font-bold uppercase hover:-translate-y-0.5 hover:shadow-glow active:scale-[0.98] ${className}`}>
-      <a href={waHref} target="_blank" rel="noopener noreferrer" onClick={() => handleWhats(source)} data-component="CarroAutomaticoCTA" data-intent="whatsapp">
-        <MessageCircle className="w-5 h-5" aria-hidden />{label}
+  const WhatsCTA = ({
+    source,
+    label = "Falar no WhatsApp",
+    className = "",
+  }: {
+    source: string;
+    label?: string;
+    className?: string;
+  }) => (
+    <Button
+      asChild
+      size="lg"
+      className={
+        "min-h-[54px] px-7 text-base font-bold hover:-translate-y-0.5 hover:shadow-glow active:translate-y-0 " +
+        className
+      }
+    >
+      <a
+        href={waHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => handleWhats(source)}
+        data-component="CarroAutomaticoCTA"
+        data-intent="whatsapp"
+      >
+        <MessageCircle className="w-5 h-5" aria-hidden />
+        {label}
       </a>
     </Button>
   );
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "DrivingSchool",
+        "@id": "https://autoescolaaptos.com.br/#drivingschool",
+        name: "Autoescola APTOS",
+        url: "https://autoescolaaptos.com.br/",
+        telephone: "+5541991453627",
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "São José dos Pinhais",
+          addressRegion: "PR",
+          addressCountry: "BR",
+        },
+      },
+      {
+        "@type": "Service",
+        name: "Aulas práticas em carro automático",
+        url: "https://autoescolaaptos.com.br/carro-automatico",
+        areaServed: {
+          "@type": "City",
+          name: "São José dos Pinhais",
+        },
+        provider: {
+          "@id": "https://autoescolaaptos.com.br/#drivingschool",
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Início",
+            item: "https://autoescolaaptos.com.br/",
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Aulas práticas",
+            item: "https://autoescolaaptos.com.br/aulas-praticas-direcao",
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: "Carro automático",
+            item: "https://autoescolaaptos.com.br/carro-automatico",
+          },
+        ],
+      },
+      {
+        "@type": "FAQPage",
+        mainEntity: campaignFaq.map((item) => ({
+          "@type": "Question",
+          name: item.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: item.answer,
+          },
+        })),
+      },
+    ],
+  };
+
   return (
-    <div className="campaign-automatico bg-background text-foreground">
+    <>
       <SEO
         title="Aulas de direção em carro automático | Autoescola APTOS SJP"
-        description="Aulas práticas em carro automático na Autoescola APTOS, em São José dos Pinhais, a 4 quadras do DETRAN. Instrutores credenciados ao DETRAN-PR. Fale agora no WhatsApp."
+        description="Aulas práticas em carro automático na Autoescola APTOS, em São José dos Pinhais. Conheça a opção automática, tire dúvidas e fale com a equipe pelo WhatsApp."
         canonical="/carro-automatico"
         image="/og-image.png"
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@graph": [
-            {
-              "@type": "Service",
-              name: "Aulas práticas em carro automático",
-              url: "https://autoescolaaptos.com.br/carro-automatico",
-              areaServed: "São José dos Pinhais, PR",
-              provider: { "@type": "DrivingSchool", name: "Autoescola APTOS", telephone: "+5541991453627" },
-            },
-            {
-              "@type": "BreadcrumbList",
-              itemListElement: [
-                { "@type": "ListItem", position: 1, name: "Início", item: "https://autoescolaaptos.com.br/" },
-                { "@type": "ListItem", position: 2, name: "Carro automático", item: "https://autoescolaaptos.com.br/carro-automatico" },
-              ],
-            },
-          ],
-        }}
+        jsonLd={jsonLd}
       />
 
-      <main>
-        {/* HERO */}
-        <section className="relative">
-          <img
-            src={carroAptos}
-            alt="Veículo da Autoescola APTOS usado nas aulas práticas em São José dos Pinhais"
-            className="absolute inset-0 w-full h-full object-cover opacity-45"
-            loading="eager"
-            decoding="async"
-            {...({ fetchpriority: "high" } as Record<string, string>)}
-          />
-          <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/40" />
-          <div className="relative container mx-auto px-4 py-16 md:py-24 max-w-3xl">
-            <p className="text-xs md:text-sm font-bold uppercase tracking-[0.2em] text-primary">
-              Autoescola APTOS
-            </p>
-            <h1 className="mt-3 text-3xl md:text-5xl font-extrabold leading-[1.1] uppercase">
-              Aprenda a dirigir em <span className="text-primary">carro automático</span>
-            </h1>
-            <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-xl">
-              A APTOS agora oferece aulas práticas em veículo de câmbio automático, em São José
-              dos Pinhais. Fale com a nossa equipe e tire suas dúvidas sobre as aulas.
-            </p>
-            <div className="mt-8">
-              <WhatsCTA source="hero" />
-            </div>
-            <p className="mt-4 text-sm text-muted-foreground">
-              Atendimento direto pelo WhatsApp oficial da autoescola.
-            </p>
-          </div>
-        </section>
+      <Navbar />
 
-        {/* CARRO AUTOMÁTICO */}
-        <section aria-labelledby="carro" className="border-t border-border py-14 md:py-20">
-          <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-10 items-center">
-            <img
-              src={carroAptos}
-              alt="Carro da Autoescola APTOS para aulas práticas de direção"
-              className="w-full rounded-lg object-cover aspect-[4/3]"
-              loading="lazy"
-              decoding="async"
-            />
-            <div>
-              <h2 id="carro" className="text-2xl md:text-4xl font-extrabold uppercase">
-                Uma nova experiência para <span className="text-primary">suas aulas práticas</span>
-              </h2>
-              <p className="mt-4 text-muted-foreground">
-                No câmbio automático você não usa embreagem nem troca marchas, o que deixa a
-                condução mais simples e permite concentrar a atenção no trânsito.
-              </p>
-              <ul className="mt-8 space-y-5">
-                {diferenciaisCarro.map(({ icon: Icon, titulo, texto }) => (
-                  <li key={titulo} className="flex gap-4">
-                    <Icon className="w-6 h-6 text-primary shrink-0 mt-0.5" aria-hidden />
-                    <div>
-                      <h3 className="font-bold">{titulo}</h3>
-                      <p className="text-sm text-muted-foreground">{texto}</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-8">
-                <WhatsCTA source="secao_carro" label="Quero saber mais" />
+      <main className="min-h-screen bg-background pt-20">
+        <section className="campaign-automatico relative overflow-hidden border-b border-border bg-background text-foreground">
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.18),transparent_38%)]"
+          />
+          <div className="relative container mx-auto px-4 py-10 md:py-16 lg:py-20">
+            <nav className="mb-8" aria-label="Breadcrumb">
+              <ol className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                <li>
+                  <Link to="/" className="hover:text-primary transition-colors">
+                    Início
+                  </Link>
+                </li>
+                <li aria-hidden>/</li>
+                <li>
+                  <Link
+                    to="/aulas-praticas-direcao"
+                    className="hover:text-primary transition-colors"
+                  >
+                    Aulas práticas
+                  </Link>
+                </li>
+                <li aria-hidden>/</li>
+                <li className="font-medium text-foreground">Carro automático</li>
+              </ol>
+            </nav>
+
+            <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-primary">
+                  <Car className="h-4 w-4" aria-hidden />
+                  Aulas práticas · Autoescola APTOS
+                </div>
+
+                <h1 className="mt-5 max-w-3xl text-4xl font-heading font-black leading-[1.05] md:text-5xl lg:text-6xl">
+                  Aprenda a dirigir em{" "}
+                  <span className="text-primary">carro automático</span>
+                </h1>
+
+                <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
+                  A opção de carro automático faz parte das aulas práticas da APTOS.
+                  Você continua dentro da estrutura completa da autoescola, com
+                  orientação da equipe, instrutores credenciados e atendimento em São
+                  José dos Pinhais.
+                </p>
+
+                <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                  <WhatsCTA source="hero" />
+                  <Button
+                    asChild
+                    size="lg"
+                    variant="outline"
+                    className="min-h-[54px] border-border bg-card/70 hover:bg-card"
+                  >
+                    <Link to="/aulas-praticas-direcao">
+                      Ver todas as aulas práticas
+                      <ArrowRight className="h-4 w-4" aria-hidden />
+                    </Link>
+                  </Button>
+                </div>
+
+                <ul className="mt-7 grid gap-3 text-sm sm:grid-cols-2">
+                  {[
+                    "Opções de carro manual e automático",
+                    "Instrutores credenciados pelo DETRAN-PR",
+                    "Atendimento em São José dos Pinhais",
+                    "WhatsApp oficial da Autoescola APTOS",
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-2 text-muted-foreground">
+                      <CheckCircle2
+                        className="mt-0.5 h-4 w-4 shrink-0 text-primary"
+                        aria-hidden
+                      />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="relative">
+                <div className="absolute -inset-3 rounded-[2rem] bg-primary/10 blur-2xl" aria-hidden />
+                <figure className="relative overflow-hidden rounded-3xl border border-border bg-card shadow-2xl">
+                  <img
+                    src={carroAptos}
+                    alt="Veículo da Autoescola APTOS usado nas aulas práticas em São José dos Pinhais"
+                    className="aspect-[4/3] w-full object-cover"
+                    loading="eager"
+                    decoding="async"
+                    {...({ fetchpriority: "high" } as Record<string, string>)}
+                  />
+                  <figcaption className="border-t border-border bg-card px-5 py-4 text-sm text-muted-foreground">
+                    Frota APTOS para aulas práticas. Consulte a equipe para confirmar
+                    agenda e disponibilidade do veículo automático.
+                  </figcaption>
+                </figure>
               </div>
             </div>
           </div>
         </section>
 
-        {/* POR QUE A APTOS */}
-        <section aria-labelledby="porque" className="bg-muted/50 border-y border-border py-14 md:py-20">
-          <div className="container mx-auto px-4 max-w-4xl">
-            <h2 id="porque" className="text-2xl md:text-4xl font-extrabold uppercase text-center">
-              Por que fazer suas aulas na <span className="text-primary">APTOS</span>?
-            </h2>
-            <ul className="mt-10 grid sm:grid-cols-2 gap-4">
-              {porQueAptos.map((item) => (
-                <li key={item} className="flex items-start gap-3 rounded-lg border border-border bg-card p-4">
-                  <ShieldCheck className="w-5 h-5 text-primary shrink-0 mt-0.5" aria-hidden />
-                  <span className="text-sm font-medium">{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
+        <section aria-labelledby="experiencia-automatico" className="py-14 md:py-20">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-primary">
+                Carro automático na APTOS
+              </p>
+              <h2
+                id="experiencia-automatico"
+                className="mt-3 text-3xl font-heading font-black md:text-4xl"
+              >
+                Uma opção a mais dentro das suas aulas práticas
+              </h2>
+              <p className="mt-4 text-muted-foreground">
+                A página do carro automático não é um serviço separado da Autoescola
+                APTOS. Ela apresenta uma das opções de veículo disponíveis dentro da
+                estrutura de aulas práticas e direciona você para as demais etapas do
+                site quando necessário.
+              </p>
+            </div>
 
-        {/* LOCALIZAÇÃO */}
-        <section aria-labelledby="local" className="py-14 md:py-20">
-          <div className="container mx-auto px-4 max-w-3xl text-center">
-            <MapPin className="w-8 h-8 text-primary mx-auto" aria-hidden />
-            <h2 id="local" className="mt-4 text-2xl md:text-3xl font-extrabold uppercase">
-              Autoescola APTOS — São José dos Pinhais, PR
-            </h2>
-            <p className="mt-3 text-muted-foreground">
-              Estamos a apenas 4 quadras do DETRAN de São José dos Pinhais, o que facilita todas as
-              etapas do seu processo.
-            </p>
-            <div className="mt-8">
-              <WhatsCTA source="localizacao" label="Falar no WhatsApp" />
+            <div className="mx-auto mt-10 grid max-w-5xl gap-5 md:grid-cols-3">
+              {diferenciaisCarro.map(({ icon: Icon, titulo, texto }) => (
+                <article
+                  key={titulo}
+                  className="rounded-2xl border border-border bg-card p-6 shadow-smooth transition-all hover:-translate-y-1 hover:shadow-medium"
+                >
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+                    <Icon className="h-6 w-6 text-primary" aria-hidden />
+                  </div>
+                  <h3 className="mt-5 text-xl font-heading font-bold">{titulo}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    {texto}
+                  </p>
+                </article>
+              ))}
+            </div>
+
+            <div className="mt-9 text-center">
+              <WhatsCTA source="secao_carro" label="Consultar aulas no automático" />
             </div>
           </div>
         </section>
 
-        {/* PROVA SOCIAL (dados já existentes no site) */}
+        <section
+          aria-labelledby="caminhos"
+          className="border-y border-border bg-muted/50 py-14 md:py-20"
+        >
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-primary">
+                Continue pelo site
+              </p>
+              <h2 id="caminhos" className="mt-3 text-3xl font-heading font-black md:text-4xl">
+                Encontre o caminho certo para o seu objetivo
+              </h2>
+              <p className="mt-4 text-muted-foreground">
+                Se você ainda está decidindo qual etapa precisa, use os atalhos abaixo.
+                Eles levam para as páginas principais da APTOS, sem criar um fluxo
+                paralelo.
+              </p>
+            </div>
+
+            <div className="mx-auto mt-10 grid max-w-6xl gap-5 lg:grid-cols-3">
+              {caminhos.map(({ icon: Icon, titulo, texto, href, cta }) => (
+                <article
+                  key={titulo}
+                  className="flex h-full flex-col rounded-2xl border border-border bg-card p-6 shadow-smooth"
+                >
+                  <Icon className="h-7 w-7 text-primary" aria-hidden />
+                  <h3 className="mt-4 text-xl font-heading font-bold">{titulo}</h3>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
+                    {texto}
+                  </p>
+                  <Link
+                    to={href}
+                    className="mt-5 inline-flex items-center gap-2 font-bold text-primary hover:underline"
+                  >
+                    {cta}
+                    <ArrowRight className="h-4 w-4" aria-hidden />
+                  </Link>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="porque-aptos" className="py-14 md:py-20">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-4xl">
+              <div className="text-center">
+                <h2
+                  id="porque-aptos"
+                  className="text-3xl font-heading font-black md:text-4xl"
+                >
+                  Por que fazer suas aulas na <span className="text-primary">APTOS</span>?
+                </h2>
+                <p className="mt-4 text-muted-foreground">
+                  Os pontos abaixo já fazem parte da comunicação e da estrutura atual da
+                  autoescola.
+                </p>
+              </div>
+
+              <ul className="mt-10 grid gap-4 sm:grid-cols-2">
+                {porQueAptos.map((item) => (
+                  <li
+                    key={item}
+                    className="flex items-start gap-3 rounded-xl border border-border bg-card p-4"
+                  >
+                    <ShieldCheck
+                      className="mt-0.5 h-5 w-5 shrink-0 text-primary"
+                      aria-hidden
+                    />
+                    <span className="text-sm font-medium">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="localizacao" className="pb-14 md:pb-20">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-border bg-foreground text-background">
+              <div className="grid gap-8 p-7 md:grid-cols-[1fr_auto] md:items-center md:p-10">
+                <div>
+                  <div className="flex items-center gap-2 text-primary">
+                    <MapPin className="h-5 w-5" aria-hidden />
+                    <span className="text-sm font-bold uppercase tracking-[0.14em]">
+                      São José dos Pinhais · PR
+                    </span>
+                  </div>
+                  <h2 id="localizacao" className="mt-3 text-2xl font-heading font-black md:text-3xl">
+                    Autoescola APTOS, a 4 quadras do DETRAN
+                  </h2>
+                  <p className="mt-3 max-w-2xl text-sm leading-relaxed text-background/70">
+                    Veja a página institucional da APTOS para conhecer localização,
+                    serviços e outras informações antes de falar com a equipe.
+                  </p>
+                </div>
+                <Button asChild variant="secondary" size="lg">
+                  <Link to="/autoescola-sao-jose-dos-pinhais">
+                    Conhecer a APTOS
+                    <ArrowRight className="h-4 w-4" aria-hidden />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <SocialProof variant="compact" />
 
-        {/* CTA FINAL */}
-        <section className="border-t border-border py-16 text-center">
-          <div className="container mx-auto px-4 max-w-2xl">
-            <div className="flex justify-center gap-1 text-primary" aria-hidden>
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="w-5 h-5 fill-current" />
-              ))}
-            </div>
-            <h2 className="mt-4 text-2xl md:text-4xl font-extrabold uppercase">
-              Pronto para começar suas aulas em <span className="text-primary">carro automático</span>?
-            </h2>
-            <p className="mt-3 text-muted-foreground">
-              Fale agora com a equipe da APTOS pelo WhatsApp e tire suas dúvidas.
-            </p>
-            <div className="mt-8">
-              <WhatsCTA source="cta_final" />
+        <section aria-labelledby="faq-automatico" className="py-14 md:py-20">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-3xl">
+              <div className="text-center">
+                <p className="text-sm font-bold uppercase tracking-[0.16em] text-primary">
+                  Dúvidas frequentes
+                </p>
+                <h2
+                  id="faq-automatico"
+                  className="mt-3 text-3xl font-heading font-black md:text-4xl"
+                >
+                  Antes de agendar suas aulas
+                </h2>
+              </div>
+
+              <div className="mt-8 divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
+                {campaignFaq.map((item) => (
+                  <details key={item.question} className="group p-5 open:bg-muted/30">
+                    <summary className="cursor-pointer list-none font-bold marker:hidden">
+                      <span className="flex items-center justify-between gap-4">
+                        {item.question}
+                        <span
+                          aria-hidden
+                          className="text-xl text-primary transition-transform group-open:rotate-45"
+                        >
+                          +
+                        </span>
+                      </span>
+                    </summary>
+                    <p className="mt-3 pr-8 text-sm leading-relaxed text-muted-foreground">
+                      {item.answer}
+                    </p>
+                  </details>
+                ))}
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Barra fixa mobile */}
-        <div aria-hidden className="h-20 md:hidden" />
-        <div className="md:hidden fixed bottom-0 inset-x-0 z-40 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] bg-background/95 backdrop-blur border-t border-border">
-          <WhatsCTA source="sticky_mobile" className="w-full" />
-        </div>
+        <RelatedLinks title="Continue navegando pela APTOS" links={relatedLinks} />
+
+        <section className="border-t border-border bg-primary py-14 text-primary-foreground md:py-16">
+          <div className="container mx-auto px-4 text-center">
+            <div className="mx-auto max-w-2xl">
+              <h2 className="text-3xl font-heading font-black md:text-4xl">
+                Quer saber se o carro automático atende ao que você precisa?
+              </h2>
+              <p className="mt-4 text-primary-foreground/80">
+                Fale com a equipe da APTOS. A conversa já identifica que você veio pela
+                página do carro automático.
+              </p>
+              <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+                <WhatsCTA
+                  source="cta_final"
+                  className="bg-background text-foreground hover:bg-background/90"
+                />
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="min-h-[54px] border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                >
+                  <Link to="/orcamento">
+                    Simular orçamento
+                    <ArrowRight className="h-4 w-4" aria-hidden />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
-    </div>
+
+      <Footer />
+
+      <div aria-hidden className="h-20 bg-foreground md:hidden" />
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur md:hidden">
+        <WhatsCTA source="sticky_mobile" className="w-full" />
+      </div>
+    </>
   );
 };
 
