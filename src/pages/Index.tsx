@@ -6,11 +6,8 @@ import ProcessoHabilitacao from "@/components/ProcessoHabilitacao";
 import PromoSection from "@/components/PromoSection";
 import Services from "@/components/Services";
 import Differentials from "@/components/Differentials";
-import SocialProof from "@/components/SocialProof";
 import GoogleReviews from "@/components/GoogleReviews";
-import Testimonials from "@/components/Testimonials";
 import HomeFAQ from "@/components/HomeFAQ";
-import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import About from "@/components/About";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
@@ -61,11 +58,6 @@ const Index = () => {
           addressLocality: "São José dos Pinhais",
           addressRegion: "PR",
           addressCountry: "BR",
-        },
-        aggregateRating: {
-          "@type": "AggregateRating",
-          ratingValue: "4.9",
-          reviewCount: "320",
         },
         areaServed: { "@type": "City", name: "São José dos Pinhais" },
       },
@@ -124,7 +116,7 @@ const Index = () => {
     <main className="min-h-screen">
       <SEO
         title="Autoescola em São José dos Pinhais | APTOS — CNH, Aulas e Reciclagem"
-        description="Autoescola APTOS em São José dos Pinhais: primeira habilitação, inclusão de categoria, reciclagem, reteste e aulas práticas. 4,9★ no Google e +5.000 alunos aprovados."
+        description="Autoescola APTOS em São José dos Pinhais: primeira habilitação, inclusão de categoria, reciclagem, reteste e aulas práticas. Solicite seu orçamento."
         canonical="/"
         jsonLd={homeJsonLd}
       />
@@ -163,10 +155,7 @@ const Index = () => {
       <PromoSection />
       <Services />
       <Differentials />
-      <TestimonialsCarousel />
-      <SocialProof />
       <GoogleReviews />
-      <Testimonials />
       <About />
       <HomeFAQ />
       <Contact />
