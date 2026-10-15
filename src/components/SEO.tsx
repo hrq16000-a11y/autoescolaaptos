@@ -60,8 +60,8 @@ const SEO = ({
       "Rio Pequeno"
     ],
     "sameAs": [
-      "https://www.instagram.com/autoescolaaptos",
-      "https://www.facebook.com/autoescolaaptos"
+      "https://www.instagram.com/autoescola_aptos/",
+      "https://www.facebook.com/cfcAutoescolaAPTOS/"
     ]
   };
 
