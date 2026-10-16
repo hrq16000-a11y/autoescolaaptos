@@ -95,7 +95,7 @@ const STORAGE_KEY = "aptos:1contato:draft:v1";
 
 const UmContato = () => {
   const [step, setStep] = useState(0);
-  const [resp, setResp] = useState<Respostas>({ lgpd: true, aceita_whats: true });
+  const [resp, setResp] = useState<Respostas>({ lgpd: false, aceita_whats: true });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
@@ -134,7 +134,15 @@ const UmContato = () => {
         const saved = JSON.parse(raw) as { resp?: Respostas; step?: number; ts?: number };
         // ignora rascunho > 7 dias
         if (saved.ts && Date.now() - saved.ts < 7 * 24 * 3600 * 1000) {
-          if (saved.resp) setResp((prev) => ({ ...prev, ...saved.resp }));
+          if (saved.resp) {
+            // Restaura somente escolhas não identificadoras. Consentimento
+            // deve ser renovado; nunca recuperar nome, telefone ou e-mail.
+            const { experiencia, conhece, servico, categoria, prazo } = saved.resp;
+            setResp((prev) => ({
+              ...prev, experiencia, conhece, servico, categoria, prazo,
+              lgpd: false,
+            }));
+          }
           if (typeof saved.step === "number" && saved.step >= 0 && saved.step < TOTAL_STEPS) {
             setStep(saved.step);
             setRestored(true);
@@ -150,7 +158,18 @@ const UmContato = () => {
     try {
       localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify({ resp, step, ts: Date.now() })
+        JSON.stringify({
+          // Rascunho anônimo: não gravar PII nem consentimento no localStorage.
+          resp: {
+            experiencia: resp.experiencia,
+            conhece: resp.conhece,
+            servico: resp.servico,
+            categoria: resp.categoria,
+            prazo: resp.prazo,
+          },
+          step,
+          ts: Date.now(),
+        })
       );
     } catch { /* noop */ }
   }, [resp, step, done]);
@@ -304,24 +323,27 @@ const UmContato = () => {
       ...utms,
     };
 
-    // Envia via edge function (aplica honeypot + rate-limit por IP + webhook opcional).
-    // Fallback silencioso para insert direto se a função ainda não estiver publicada.
+    // Só confirmar e iniciar o WhatsApp após receber comprovante de gravação.
+    // A função aplica rate-limit, LGPD e deduplicação; não contornar via insert direto.
     try {
-      const { error } = await supabase.functions.invoke("submit-triagem", { body: payload });
+      const { data, error } = await supabase.functions.invoke("submit-triagem", { body: payload });
       if (error) throw error;
+      const receipt = data as { ok?: boolean; id?: string; skipped?: boolean } | null;
+      if (receipt?.ok !== true || receipt.skipped || typeof receipt.id !== "string" || !receipt.id) {
+        throw new Error("persistence_not_confirmed");
+      }
     } catch (err) {
-      // Fallback best-effort — nunca bloquear o handoff do WhatsApp por falha de rede.
+      // Manter respostas preenchidas para que a pessoa possa tentar novamente.
+      // Nenhum evento de conversão nem redirect é disparado sem confirmação.
       const msg = String((err as { message?: string })?.message || "");
-      if (msg.includes("429") || msg.toLowerCase().includes("rate")) {
-        setSubmitError("Muitas tentativas em pouco tempo. Aguarde um instante e tente novamente.");
-        setSubmitting(false);
-        return;
-      }
-      try {
-        await supabase.from("triagem_leads").insert(payload as never);
-      } catch {
-        /* silent */
-      }
+      const isRateLimit = msg.includes("429") || msg.toLowerCase().includes("rate_limit");
+      setSubmitError(
+        isRateLimit
+          ? "Muitas tentativas em pouco tempo. Aguarde um instante e tente novamente."
+          : "Não foi possível confirmar seu pedido agora. Tente novamente; suas respostas continuam nesta página."
+      );
+      setSubmitting(false);
+      return;
     }
 
     // Analytics — Lead event + custom
@@ -334,7 +356,13 @@ const UmContato = () => {
       value: 10,
       currency: "BRL",
     });
-    track("triagem_complete", payload as unknown as Record<string, unknown>);
+    // Analytics sem nome, telefone, e-mail, IP, agente ou referência pessoal.
+    track("triagem_complete", {
+      funnel: "1contato",
+      servico: payload.servico,
+      categoria: payload.categoria,
+      prazo: payload.prazo,
+    });
 
     try {
       const { addSignal } = await import("@/lib/leadScore");
@@ -471,7 +499,7 @@ const UmContato = () => {
                 type="button"
                 onClick={() => {
                   try { localStorage.removeItem(STORAGE_KEY); } catch { /* noop */ }
-                  setResp({ lgpd: true, aceita_whats: true });
+                  setResp({ lgpd: false, aceita_whats: true });
                   setStep(0);
                   setRestored(false);
                 }}
@@ -719,7 +747,7 @@ const UmContato = () => {
                         Autorizo a <strong>Autoescola APTOS</strong> a utilizar meus dados
                         para contato, envio do orçamento e informações relacionadas aos
                         serviços, conforme a <strong>LGPD</strong>. Meus dados jamais serão
-                        compartilhados com terceiros.
+                        tratados para atender à sua solicitação, conforme a legislação de proteção de dados.
                       </span>
                     </label>
                     <FieldError message={errors.lgpd} />
