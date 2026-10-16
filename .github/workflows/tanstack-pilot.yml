@@ -1,0 +1,22 @@
+name: TanStack pilot
+on:
+  push:
+    paths: ['migration/tanstack/**', '.github/workflows/tanstack-pilot.yml']
+  pull_request:
+    paths: ['migration/tanstack/**', '.github/workflows/tanstack-pilot.yml']
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: migration/tanstack/package-lock.json
+      - run: npm ci --prefix migration/tanstack --no-audit --no-fund
+      - run: npm run build --prefix migration/tanstack
+      - run: npm run typecheck --prefix migration/tanstack
