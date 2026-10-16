@@ -13,6 +13,11 @@ test('home hydrates, opens funnel and navigates without a full reload', async ({
     elements: [...document.querySelectorAll('body *')].filter(el => el.getBoundingClientRect().right > window.innerWidth + 1).slice(0, 12).map(el => ({ tag: el.tagName, className: String(el.className), right: el.getBoundingClientRect().right })),
   }));
   expect(overflow.width, JSON.stringify(overflow)).toBeLessThanOrEqual(overflow.viewport + 1);
+  // Evidência visual do layout SSR/hidratado; nunca envia formulários ou mensagens.
+  await test.info().attach('aptos-home-viewport', {
+    body: await page.screenshot({ animations: 'disabled' }),
+    contentType: 'image/png',
+  });
   await page.locator('button[data-intent="funil"]').first().click();
   await expect(page.getByRole('dialog')).toBeVisible();
   await page.keyboard.press('Escape');
@@ -34,11 +39,19 @@ test('blog and neighborhood routes render and navigate', async ({ page }) => {
  page.on('pageerror', error => errors.push(error.message));
  await page.goto('/blog');
  await expect(page.getByRole('heading', { level: 1 })).toContainText('Blog');
+ await test.info().attach('aptos-blog-viewport', {
+   body: await page.screenshot({ animations: 'disabled' }),
+   contentType: 'image/png',
+ });
  await page.locator('a[href="/blog/o-que-e-direcao-defensiva"]').first().click();
  await expect(page).toHaveURL(/\/blog\/o-que-e-direcao-defensiva$/);
  await expect(page.getByRole('heading', { level: 1 })).toContainText('Direção Defensiva');
  await page.goto('/bairros/centro');
  await expect(page.getByRole('heading', { level: 1 })).toContainText('Centro');
+ await test.info().attach('aptos-bairro-centro-viewport', {
+   body: await page.screenshot({ animations: 'disabled' }),
+   contentType: 'image/png',
+ });
  const missing = await page.goto('/bairros/nao-existe');
  expect(missing?.status()).toBe(404);
  expect(errors).toEqual([]);
