@@ -56,3 +56,38 @@ test('blog and neighborhood routes render and navigate', async ({ page }) => {
  expect(missing?.status()).toBe(404);
  expect(errors).toEqual([]);
 });
+
+test('quote funnel validates WhatsApp destination without contacting anyone', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  // No WhatsApp request, popup, form submission or external navigation is made.
+  const response = await page.goto('/orcamento');
+  expect(response?.status()).toBe(200);
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('orçamento');
+  await expect(page).toHaveTitle(/Solicitar Orçamento de CNH/);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
+  await page.getByRole('button', { name: /^Carro\s*→$/ }).click();
+  await page.getByRole('button', { name: /^Hoje\s*→$/ }).click();
+  await page.getByRole('button', { name: /^Nunca\s*→$/ }).click();
+  const checkout = page.getByRole('link', { name: /Receber meu orçamento agora/i });
+  await expect(checkout).toBeVisible();
+  const href = await checkout.getAttribute('href');
+  expect(href).toBeTruthy();
+  const destination = new URL(href!);
+  expect(destination.origin).toBe('https://api.whatsapp.com');
+  expect(destination.pathname).toBe('/send');
+  expect(destination.searchParams.get('phone')).toBe('554133833627');
+  const message = destination.searchParams.get('text') || '';
+  expect(message).toContain('Categoria desejada: Carro');
+  expect(message).toContain('Quero iniciar: Hoje');
+  expect(message).toContain('Experiência ao volante: Nunca dirigi');
+  const directLinks = page.locator('a[href*="api.whatsapp.com/send?phone=5541991453627"]');
+  await expect(directLinks.first()).toBeAttached();
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
+  await test.info().attach('aptos-quote-final-viewport', {
+    body: await page.screenshot({ animations: 'disabled' }),
+    contentType: 'image/png',
+  });
+  expect(errors).toEqual([]);
+});

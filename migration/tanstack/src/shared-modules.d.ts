@@ -92,3 +92,13 @@ declare module '@/pages/NotFound' {
  import type { FunctionComponent } from 'react';
  const Page: FunctionComponent; export default Page;
 }
+
+declare module '@/pages/Orcamento' {
+  import type { FunctionComponent } from 'react';
+  const Page: FunctionComponent;
+  export default Page;
+}
+
+declare module '@/lib/analytics' {
+  export function track(eventName: string, payload?: Record<string, unknown>): void;
+}

@@ -93,3 +93,25 @@ implantação pública definitiva sem revisão de SEO.
 
 O processo acima é um checklist de liberação; **não** executa troca de
 hospedagem ou rollback automaticamente.
+
+## Rodada 8 — simulação do funil e pré-produção independente
+
+O piloto agora monta `/orcamento` por SSR reutilizando a página legada,
+sem mudar a home pública nem o número ou a mensagem do WhatsApp. O Playwright
+verifica as 3 respostas e inspeciona o `href` final (triagem
+`554133833627`) com desktop e celular, sem clicar, enviar lead,
+abrir WhatsApp ou escrever em serviços externos.
+
+O ambiente segue **sem hospedagem de pré-produção externa configurada**.
+Para disponibilizá-lo por domínio independente antes do corte, escolher
+primeiro um provedor com suporte real a SSR/Node 22 e preview privado,
+configurar um runtime seguro (o adaptador `serve-production.mjs` atual
+serve somente para CI/local), HTTPS, variáveis públicas estritamente
+necessárias, logs sem dados pessoais, autenticação e `noindex` com
+confirmação pelo cabeçalho/HTML. Não duplicar chaves privilegiadas nem
+assumir compatibilidade do login Lovable/Supabase sem testes.
+
+O ponto de retorno continua sendo a aplicação Vite já hospedada:
+nenhuma troca de DNS/hosting ocorre nesta rodada. Antes do corte real:
+validar formulários, consentimento OAuth, páginas ainda não migradas,
+funil completo, CTR de CTAs, analytics, SEO e evidências visuais.

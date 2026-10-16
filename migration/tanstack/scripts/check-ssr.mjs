@@ -15,7 +15,7 @@ assert.ok(css.includes('.min-h-screen'), 'Missing generated Tailwind utilities')
 assert.ok(!/@tailwind|@apply/.test(css), 'Unprocessed Tailwind directives');
 console.log('PASS FAQ SSR, metadata, JSON-LD and generated CSS');
 
-for (const path of ['/primeira-habilitacao', '/exames-detran', '/resolucao-1020-2025', '/formas-estudo-teorico', '/aulas-praticas-direcao', '/por-que-autoescola-credenciada', '/carro-automatico']) {
+for (const path of ['/orcamento', '/primeira-habilitacao', '/exames-detran', '/resolucao-1020-2025', '/formas-estudo-teorico', '/aulas-praticas-direcao', '/por-que-autoescola-credenciada', '/carro-automatico']) {
   const response = await server.fetch(new Request(`http://localhost:3001${path}`));
   const html = await response.text();
   assert.equal(response.status, 200);
@@ -37,6 +37,15 @@ for (const expected of ['Conquiste Sua', 'CNH', 'Conhecer carro automático', 'W
 assert.ok(!homeHtml.includes('ambiente de validação'));
 assert.ok(homeHtml.includes('api.whatsapp.com/send'));
 console.log('PASS home SSR, structured data and WhatsApp links');
+
+// A página de orçamento mantém SEO e conteúdo SSR, mas permanece noindex no piloto.
+const quote = await server.fetch(new Request('http://localhost:3001/orcamento'));
+const quoteHtml = await quote.text();
+assert.equal(quote.status, 200);
+for (const expected of ['Monte seu', 'orçamento', 'noindex, nofollow', 'https://autoescolaaptos.com.br/orcamento']) {
+  assert.ok(quoteHtml.includes(expected), `Quote SSR missing: ${expected}`);
+}
+
 
 for (const path of ['/blog', '/blog/o-que-e-direcao-defensiva', '/bairros', '/bairros/centro']) {
  const response = await server.fetch(new Request(`http://localhost:3001${path}`));

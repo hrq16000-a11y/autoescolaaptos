@@ -9,6 +9,7 @@ export default defineConfig({
     dedupe: ['react', 'react-dom'],
     alias: [
       { find: '@/components/SEO', replacement: local('./src/legacy-seo.tsx') },
+      { find: '@/lib/featureFlags', replacement: local('./src/pilot-feature-flags.ts') },
       { find: 'react-router-dom', replacement: local('./src/router-compat.tsx') },
       { find: '@', replacement: local('../../src') },
     ],
