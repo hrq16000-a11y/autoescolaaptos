@@ -3,7 +3,7 @@ import { useLocation as useTanStackLocation } from '@tanstack/react-router';
 
 // Transitional bridge for the first reused page. Unmigrated links keep opening
 // the existing public site instead of landing on a pilot 404.
-const migrated = new Set(['/', '/perguntas-frequentes']);
+const migrated = new Set(['/', '/perguntas-frequentes', '/primeira-habilitacao', '/exames-detran', '/resolucao-1020-2025']);
 type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & { to: string };
 export const Link = forwardRef<HTMLAnchorElement, LinkProps>(({ to, ...props }, ref) => {
   const path = to.split(/[?#]/)[0];
