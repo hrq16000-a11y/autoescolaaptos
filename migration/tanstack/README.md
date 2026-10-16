@@ -348,28 +348,20 @@ Esse é um teste de interface com serviços externos simulados,
 As áreas de gravação continuam exclusivamente no portal oficial.
 
 
-## Rodada 18 — SQL real em banco descartável e preparação do OAuth
 
-Um job `rpc-contract` no GitHub Actions executa a migração
-`submit_triagem` do repositório em um **PostgreSQL 16 temporário**,
-não no banco da Autoescola. Testa rejeição de honeypot,
-consentimento ausente, submissão rápida e nome inválido;
-criação de registro com `ok/id/action`; deduplicação por telefone;
-preservação de `status_funil=won`; bloqueio por IP após cinco
-novos registros. O teste roda em transação com `ROLLBACK`.
+## Rodada 18 — login seguro e contrato do banco consolidado
 
-O login mantém os fluxos existentes de e-mail, Google e OAuth,
-mas o destino `?next=` agora passa pelo utilitário
-`safeNext.mjs`, testado em Node: somente caminhos relativos
-à origem oficial são aceitos, rejeitando URLs externas,
-protocol-relative, barras invertidas, controle e encoding
-ambíguo no caminho. O código de OAuth do Lovable/Supabase
-e suas credenciais **não** foram migrados.
+A PR #33 já integrou o teste abrangente do contrato SQL da triagem
+em PostgreSQL 16 descartável, cobrindo permissões da RPC, deduplicação,
+LGPD, recibos, rate-limit e status. Evitar duplicar essa suíte.
 
-Limitação explícita: essa suíte valida a lógica SQL versionada,
-mas não valida conectividade/roles da base real, webhooks,
-nem autenticação com contas verdadeiras. Antes de remover
-a dependência do Lovable, homologar o provedor OAuth,
-os callbacks autorizados, cookies, sessões, CSRF,
-acesso administrativo, recuperação de senha e LGPD
-em ambiente privado com usuários e credenciais de teste.
+A PR #34 complementa a R18 protegendo `/login?next=`: o utilitário
+`safeNext.mjs` aceita apenas caminhos internos da origem oficial;
+rejeita URLs externas, protocol-relative, barras invertidas,
+caracteres de controle e encoding ambíguo. `test-safe-next.mjs`
+exercita casos válidos e ataques de redirecionamento no Build CI.
+
+A autenticação, o consentimento OAuth e as contas continuam
+exclusivamente no site oficial. Migrar para TanStack só após homologar
+callbacks, sessões, cookies, CSRF, controle de acesso administrativo,
+recuperação de senha e autorização em ambiente privado.
