@@ -98,3 +98,7 @@ declare module '@/pages/Orcamento' {
   const Page: FunctionComponent;
   export default Page;
 }
+
+declare module '@/lib/analytics' {
+  export function track(eventName: string, payload?: Record<string, unknown>): void;
+}
