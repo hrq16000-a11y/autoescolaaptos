@@ -64,7 +64,8 @@ const missingNeighborhood = await server.fetch(new Request('http://localhost:300
 assert.equal(missingNeighborhood.status, 404);
 console.log('PASS missing article redirect and neighborhood HTTP 404');
 
-\n// O piloto não implementa autenticação, OAuth, área administrativa nem
+
+// O piloto não implementa autenticação, OAuth, área administrativa nem
 // a confirmação de conversão. Evita que um novo route handler exponha esses
 // caminhos sem validação de segurança e sem migração explícita.
 for (const path of [
