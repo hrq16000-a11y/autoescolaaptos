@@ -11,9 +11,9 @@ export default defineConfig({
     { name: 'mobile', use: { ...devices['iPhone 13'], defaultBrowserType: 'chromium' } },
   ],
   webServer: {
-    command: 'npm run dev -- --host 127.0.0.1',
+    command: 'npm run serve:production',
     url: 'http://127.0.0.1:3001',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
     timeout: 60000,
   },
 });
