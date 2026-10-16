@@ -1,9 +1,9 @@
 name: TanStack pilot
 on:
   push:
-    paths: ['migration/tanstack/**', '.github/workflows/tanstack-pilot.yml']
+    paths: ['migration/tanstack/**', '.github/workflows/tanstack-pilot.yml', 'src/pages/UmContato.tsx']
   pull_request:
-    paths: ['migration/tanstack/**', '.github/workflows/tanstack-pilot.yml']
+    paths: ['migration/tanstack/**', '.github/workflows/tanstack-pilot.yml', 'src/pages/UmContato.tsx']
 permissions:
   contents: read
 jobs:
@@ -57,3 +57,26 @@ jobs:
         run: VERCEL=1 npm run build --prefix migration/tanstack
       - name: Assert serverless output and protected staging
         run: node migration/tanstack/scripts/check-vercel-package.mjs
+
+  triage-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm ci --prefix migration/tanstack --no-audit --no-fund
+      - run: npm run build
+      - run: ./migration/tanstack/node_modules/.bin/playwright install --with-deps chromium
+      - run: npm run test:triage --prefix migration/tanstack
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: triage-browser-failures
+          path: |
+            migration/tanstack/playwright-report-triagem
+            migration/tanstack/test-results-triagem
+          retention-days: 7
