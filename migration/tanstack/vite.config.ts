@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'node:url';
 const local = (path: string) => fileURLToPath(new URL(path, import.meta.url));
 export default defineConfig({
+  envDir: local('../../'),
   resolve: {
     dedupe: ['react', 'react-dom'],
     alias: [

@@ -115,7 +115,7 @@ const Index = () => {
   ];
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen overflow-x-clip">
       <SEO
         title="Autoescola em São José dos Pinhais | APTOS — CNH, Aulas e Reciclagem"
         description="Autoescola APTOS em São José dos Pinhais: primeira habilitação, inclusão de categoria, reciclagem, reteste e aulas práticas. Solicite seu orçamento."

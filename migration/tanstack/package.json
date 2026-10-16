@@ -2,8 +2,28 @@
   "name": "aptos-tanstack-migration",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=22.12.0" },
-  "scripts": { "dev": "vite --port 3001", "build": "vite build", "typecheck": "tsc --noEmit", "check:ssr": "node scripts/check-ssr.mjs" },
-  "dependencies": { "@tanstack/react-start": "1.169.2", "@tanstack/react-router": "1.170.44", "react": "18.3.1", "react-dom": "18.3.1" },
-  "devDependencies": { "vite": "^8.0.0", "@vitejs/plugin-react": "^6.0.0", "typescript": "~5.8.3", "@types/react": "^18.3.23", "@types/react-dom": "^18.3.7", "@types/node": "^22.16.5" }
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "vite --port 3001",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "check:ssr": "node scripts/check-ssr.mjs", "test:browser": "playwright test", "serve:production": "node scripts/serve-production.mjs"
+  },
+  "dependencies": {
+    "@tanstack/react-router": "1.170.44",
+    "@tanstack/react-start": "1.169.2",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@types/node": "^22.16.5",
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^6.0.0",
+    "typescript": "~5.8.3",
+    "vite": "^8.0.0"
+  }
 }
