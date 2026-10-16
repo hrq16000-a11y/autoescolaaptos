@@ -146,3 +146,36 @@ Não usar esta configuração como servidor público final.
 A aplicação antiga continua no domínio oficial, sem alteração de DNS,
 sem migração de login/OAuth e sem envio de leads. O teste HTTP de produção
 continuará comprovando qual commit chegou ao site atual.
+
+## Rodada 10 — Vercel protegida e plugin Nitro
+
+Projeto Vercel separado: `autoescolaaptos-tanstack-staging` (equipe `msolus`).
+Usa Node.js 22, raiz `migration/tanstack`, código externo à raiz permitido,
+SSO da Vercel em **todas** as implantações e nenhum domínio customizado.
+O código público da Aptos **não** é redirecionado para essa pré-produção.
+
+A primeira implantação compilou, mas respondeu HTTP 404. A causa foi ausência
+do adaptador Nitro necessário para emitir as funções SSR no build da Vercel.
+No `vite.config.ts`, Nitro Vercel é ativado somente quando `VERCEL=1`;
+o build local/CI permanece usando o SSR original para não quebrar os testes.
+
+A dependência `nitro` é fixada exatamente na versão
+`3.0.260903-beta`. Exigir `npm ci`, lockfile sincronizado e validação
+concreta de rotas HTTP protegidas na Vercel, inclusive `/orcamento` e 404,
+antes de classificar o ambiente como funcional. O build `READY` sozinho
+NÃO prova que o conteúdo esteja acessível.
+
+A hospedagem externa continua um **piloto** com `noindex`; jamais conectar
+DNS oficial ou retirar SSO sem aprovação e testes completos de segurança,
+identidade visual, autenticação, matrícula e conversão.
+
+### Evidência do staging Vercel (primeiro teste)
+
+Projeto `prj_mTngOVoFszQ73DjFydGfYS9ICmLJ`, equipe `msolus`.
+A primeira implantação sem Nitro (`dpl_87qqCSmPgxit69WxLuFaTbxvkFWv`)
+foi READY, mas devolvia 404. Após adicionar Nitro ao build Vercel,
+`dpl_CVkCBKgEUW29k4MeRTA6CqFheLHZ` respondeu HTTP 200 na
+home e em `/orcamento`, com HTML SSR e `X-Robots-Tag` de noindex.
+O acesso permanece protegido via SSO (deploymentType=all).
+Os checks GitHub e o deploy definitivo pós-merge devem ser validados
+antes do encerramento da rodada; READY sozinho não comprova a publicação.
