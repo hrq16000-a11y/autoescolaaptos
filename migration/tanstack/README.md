@@ -168,3 +168,14 @@ NÃO prova que o conteúdo esteja acessível.
 A hospedagem externa continua um **piloto** com `noindex`; jamais conectar
 DNS oficial ou retirar SSO sem aprovação e testes completos de segurança,
 identidade visual, autenticação, matrícula e conversão.
+
+### Evidência do staging Vercel (primeiro teste)
+
+Projeto `prj_mTngOVoFszQ73DjFydGfYS9ICmLJ`, equipe `msolus`.
+A primeira implantação sem Nitro (`dpl_87qqCSmPgxit69WxLuFaTbxvkFWv`)
+foi READY, mas devolvia 404. Após adicionar Nitro ao build Vercel,
+`dpl_CVkCBKgEUW29k4MeRTA6CqFheLHZ` respondeu HTTP 200 na
+home e em `/orcamento`, com HTML SSR e `X-Robots-Tag` de noindex.
+O acesso permanece protegido via SSO (deploymentType=all).
+Os checks GitHub e o deploy definitivo pós-merge devem ser validados
+antes do encerramento da rodada; READY sozinho não comprova a publicação.
