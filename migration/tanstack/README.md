@@ -60,3 +60,36 @@ O modo dev apresentou incompatibilidade CommonJS/React e ainda precisa de ajuste
 Artigo inexistente redireciona para `/blog` com HTTP 302; bairro inexistente retorna HTTP 404.
 Datas do blog usam UTC para preservar o dia publicado entre servidor e navegador.
 As novas rotas têm verificações SSR e cenários Playwright próprios.
+
+## Rodada 7 — evidência visual e pré-requisitos de hospedagem
+
+A CI do piloto guarda um relatório Playwright com capturas de home, blog e
+bairro Centro em **desktop e celular**, quando os testes passam. O artefato
+`tanstack-visual-evidence` expira em 14 dias; as capturas são evidência para
+revisão humana, **não** aprovação automática de fidelidade visual.
+
+O `check:ssr` impede a promoção inadvertida de rotas de conteúdo caso o piloto
+perca `noindex, nofollow` ou produza JSON-LD inválido. Esse `noindex` é
+intencional para o ambiente de testes e não deve ser copiado para uma
+implantação pública definitiva sem revisão de SEO.
+
+### Condições antes da migração da hospedagem
+
+1. Manter `autoescolaaptos.com.br` na aplicação Vite existente; não modificar
+   DNS, domínio no Lovable ou diretório de publicação durante este piloto.
+2. Hospedar a aplicação TanStack **em um ambiente de pré-produção isolado**,
+   com um adaptador de servidor próprio, HTTPS, credenciais limitadas e
+   `noindex`; o adaptador `serve-production.mjs` serve somente para CI/local.
+3. Migrar e validar rotas restantes, sobretudo `/orcamento`, `/login`,
+   autorização OAuth, campanhas e formulários, sem alterar os dois destinos
+   WhatsApp (direto e funil). Executar testes reais de conversão com
+   autorização dos responsáveis e sem enviar contatos de teste a alunos.
+4. Conferir manualmente os screenshots de desktop/celular e metadados
+   HTTP/SSR/SEO; aplicar corte gradual **somente após** aprovação explícita.
+5. Registrar DNS e configurações anteriores, manter o deploy Vite funcional e
+   planejar reversão verificável: restaurar o roteamento/DNS anterior,
+   republicar a versão Vite aprovada e executar o smoke test de produção.
+   Nunca presumir rollback concluído sem verificar domínio e funções.
+
+O processo acima é um checklist de liberação; **não** executa troca de
+hospedagem ou rollback automaticamente.
