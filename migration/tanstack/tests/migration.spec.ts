@@ -209,3 +209,18 @@ test('CNH comparator renders four categories and keeps lead funnel protected', a
   expect(outbound).toEqual([]);
   expect(errors).toEqual([]);
 });
+
+test('data-writing routes are isolated from staging without sending form data', async ({ page }) => {
+  const blocked = ['/1contato', '/triagem', '/ofertas', '/campanha'];
+  const outgoingWrites: string[] = [];
+  page.on('request', request => {
+    if (request.method() !== 'GET' && request.method() !== 'HEAD') outgoingWrites.push(request.url());
+  });
+  for (const route of blocked) {
+    const result = await page.goto(route);
+    expect(result?.status(), route).toBe(404);
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
+    await expect(page.locator('form')).toHaveCount(0);
+  }
+  expect(outgoingWrites).toEqual([]);
+});
