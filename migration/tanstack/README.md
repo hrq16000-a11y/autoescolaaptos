@@ -254,3 +254,31 @@ A pré-produção R13 foi confirmada em Vercel no commit
 `e7e249090bf9e9d97af3fabda3b617ee5aa0e69a`: home, simulador,
 orçamento, FAQ, blog e bairro responderam 200 com SSR/noindex;
 login, OAuth e administração permaneceram 404.
+
+
+## Rodada 15 — fronteira de formulários, consentimento e autenticação
+
+A lista `protected-routes.json` identifica as rotas que continuam no
+portal oficial por envolverem gravação de dados pessoais, consentimento,
+credenciais ou administração: `/1contato` (`submit-triagem` e
+`triagem_leads`), `/triagem` (redirecionamento legado), `/ofertas`
+(`marketing-optin`), `/campanha`, `/obrigado`, `/login`,
+`/.lovable/oauth/consent` e `/admin/*`.
+
+`router-compat.tsx` força a navegação por esses links para
+`https://autoescolaaptos.com.br`, ainda que uma rota seja erroneamente
+marcada como migrada na lista de páginas do piloto. A verificação
+`check:boundary` falha no CI se uma rota protegida for adicionada ao
+TanStack sem revisão e prova, se a fronteira de links for perdida ou
+se uma URL protegida deixar de responder 404 e `noindex` no piloto.
+
+Playwright verifica que as rotas de formulário não são renderizadas
+na pré-produção. **Nenhum teste desta rodada envia dados, salva leads,
+autentica usuários ou autoriza campanhas.** A validação das transações
+reais e OAuth com contas de teste exige planejamento separado antes
+do corte completo, incluindo consentimento LGPD, confirmação de
+gravação e callbacks/sessões.
+
+Este é um bloqueio explícito e temporário para o piloto, não uma
+migração completa desses fluxos. Não aplicar `noindex` à aplicação
+pública nem alterar seu funcionamento comercial.
