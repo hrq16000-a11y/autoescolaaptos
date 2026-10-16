@@ -48,3 +48,7 @@ jobs:
         run: sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client
       - name: Execute real migrations and synthetic RPC assertions
         run: psql -X -v ON_ERROR_STOP=1 -f scripts/test-triagem-db-contract.sql
+      - name: Verify concurrent submissions against isolated PostgreSQL RPC
+        env:
+          APTOS_ISOLATED_DB_TEST: '1'
+        run: python3 scripts/test-triagem-concurrency.py
