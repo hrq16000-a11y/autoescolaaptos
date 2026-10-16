@@ -42,7 +42,7 @@ def submit(item):
     except Exception as e:
         raise AssertionError("Invalid RPC receipt: " + repr(out)) from e
 
-def concurrent(items):
+def run_parallel(items):
     with concurrent.futures.ThreadPoolExecutor(max_workers=len(items)) as pool:
         futures = [pool.submit(submit, item) for item in items]
         return [future.result(timeout=35) for future in futures]
@@ -60,7 +60,7 @@ FOR EACH ROW EXECUTE FUNCTION public.r19_delayed_insert();
 """)
 
 try:
-    phone = concurrent([
+    phone = run_parallel([
         payload("(41) 99991-1111", "p1@example.invalid", "192.0.2.1", 1),
         payload("41999911111", "p2@example.invalid", "192.0.2.2", 2),
     ])
@@ -70,7 +70,7 @@ try:
     assert require("SELECT count(*) FROM public.triagem_leads WHERE regexp_replace(telefone, '\\D','','g')='41999911111'") == "1"
     print("PASS concurrent normalized phone deduplication", flush=True)
 
-    email = concurrent([
+    email = run_parallel([
         payload("41988881111", "e1@example.invalid", "192.0.2.3", 3),
         payload("41988882222", "E1@EXAMPLE.INVALID", "192.0.2.4", 4),
     ])
@@ -81,7 +81,7 @@ try:
     print("PASS concurrent case-insensitive email deduplication", flush=True)
 
     ip = "198.51.100.19"
-    quota = concurrent([
+    quota = run_parallel([
         payload("4197777" + str(i).zfill(4), "limit" + str(i) + "@example.invalid", ip, i+10)
         for i in range(6)
     ])
