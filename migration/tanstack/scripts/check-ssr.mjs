@@ -42,7 +42,10 @@ for (const path of ['/blog', '/blog/o-que-e-direcao-defensiva', '/bairros', '/ba
  const response = await server.fetch(new Request(`http://localhost:3001${path}`));
  const html = await response.text();
  assert.equal(response.status, 200, path);
- for (const expected of ['<h1', 'application/ld+json', `https://autoescolaaptos.com.br${path}`]) assert.ok(html.includes(expected), `${path}: ${expected}`);
+ for (const expected of ['<h1', 'application/ld+json', `https://autoescolaaptos.com.br${path}`, 'noindex, nofollow']) assert.ok(html.includes(expected), `${path}: ${expected}`);
+  const schemas = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
+ assert.ok(schemas.length > 0, `${path}: missing JSON-LD`);
+ for (const schema of schemas) assert.doesNotThrow(() => JSON.parse(schema[1]), `${path}: invalid JSON-LD`);
  console.log(`PASS content SSR: ${path}`);
 }
 const missingPost = await server.fetch(new Request('http://localhost:3001/blog/nao-existe'));
