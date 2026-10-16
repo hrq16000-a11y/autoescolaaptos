@@ -108,3 +108,9 @@ declare module '@/pages/CalculadoraCnh' {
   const Page: FunctionComponent;
   export default Page;
 }
+
+declare module '@/pages/Comparador' {
+  import type { FunctionComponent } from 'react';
+  const Page: FunctionComponent;
+  export default Page;
+}

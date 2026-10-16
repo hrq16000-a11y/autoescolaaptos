@@ -179,3 +179,33 @@ test('CNH journey calculator hydrates, simulates steps and opens budget modal wi
   expect(outbound).toEqual([]);
   expect(errors).toEqual([]);
 });
+
+test('CNH comparator renders four categories and keeps lead funnel protected', async ({ page }) => {
+  const errors: string[] = [];
+  const outbound: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('request', request => {
+    if (/^https:\/\/(api\.whatsapp\.com|wa\.me)(?:\/|$)/.test(request.url())) outbound.push(request.url());
+  });
+  const response = await page.goto('/comparador');
+  expect(response?.status()).toBe(200);
+  await expect(page).toHaveTitle(/Comparador de CNH/);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Qual categoria');
+  await expect(page.locator('[data-component="ComparadorColuna"]')).toHaveCount(4);
+  const cards = page.locator('[data-component="ComparadorColuna"]');
+  await expect(cards.nth(0)).toContainText('Categoria A');
+  await expect(cards.nth(1)).toContainText('Categoria B');
+  await expect(cards.nth(2)).toContainText('Categoria AB');
+  await expect(cards.nth(3)).toContainText('Inclusão');
+  await test.info().attach('aptos-comparador-viewport', {
+    body: await page.screenshot({ animations: 'disabled' }),
+    contentType: 'image/png',
+  });
+  await cards.nth(0).getByRole('button', { name: /Quero esta opção/ }).click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog')).not.toBeVisible();
+  expect(outbound).toEqual([]);
+  expect(errors).toEqual([]);
+});
