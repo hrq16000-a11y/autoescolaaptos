@@ -10,8 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AulasPraticasDirecaoRouteImport } from './routes/aulas-praticas-direcao'
+import { Route as CarroAutomaticoRouteImport } from './routes/carro-automatico'
 import { Route as ExamesDetranRouteImport } from './routes/exames-detran'
+import { Route as FormasEstudoTeoricoRouteImport } from './routes/formas-estudo-teorico'
 import { Route as PerguntasFrequentesRouteImport } from './routes/perguntas-frequentes'
+import { Route as PorQueAutoescolaCredenciadaRouteImport } from './routes/por-que-autoescola-credenciada'
 import { Route as PrimeiraHabilitacaoRouteImport } from './routes/primeira-habilitacao'
 import { Route as Resolucao10202025RouteImport } from './routes/resolucao-1020-2025'
 
@@ -20,9 +24,24 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AulasPraticasDirecaoRoute = AulasPraticasDirecaoRouteImport.update({
+  id: '/aulas-praticas-direcao',
+  path: '/aulas-praticas-direcao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CarroAutomaticoRoute = CarroAutomaticoRouteImport.update({
+  id: '/carro-automatico',
+  path: '/carro-automatico',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExamesDetranRoute = ExamesDetranRouteImport.update({
   id: '/exames-detran',
   path: '/exames-detran',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FormasEstudoTeoricoRoute = FormasEstudoTeoricoRouteImport.update({
+  id: '/formas-estudo-teorico',
+  path: '/formas-estudo-teorico',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PerguntasFrequentesRoute = PerguntasFrequentesRouteImport.update({
@@ -30,6 +49,12 @@ const PerguntasFrequentesRoute = PerguntasFrequentesRouteImport.update({
   path: '/perguntas-frequentes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PorQueAutoescolaCredenciadaRoute =
+  PorQueAutoescolaCredenciadaRouteImport.update({
+    id: '/por-que-autoescola-credenciada',
+    path: '/por-que-autoescola-credenciada',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const PrimeiraHabilitacaoRoute = PrimeiraHabilitacaoRouteImport.update({
   id: '/primeira-habilitacao',
   path: '/primeira-habilitacao',
@@ -43,23 +68,35 @@ const Resolucao10202025Route = Resolucao10202025RouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/aulas-praticas-direcao': typeof AulasPraticasDirecaoRoute
+  '/carro-automatico': typeof CarroAutomaticoRoute
   '/exames-detran': typeof ExamesDetranRoute
+  '/formas-estudo-teorico': typeof FormasEstudoTeoricoRoute
   '/perguntas-frequentes': typeof PerguntasFrequentesRoute
+  '/por-que-autoescola-credenciada': typeof PorQueAutoescolaCredenciadaRoute
   '/primeira-habilitacao': typeof PrimeiraHabilitacaoRoute
   '/resolucao-1020-2025': typeof Resolucao10202025Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/aulas-praticas-direcao': typeof AulasPraticasDirecaoRoute
+  '/carro-automatico': typeof CarroAutomaticoRoute
   '/exames-detran': typeof ExamesDetranRoute
+  '/formas-estudo-teorico': typeof FormasEstudoTeoricoRoute
   '/perguntas-frequentes': typeof PerguntasFrequentesRoute
+  '/por-que-autoescola-credenciada': typeof PorQueAutoescolaCredenciadaRoute
   '/primeira-habilitacao': typeof PrimeiraHabilitacaoRoute
   '/resolucao-1020-2025': typeof Resolucao10202025Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/aulas-praticas-direcao': typeof AulasPraticasDirecaoRoute
+  '/carro-automatico': typeof CarroAutomaticoRoute
   '/exames-detran': typeof ExamesDetranRoute
+  '/formas-estudo-teorico': typeof FormasEstudoTeoricoRoute
   '/perguntas-frequentes': typeof PerguntasFrequentesRoute
+  '/por-que-autoescola-credenciada': typeof PorQueAutoescolaCredenciadaRoute
   '/primeira-habilitacao': typeof PrimeiraHabilitacaoRoute
   '/resolucao-1020-2025': typeof Resolucao10202025Route
 }
@@ -67,30 +104,46 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/aulas-praticas-direcao'
+    | '/carro-automatico'
     | '/exames-detran'
+    | '/formas-estudo-teorico'
     | '/perguntas-frequentes'
+    | '/por-que-autoescola-credenciada'
     | '/primeira-habilitacao'
     | '/resolucao-1020-2025'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/aulas-praticas-direcao'
+    | '/carro-automatico'
     | '/exames-detran'
+    | '/formas-estudo-teorico'
     | '/perguntas-frequentes'
+    | '/por-que-autoescola-credenciada'
     | '/primeira-habilitacao'
     | '/resolucao-1020-2025'
   id:
     | '__root__'
     | '/'
+    | '/aulas-praticas-direcao'
+    | '/carro-automatico'
     | '/exames-detran'
+    | '/formas-estudo-teorico'
     | '/perguntas-frequentes'
+    | '/por-que-autoescola-credenciada'
     | '/primeira-habilitacao'
     | '/resolucao-1020-2025'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AulasPraticasDirecaoRoute: typeof AulasPraticasDirecaoRoute
+  CarroAutomaticoRoute: typeof CarroAutomaticoRoute
   ExamesDetranRoute: typeof ExamesDetranRoute
+  FormasEstudoTeoricoRoute: typeof FormasEstudoTeoricoRoute
   PerguntasFrequentesRoute: typeof PerguntasFrequentesRoute
+  PorQueAutoescolaCredenciadaRoute: typeof PorQueAutoescolaCredenciadaRoute
   PrimeiraHabilitacaoRoute: typeof PrimeiraHabilitacaoRoute
   Resolucao10202025Route: typeof Resolucao10202025Route
 }
@@ -104,6 +157,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/aulas-praticas-direcao': {
+      id: '/aulas-praticas-direcao'
+      path: '/aulas-praticas-direcao'
+      fullPath: '/aulas-praticas-direcao'
+      preLoaderRoute: typeof AulasPraticasDirecaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/carro-automatico': {
+      id: '/carro-automatico'
+      path: '/carro-automatico'
+      fullPath: '/carro-automatico'
+      preLoaderRoute: typeof CarroAutomaticoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/exames-detran': {
       id: '/exames-detran'
       path: '/exames-detran'
@@ -111,11 +178,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExamesDetranRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/formas-estudo-teorico': {
+      id: '/formas-estudo-teorico'
+      path: '/formas-estudo-teorico'
+      fullPath: '/formas-estudo-teorico'
+      preLoaderRoute: typeof FormasEstudoTeoricoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/perguntas-frequentes': {
       id: '/perguntas-frequentes'
       path: '/perguntas-frequentes'
       fullPath: '/perguntas-frequentes'
       preLoaderRoute: typeof PerguntasFrequentesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/por-que-autoescola-credenciada': {
+      id: '/por-que-autoescola-credenciada'
+      path: '/por-que-autoescola-credenciada'
+      fullPath: '/por-que-autoescola-credenciada'
+      preLoaderRoute: typeof PorQueAutoescolaCredenciadaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/primeira-habilitacao': {
@@ -137,8 +218,12 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AulasPraticasDirecaoRoute: AulasPraticasDirecaoRoute,
+  CarroAutomaticoRoute: CarroAutomaticoRoute,
   ExamesDetranRoute: ExamesDetranRoute,
+  FormasEstudoTeoricoRoute: FormasEstudoTeoricoRoute,
   PerguntasFrequentesRoute: PerguntasFrequentesRoute,
+  PorQueAutoescolaCredenciadaRoute: PorQueAutoescolaCredenciadaRoute,
   PrimeiraHabilitacaoRoute: PrimeiraHabilitacaoRoute,
   Resolucao10202025Route: Resolucao10202025Route,
 }
