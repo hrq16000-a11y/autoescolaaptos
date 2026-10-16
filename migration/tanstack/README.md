@@ -282,3 +282,19 @@ gravação e callbacks/sessões.
 Este é um bloqueio explícito e temporário para o piloto, não uma
 migração completa desses fluxos. Não aplicar `noindex` à aplicação
 pública nem alterar seu funcionamento comercial.
+
+
+### Complemento da Rodada 15 — rota PCD e destinos de atendimento
+
+Preservando os controles de `protected-routes.json` integrados pela PR #29,
+a página informativa `/pcd` passou para SSR no piloto TanStack,
+reutilizando o conteúdo existente e o `FunnelProvider` para CTAs.
+O HTML inclui SEO/canonical/WebPage JSON-LD e continua `noindex` na
+pré-produção protegida. A página **não grava dados**.
+
+Playwright verifica a expansão da FAQ e os dois destinos separados
+de WhatsApp (direto `5541991453627` e triagem `554133833627`)
+sem abrir conversa ou enviar dados. A rota `/1contato` mantém HTTP 404
+no piloto e links para a aplicação oficial. A migração do formulário
+de triagem, do consentimento e de autenticação ainda exige validação
+separada antes de qualquer transferência do domínio.
