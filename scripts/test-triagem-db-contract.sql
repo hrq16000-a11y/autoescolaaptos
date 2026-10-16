@@ -18,6 +18,7 @@ CREATE ROLE service_role NOLOGIN BYPASSRLS;
 -- verbatim instead of fabricating the application's auth enum.
 REVOKE ALL ON FUNCTION public.submit_triagem(jsonb) FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.submit_triagem(jsonb) TO service_role;
+\i supabase/migrations/20261016163000_triagem_rpc_advisory_locks.sql
 
 BEGIN;
 DO $contract$
