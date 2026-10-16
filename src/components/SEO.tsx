@@ -46,7 +46,7 @@ const SEO = ({
       "latitude": -25.5304,
       "longitude": -49.2089
     },
-    "openingHours": "Mo-Fr 08:00-18:00, Sa 08:00-12:00",
+    "openingHours": "Mo-Fr 09:00-19:00, Sa 09:00-13:00",
     "priceRange": "$$",
     "areaServed": [
       "São José dos Pinhais",
@@ -61,7 +61,8 @@ const SEO = ({
     ],
     "sameAs": [
       "https://www.instagram.com/autoescola_aptos/",
-      "https://www.facebook.com/cfcAutoescolaAPTOS/"
+      "https://www.facebook.com/cfcAutoescolaAPTOS/",
+      "https://www.google.com/maps/search/?api=1&query=Autoescola%20Aptos%20Sao%20Jose%20dos%20Pinhais&query_place_id=ChIJbXhF6g763JQR9TTJ4hS7wwM"
     ]
   };
 
