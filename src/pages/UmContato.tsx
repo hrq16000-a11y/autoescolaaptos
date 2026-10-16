@@ -744,10 +744,9 @@ const UmContato = () => {
                         aria-invalid={!!errors.lgpd}
                       />
                       <span className="text-xs text-foreground/90 leading-relaxed">
-                        Autorizo a <strong>Autoescola APTOS</strong> a utilizar meus dados
-                        para contato, envio do orçamento e informações relacionadas aos
-                        serviços, conforme a <strong>LGPD</strong>. Meus dados jamais serão
-                        tratados para atender à sua solicitação, conforme a legislação de proteção de dados.
+                        Autorizo a <strong>Autoescola APTOS</strong> a tratar meus dados
+                        para responder à minha solicitação de contato e orçamento,
+                        conforme a <strong>LGPD</strong>.
                       </span>
                     </label>
                     <FieldError message={errors.lgpd} />
