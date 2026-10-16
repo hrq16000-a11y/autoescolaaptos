@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import { readFileSync, readdirSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import server from '../dist/server/server.js';
+const response = await server.fetch(new Request('http://localhost:3001/perguntas-frequentes'));
+const html = await response.text();
+assert.equal(response.status, 200);
+for (const expected of ['Perguntas Frequentes CNH | Autoescola APTOS', 'Qual a idade mínima', 'FAQPage', 'noindex, nofollow', 'rel="canonical"', 'https://autoescolaaptos.com.br/perguntas-frequentes']) {
+  assert.ok(html.includes(expected), `SSR missing: ${expected}`);
+}
+assert.ok(!html.includes('Erro ao carregar'));
+const assets = fileURLToPath(new URL('../dist/client/assets/', import.meta.url));
+const css = readdirSync(assets).filter(p => p.endsWith('.css')).map(p => readFileSync(`${assets}/${p}`, 'utf8')).join('');
+assert.ok(css.includes('.min-h-screen'), 'Missing generated Tailwind utilities');
+assert.ok(!/@tailwind|@apply/.test(css), 'Unprocessed Tailwind directives');
+console.log('PASS FAQ SSR, metadata, JSON-LD and generated CSS');

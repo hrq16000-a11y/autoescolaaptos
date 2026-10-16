@@ -1,4 +1,5 @@
 import { createRootRoute, HeadContent, Outlet, Scripts } from '@tanstack/react-router';
+import '@/index.css';
 export const Route = createRootRoute({
   head: () => ({ meta: [
     { charSet: 'utf-8' },
