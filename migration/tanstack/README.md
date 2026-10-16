@@ -115,3 +115,34 @@ O ponto de retorno continua sendo a aplicação Vite já hospedada:
 nenhuma troca de DNS/hosting ocorre nesta rodada. Antes do corte real:
 validar formulários, consentimento OAuth, páginas ainda não migradas,
 funil completo, CTR de CTAs, analytics, SEO e evidências visuais.
+
+## Rodada 9 — servidor independente de pré-produção (sem troca de hospedagem)
+
+O comando `npm run serve:preview --prefix migration/tanstack` executa
+**o bundle SSR compilado**, sem plugins nem servidor Lovable:
+
+```sh
+npm ci --no-audit --no-fund
+npm ci --prefix migration/tanstack --no-audit --no-fund
+npm run build --prefix migration/tanstack
+npm run check:preview --prefix migration/tanstack
+npm run serve:preview --prefix migration/tanstack
+```
+
+O serviço abre em `127.0.0.1:3002` por padrão e responde a
+`/healthz`. Todas as respostas incluem `X-Robots-Tag:
+noindex, nofollow, noarchive`, políticas de proteção e cache `no-store`.
+Aceita apenas GET/HEAD, servindo `/assets/*` somente do diretório
+compilado. O CI testa SSR, headers, 404, métodos e assets.
+
+**O servidor não hospeda o site publicamente nem substitui o Vite.**
+Expor fora de loopback requer opt-in `APTOS_PREVIEW_ALLOW_PUBLIC=1` e
+um ingresso HTTPS **autenticado e restrito** configurado por um provedor:
+o opt-in sozinho NÃO é controle de acesso. Nunca exponha a aplicação
+a terceiros sem esse ingresso e sem validar privacidade, logs,
+monitoramento, CSP compatível, limites de requisição e variáveis de ambiente.
+Não usar esta configuração como servidor público final.
+
+A aplicação antiga continua no domínio oficial, sem alteração de DNS,
+sem migração de login/OAuth e sem envio de leads. O teste HTTP de produção
+continuará comprovando qual commit chegou ao site atual.

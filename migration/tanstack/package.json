@@ -9,7 +9,7 @@
     "dev": "vite --port 3001",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
-    "check:ssr": "node scripts/check-ssr.mjs", "test:browser": "playwright test", "serve:production": "node scripts/serve-production.mjs"
+    "check:ssr": "node scripts/check-ssr.mjs", "test:browser": "playwright test", "serve:production": "node scripts/serve-production.mjs", "serve:preview": "node scripts/serve-preview.mjs", "check:preview": "node scripts/check-preview.mjs"
   },
   "dependencies": {
     "@tanstack/react-router": "1.170.44",
