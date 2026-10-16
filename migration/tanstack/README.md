@@ -298,3 +298,31 @@ sem abrir conversa ou enviar dados. A rota `/1contato` mantém HTTP 404
 no piloto e links para a aplicação oficial. A migração do formulário
 de triagem, do consentimento e de autenticação ainda exige validação
 separada antes de qualquer transferência do domínio.
+
+
+## Rodada 16 — integridade de dados e consentimento do formulário existente
+
+Antes de migrar a rota `/1contato` ao TanStack, o fluxo oficial
+recebe controles de segurança sem mudar números de WhatsApp nem o
+contrato de gravação do backend:
+
+- A opção de consentimento LGPD não começa marcada e não é restaurada
+  automaticamente de um rascunho anterior.
+- O rascunho local mantém **somente preferências de serviço** e etapa,
+  nunca nome, telefone, e-mail ou consentimento. A próxima gravação
+  também sobrescreve rascunhos legados com esse formato reduzido.
+- O evento `triagem_complete` recebe somente categorias e status,
+  evitando enviar dados pessoais a analytics de terceiros.
+- Sucesso de atendimento, analytics de conversão e encaminhamento
+  automático ao WhatsApp exigem `ok: true` e um `id` confirmado pela
+  função `submit-triagem` (contrato respaldado pela RPC SQL).
+- Erro, rate limit e resposta sem recibo mantêm o formulário disponível
+  para tentativa manual. O fallback de `insert` direto foi desativado,
+  pois poderia contornar as validações de backend ou falhar em silêncio.
+
+O comando `node scripts/check-triagem-safety.mjs` roda no Build CI
+e verifica invariantes de privacidade/persistência sem criar leads,
+enviar mensagens ou acessar bases reais. Isso **não substitui** um
+teste integrado de submissão autorizado, validação de políticas de
+retenção LGPD ou migração da autenticação. `/1contato` continua
+no site oficial e retorna 404 no staging TanStack.
