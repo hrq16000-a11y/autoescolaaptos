@@ -1,26 +1,32 @@
-import { forwardRef, type AnchorHTMLAttributes } from 'react';
-import { useLocation as useTanStackLocation } from '@tanstack/react-router';
+import { forwardRef, useCallback, type AnchorHTMLAttributes } from 'react';
+import { Link as TanStackLink, useLocation as useTanStackLocation, useRouter } from '@tanstack/react-router';
 
-// Transitional bridge for the first reused page. Unmigrated links keep opening
-// the existing public site instead of landing on a pilot 404.
+// Unmigrated destinations continue to open the existing public site.
 const migrated = new Set(['/', '/perguntas-frequentes', '/primeira-habilitacao', '/exames-detran', '/resolucao-1020-2025']);
+function migratedDestination(to: string) {
+  const path = to.split(/[?#]/)[0];
+  return to.startsWith('/') && migrated.has(path);
+}
+function publicDestination(to: string) {
+  return to.startsWith('/') ? `https://autoescolaaptos.com.br${to}` : to;
+}
 type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & { to: string };
 export const Link = forwardRef<HTMLAnchorElement, LinkProps>(({ to, ...props }, ref) => {
-  const path = to.split(/[?#]/)[0];
-  const href = to.startsWith('/') && !migrated.has(path)
-    ? `https://autoescolaaptos.com.br${to}` : to;
-  return <a {...props} href={href} ref={ref} />;
+  if (migratedDestination(to)) {
+    return <TanStackLink {...props} to={to} ref={ref} />;
+  }
+  return <a {...props} href={publicDestination(to)} ref={ref} />;
 });
 Link.displayName = 'MigrationLink';
 export function useLocation() { return useTanStackLocation(); }
-
 export function useNavigate() {
-  return (to: string | number, options?: { replace?: boolean }) => {
+  const router = useRouter();
+  return useCallback((to: string | number, options?: { replace?: boolean }) => {
     if (typeof window === 'undefined') return;
     if (typeof to === 'number') { window.history.go(to); return; }
-    const path = to.split(/[?#]/)[0];
-    const href = to.startsWith('/') && !migrated.has(path) ? `https://autoescolaaptos.com.br${to}` : to;
+    if (migratedDestination(to)) return router.navigate({ href: to, replace: options?.replace });
+    const href = publicDestination(to);
     if (options?.replace) window.location.replace(href);
     else window.location.assign(href);
-  };
+  }, [router]);
 }

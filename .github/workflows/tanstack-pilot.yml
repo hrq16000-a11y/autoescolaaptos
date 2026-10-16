@@ -22,3 +22,13 @@ jobs:
       - run: npm run build --prefix migration/tanstack
       - run: npm run typecheck --prefix migration/tanstack
       - run: npm run check:ssr --prefix migration/tanstack
+      - run: ./migration/tanstack/node_modules/.bin/playwright install --with-deps chromium
+      - run: npm run test:browser --prefix migration/tanstack
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: tanstack-browser-failures
+          path: |
+            migration/tanstack/playwright-report
+            migration/tanstack/test-results
+          retention-days: 7

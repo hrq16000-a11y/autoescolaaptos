@@ -38,3 +38,10 @@ O adaptador ainda usa navegação nativa; navegação cliente completa e valida�
 `/` reutiliza `src/pages/Index.tsx`, seus componentes, dados estruturados e FunnelProvider real.
 A ponte useNavigate mantém navegação nativa durante a migração. SSR e links WhatsApp são verificados no CI.
 A home não foi aprovada visualmente nem para cliques em navegador nesta etapa.
+
+## Navegação e testes de navegador
+
+Rotas migradas agora usam Link e navigate do TanStack; destinos não migrados continuam no site público.
+`npm run test:browser --prefix migration/tanstack` cobre desktop e celular: hidratação da home,
+ausência de overflow horizontal, abertura e fechamento do modal, navegação sem recarga e accordion FAQ.
+O CI instala Chromium e salva screenshots/traces se ocorrer falha. Nenhum envio de formulário ou WhatsApp é executado pelo teste.
