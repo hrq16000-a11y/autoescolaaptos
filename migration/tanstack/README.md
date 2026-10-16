@@ -254,3 +254,28 @@ A pré-produção R13 foi confirmada em Vercel no commit
 `e7e249090bf9e9d97af3fabda3b617ee5aa0e69a`: home, simulador,
 orçamento, FAQ, blog e bairro responderam 200 com SSR/noindex;
 login, OAuth e administração permaneceram 404.
+
+
+## Rodada 15 — Habilitação PCD SSR e fronteira de dados
+
+A rota `/pcd` reutiliza o componente público existente para
+Habilitação Especial, sem alterar seu conteúdo ou realizar gravações.
+Título, descrição, canonical e WebPage JSON-LD são entregues no HTML
+SSR; o staging permanece protegido por SSO e `noindex`.
+
+O Playwright verifica em desktop e celular os contatos separados:
+WhatsApp **direto** `5541991453627` e WhatsApp de
+**triagem** `554133833627`, além do FAQ expansível e da ausência
+de solicitações de rede externas para WhatsApp durante o teste.
+
+**Fronteira de segurança:** `/1contato` continua fora do piloto
+(404/noindex). A versão oficial desse formulário utiliza
+`submit-triagem`, com gravação alternativa em `triagem_leads`;
+não se deve migrá-lo automaticamente sem validar o contrato,
+LGPD, bloqueio de spam, sessão/consentimento, logs, redirecionamentos
+e rollback, nem simular cadastros reais. A adaptação de leads será
+tratada separadamente, com ambiente e dados de teste controlados.
+
+A aplicação oficial continua servida pelo Vite. Nenhuma alteração
+de DNS, número de WhatsApp, login, Supabase ou cadastro de alunos
+é realizada nesta rodada.
