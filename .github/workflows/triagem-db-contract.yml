@@ -1,0 +1,50 @@
+name: Triagem PostgreSQL contract (isolated)
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/**'
+      - 'supabase/functions/submit-triagem/**'
+      - 'scripts/test-triagem-db-contract.sql'
+      - '.github/workflows/triagem-db-contract.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/**'
+      - 'supabase/functions/submit-triagem/**'
+      - 'scripts/test-triagem-db-contract.sql'
+      - '.github/workflows/triagem-db-contract.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rpc-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: aptos-ci-disposable-only
+          POSTGRES_DB: aptos_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d aptos_ci"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 15
+    env:
+      PGHOST: 127.0.0.1
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: aptos-ci-disposable-only
+      PGDATABASE: aptos_ci
+    steps:
+      - uses: actions/checkout@v4
+      - name: PostgreSQL client for ephemeral service
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client
+      - name: Execute real migrations and synthetic RPC assertions
+        run: psql -X -v ON_ERROR_STOP=1 -f scripts/test-triagem-db-contract.sql
