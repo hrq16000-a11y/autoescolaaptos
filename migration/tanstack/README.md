@@ -200,3 +200,19 @@ Esses testes **não validam** autenticação real nem a entrega de mensagens;
 essas duas capacidades precisam de testes separados e autorizados antes de
 qualquer troca de hospedagem. Não desativar SSO ou remover noindex para
 facilitar o teste.
+
+
+## Rodada 12 — gate de empacotamento Vercel
+O CI agora realiza **dois builds independentes** do piloto: o build SSR
+local (com Playwright/SSR) e o build com `VERCEL=1` que habilita Nitro,
+sem consumir cota de deploy da Vercel. O script
+`check-vercel-package.mjs` confirma o artefato Build Output API v3,
+função `__server`, configuração de runtime, rotas de encaminhamento,
+assets e presença da política `noindex`.
+
+A validação do pacote é **necessária, mas não suficiente** para um
+deploy funcional: após a cota da equipe `msolus` ser restabelecida,
+ainda deve ocorrer uma implantação protegida do commit atual e
+testes HTTP de home, orçamento, FAQ, blog, bairros, 404 e controle
+de acesso. Até lá, não confundir o staging R10 com uma publicação R11/R12.
+Não modificar domínio oficial nem desabilitar SSO.
