@@ -21,8 +21,7 @@ import {
   Bike
 } from "lucide-react";
 
-const AulasPraticasDirecao = () => {
-  const jsonLd = {
+export const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
       {
@@ -42,6 +41,8 @@ const AulasPraticasDirecao = () => {
       }
     ]
   };
+
+const AulasPraticasDirecao = () => {
 
   const diferenciais = [
     {

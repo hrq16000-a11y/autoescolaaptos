@@ -20,8 +20,7 @@ import {
   ArrowRight
 } from "lucide-react";
 
-const FormasEstudoTeorico = () => {
-  const jsonLd = {
+export const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": "Formas de Estudo Teórico para CNH - Autoescola APTOS",
@@ -31,6 +30,8 @@ const FormasEstudoTeorico = () => {
       "name": "Autoescola APTOS"
     }
   };
+
+const FormasEstudoTeorico = () => {
 
   const formasEstudo = [
     {
