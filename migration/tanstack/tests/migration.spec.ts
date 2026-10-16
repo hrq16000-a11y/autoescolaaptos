@@ -91,3 +91,56 @@ test('quote funnel validates WhatsApp destination without contacting anyone', as
   });
   expect(errors).toEqual([]);
 });
+
+
+// Guardrails for routes which are deliberately NOT ported to this SSR pilot.
+test('login, OAuth, admin and thank-you remain isolated from staging', async ({ page }) => {
+  const forbidden = [
+    '/login',
+    '/.lovable/oauth/consent?authorization_id=ci-placeholder',
+    '/admin',
+    '/admin/leads',
+    '/obrigado',
+  ];
+  for (const pathname of forbidden) {
+    const response = await page.goto(pathname);
+    expect(response?.status(), pathname).toBe(404);
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
+    await expect(page.locator('input[type="password"]')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Aprovar' })).toHaveCount(0);
+  }
+});
+
+// Exercise alternate branches without submitting a lead, logging in, or
+// opening an external WhatsApp conversation.
+test('alternate quote paths keep prequalified WhatsApp message intact', async ({ page }) => {
+  const outbound: string[] = [];
+  page.on('request', request => {
+    if (/^https:\/\/(api\.whatsapp\.com|wa\.me)(?:\/|$)/.test(request.url())) {
+      outbound.push(request.url());
+    }
+  });
+  const cases = [
+    {
+      buttons: [/^Moto\s*→$/, /^Esta semana\s*→$/, /^Pouco\s*→$/],
+      expected: ['Categoria desejada: Moto', 'Quero iniciar: Esta semana', 'Experiência ao volante: Pouca experiência'],
+    },
+    {
+      buttons: [/^Inclusão de Categoria\s*→$/, /^Ainda pesquisando\s*→$/, /^Já dirijo\s*→$/],
+      expected: ['Categoria desejada: Inclusão', 'Quero iniciar: Ainda pesquisando', 'Experiência ao volante: Já dirijo'],
+    },
+  ];
+  for (const scenario of cases) {
+    const response = await page.goto('/orcamento');
+    expect(response?.status()).toBe(200);
+    for (const label of scenario.buttons) await page.getByRole('button', { name: label }).click();
+    const href = await page.getByRole('link', { name: /Receber meu orçamento agora/i }).getAttribute('href');
+    expect(href).toBeTruthy();
+    const target = new URL(href!);
+    expect(target.origin + target.pathname).toBe('https://api.whatsapp.com/send');
+    expect(target.searchParams.get('phone')).toBe('554133833627');
+    const message = target.searchParams.get('text') || '';
+    for (const expected of scenario.expected) expect(message).toContain(expected);
+  }
+  expect(outbound).toEqual([]);
+});
