@@ -5,14 +5,10 @@ import { fileURLToPath } from 'node:url';
 const local = (path: string) => fileURLToPath(new URL(path, import.meta.url));
 // Vercel needs Nitro to generate serverless SSR routes; CI/local keep the tested
 // fetch-based build used by check:ssr and the independent Node preview server.
-export default defineConfig(async () => {
-  const plugins = [tanstackStart()];
-  if (process.env.VERCEL === '1') {
-    const { nitro } = await import('nitro/vite');
-    plugins.push(nitro({ preset: 'vercel' }));
-  }
-  plugins.push(react());
-  return {
+const vercelPlugins = process.env.VERCEL === '1'
+  ? [(await import('nitro/vite')).nitro({ preset: 'vercel' })]
+  : [];
+export default defineConfig({
   envDir: local('../../'),
   resolve: {
     dedupe: ['react', 'react-dom'],
@@ -25,6 +21,5 @@ export default defineConfig(async () => {
   },
   ssr: { noExternal: true },
   css: { postcss: local('./') },
-  plugins,
-  };
+  plugins: [tanstackStart(), ...vercelPlugins, react()],
 });
