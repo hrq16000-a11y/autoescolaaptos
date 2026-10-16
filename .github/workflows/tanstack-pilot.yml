@@ -39,3 +39,20 @@ jobs:
             migration/tanstack/playwright-report
             migration/tanstack/test-results
           retention-days: 7
+
+  vercel-package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: migration/tanstack/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm ci --prefix migration/tanstack --no-audit --no-fund
+      - name: Build Vercel Nitro output
+        run: VERCEL=1 npm run build --prefix migration/tanstack
+      - name: Assert serverless output and protected staging
+        run: node migration/tanstack/scripts/check-vercel-package.mjs
