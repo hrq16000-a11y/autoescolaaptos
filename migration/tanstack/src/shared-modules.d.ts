@@ -102,3 +102,9 @@ declare module '@/pages/Orcamento' {
 declare module '@/lib/analytics' {
   export function track(eventName: string, payload?: Record<string, unknown>): void;
 }
+
+declare module '@/pages/CalculadoraCnh' {
+  import type { FunctionComponent } from 'react';
+  const Page: FunctionComponent;
+  export default Page;
+}
