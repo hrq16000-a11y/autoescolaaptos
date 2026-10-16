@@ -63,3 +63,22 @@ assert.equal(missingPost.headers.get('location'), '/blog');
 const missingNeighborhood = await server.fetch(new Request('http://localhost:3001/bairros/nao-existe'));
 assert.equal(missingNeighborhood.status, 404);
 console.log('PASS missing article redirect and neighborhood HTTP 404');
+
+\n// O piloto não implementa autenticação, OAuth, área administrativa nem
+// a confirmação de conversão. Evita que um novo route handler exponha esses
+// caminhos sem validação de segurança e sem migração explícita.
+for (const path of [
+  '/login',
+  '/.lovable/oauth/consent?authorization_id=ci-placeholder',
+  '/admin',
+  '/admin/leads',
+  '/obrigado',
+]) {
+  const result = await server.fetch(new Request('http://localhost:3001' + path));
+  assert.equal(result.status, 404, `Sensitive route must stay outside pilot: ${path}`);
+  const html = await result.text();
+  assert.ok(html.includes('noindex, nofollow'), `Missing noindex on ${path}`);
+  assert.ok(!html.includes('Entrar na APTOS'), `Auth page unexpectedly served: ${path}`);
+  assert.ok(!html.includes('Conectar esse aplicativo'), `OAuth consent unexpectedly served: ${path}`);
+  console.log(`PASS isolated sensitive route: ${path}`);
+}
