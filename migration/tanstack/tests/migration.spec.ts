@@ -229,7 +229,7 @@ test('PCD page renders SSR, keeps direct/triage contacts and FAQ without sending
   expect(directUrl.origin + directUrl.pathname).toBe('https://api.whatsapp.com/send');
   expect(directUrl.searchParams.get('phone')).toBe('5541991453627');
   expect(directUrl.searchParams.get('text')).toContain('Habilitação PCD');
-  const triage = page.getByRole('link', { name: /WhatsApp \(41\) 3383-3627/ });
+  const triage = page.getByRole('main').getByRole('link', { name: /WhatsApp \(41\) 3383-3627/ });
   const triageHref = await triage.getAttribute('href');
   expect(triageHref).toBeTruthy();
   const triageUrl = new URL(triageHref!);
