@@ -92,3 +92,9 @@ declare module '@/pages/NotFound' {
  import type { FunctionComponent } from 'react';
  const Page: FunctionComponent; export default Page;
 }
+
+declare module '@/pages/Orcamento' {
+  import type { FunctionComponent } from 'react';
+  const Page: FunctionComponent;
+  export default Page;
+}
