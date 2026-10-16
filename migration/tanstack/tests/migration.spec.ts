@@ -8,13 +8,19 @@ test('home hydrates, opens funnel and navigates without a full reload', async ({
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('CNH');
   await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('opacity', '1');
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBeTruthy();
+  const overflow = await page.evaluate(() => ({
+    viewport: window.innerWidth, width: document.documentElement.scrollWidth,
+    elements: [...document.querySelectorAll('body *')].filter(el => el.getBoundingClientRect().right > window.innerWidth + 1).slice(0, 12).map(el => ({ tag: el.tagName, className: String(el.className), right: el.getBoundingClientRect().right })),
+  }));
+  expect(overflow.width, JSON.stringify(overflow)).toBeLessThanOrEqual(overflow.viewport + 1);
   await page.locator('button[data-intent="funil"]').first().click();
   await expect(page.getByRole('dialog')).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog')).not.toBeVisible();
   await page.evaluate(() => Object.assign(window, { aptosDocumentMarker: 'preserved' }));
-  await page.locator('a[href="/perguntas-frequentes"]').first().click();
+  const menu = page.getByRole('button', { name: 'Toggle menu' });
+  if (await menu.isVisible()) await menu.click();
+  await page.getByRole('link', { name: 'FAQ', exact: true }).click();
   await expect(page).toHaveURL(/\/perguntas-frequentes$/);
   expect(await page.evaluate(() => (window as unknown as { aptosDocumentMarker?: string }).aptosDocumentMarker)).toBe('preserved');
   await expect(page).toHaveTitle('Perguntas Frequentes CNH | Autoescola APTOS');
