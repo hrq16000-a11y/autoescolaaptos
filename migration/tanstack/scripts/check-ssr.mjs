@@ -27,3 +27,13 @@ for (const path of ['/primeira-habilitacao', '/exames-detran', '/resolucao-1020-
   for (const script of scripts) assert.doesNotThrow(() => JSON.parse(script[1]));
   console.log(`PASS SSR and valid schema: ${path}`);
 }
+
+const homeResponse = await server.fetch(new Request('http://localhost:3001/'));
+const homeHtml = await homeResponse.text();
+assert.equal(homeResponse.status, 200);
+for (const expected of ['Conquiste Sua', 'CNH', 'Conhecer carro automático', 'WebSite', 'Organization', 'DrivingSchool', 'noindex, nofollow']) {
+  assert.ok(homeHtml.includes(expected), `Home missing ${expected}`);
+}
+assert.ok(!homeHtml.includes('ambiente de validação'));
+assert.ok(homeHtml.includes('api.whatsapp.com/send'));
+console.log('PASS home SSR, structured data and WhatsApp links');

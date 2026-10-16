@@ -24,3 +24,14 @@ declare module '@/pages/Resolucao1020' {
   const Page: FunctionComponent;
   export default Page;
 }
+
+declare module '@/pages/Index' {
+  import type { FunctionComponent } from 'react';
+  export const homeJsonLd: object;
+  const Page: FunctionComponent;
+  export default Page;
+}
+declare module '@/hooks/useFunnelModal' {
+  import type { FunctionComponent, ReactNode } from 'react';
+  export const FunnelProvider: FunctionComponent<{ children: ReactNode }>;
+}
