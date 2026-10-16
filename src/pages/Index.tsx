@@ -45,6 +45,7 @@ const Index = () => {
         sameAs: [
           "https://www.instagram.com/autoescola_aptos/",
           "https://www.facebook.com/cfcAutoescolaAPTOS/",
+          "https://www.google.com/maps/search/?api=1&query=Autoescola%20Aptos%20Sao%20Jose%20dos%20Pinhais&query_place_id=ChIJbXhF6g763JQR9TTJ4hS7wwM",
         ],
       },
       {
