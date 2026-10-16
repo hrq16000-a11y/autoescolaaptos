@@ -209,3 +209,42 @@ test('CNH comparator renders four categories and keeps lead funnel protected', a
   expect(outbound).toEqual([]);
   expect(errors).toEqual([]);
 });
+
+test('PCD page renders SSR, keeps direct/triage contacts and FAQ without sending leads', async ({ page }) => {
+  const errors: string[] = [];
+  const outbound: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('request', request => {
+    if (/^https:\/\/(api\.whatsapp\.com|wa\.me)(?:\/|$)/.test(request.url())) outbound.push(request.url());
+  });
+  const response = await page.goto('/pcd');
+  expect(response?.status()).toBe(200);
+  await expect(page).toHaveTitle(/Autoescola PCD em São José dos Pinhais/);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Autoescola PCD');
+  const direct = page.getByRole('link', { name: /Falar com especialista PCD/ });
+  const directHref = await direct.getAttribute('href');
+  expect(directHref).toBeTruthy();
+  const directUrl = new URL(directHref!);
+  expect(directUrl.origin + directUrl.pathname).toBe('https://api.whatsapp.com/send');
+  expect(directUrl.searchParams.get('phone')).toBe('5541991453627');
+  expect(directUrl.searchParams.get('text')).toContain('Habilitação PCD');
+  const triage = page.getByRole('link', { name: /WhatsApp \(41\) 3383-3627/ });
+  const triageHref = await triage.getAttribute('href');
+  expect(triageHref).toBeTruthy();
+  const triageUrl = new URL(triageHref!);
+  expect(triageUrl.searchParams.get('phone')).toBe('554133833627');
+  const firstFAQ = page.getByRole('button', { name: 'Quem tem direito à Habilitação Especial (PCD)?' });
+  await firstFAQ.click();
+  await expect(page.getByText('Toda pessoa com deficiência física', { exact: false })).toBeVisible();
+  await test.info().attach('aptos-pcd-viewport', {
+    body: await page.screenshot({ animations: 'disabled' }),
+    contentType: 'image/png',
+  });
+  // Complex CRM form is not moved in this round; staging must never write leads.
+  const crmRoute = await page.goto('/1contato');
+  expect(crmRoute?.status()).toBe(404);
+  await expect(page.locator('input[name="telefone"]')).toHaveCount(0);
+  expect(outbound).toEqual([]);
+  expect(errors).toEqual([]);
+});
