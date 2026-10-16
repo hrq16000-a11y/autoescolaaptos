@@ -15,3 +15,13 @@ npm run dev --prefix migration/tanstack
 Porta local: 3001. Todas as páginas deste piloto têm noindex,nofollow.
 Nenhuma conexão com banco, login ou alteração de dados é feita pelo piloto.
 Próximo marco: migrar roteamento e componentes reais, validar conteúdo SSR, metadados, hidratação, navegação, autenticação e conversão; então configurar preview de hospedagem e publicar o site completo.
+
+## Primeira rota migrada
+
+`/perguntas-frequentes` reutiliza `src/pages/FAQ.tsx` e os dados originais.
+Metadados são entregues no head do TanStack; o Helmet é substituído somente neste piloto.
+O adaptador temporário cobre Link e useLocation. Rotas ainda não migradas abrem o site público.
+Build exige também `npm ci` na raiz para componentes compartilhados.
+`npm run check:ssr --prefix migration/tanstack` valida HTML, metadados e CSS gerado.
+O typecheck cobre o piloto; a página legada compartilhada mantém sua verificação no projeto original.
+Validação visual, hidratação e interação em navegador ainda pendentes.
