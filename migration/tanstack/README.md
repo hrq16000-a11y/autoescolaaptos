@@ -235,3 +235,22 @@ O commit R12 foi implantado e validado com HTTP 200/404 e noindex na
 Vercel protegida, após a liberação da cota. O corte do domínio oficial
 continua pendente de migração das demais rotas, autenticação/OAuth,
 aprovação visual e plano de rollback.
+
+
+## Rodada 14 — comparador de categorias no piloto SSR
+
+A página `/comparador` reutiliza a comparação existente entre CNH A,
+B, AB e inclusão, mantendo a mesma aparência e as CTAs de orçamento
+do portal atual. O componente fica envolvido no `FunnelProvider`
+para abrir e fechar o modal de atendimento sem envios de teste.
+
+O `pageHead` do TanStack fornece SEO SSR com canonical e WebPage
+JSON-LD, preservando `noindex` no staging. A suíte Playwright executa
+desktop e celular, verifica quatro cards, abre/fecha o funil e captura
+a tela sem enviar informações a terceiros. A implementação não altera
+o comparador público nem substitui a hospedagem oficial.
+
+A pré-produção R13 foi confirmada em Vercel no commit
+`e7e249090bf9e9d97af3fabda3b617ee5aa0e69a`: home, simulador,
+orçamento, FAQ, blog e bairro responderam 200 com SSR/noindex;
+login, OAuth e administração permaneceram 404.
