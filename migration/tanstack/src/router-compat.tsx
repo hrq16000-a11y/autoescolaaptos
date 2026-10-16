@@ -13,3 +13,14 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(({ to, ...props }, 
 });
 Link.displayName = 'MigrationLink';
 export function useLocation() { return useTanStackLocation(); }
+
+export function useNavigate() {
+  return (to: string | number, options?: { replace?: boolean }) => {
+    if (typeof window === 'undefined') return;
+    if (typeof to === 'number') { window.history.go(to); return; }
+    const path = to.split(/[?#]/)[0];
+    const href = to.startsWith('/') && !migrated.has(path) ? `https://autoescolaaptos.com.br${to}` : to;
+    if (options?.replace) window.location.replace(href);
+    else window.location.assign(href);
+  };
+}

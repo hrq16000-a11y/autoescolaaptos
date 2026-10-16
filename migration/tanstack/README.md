@@ -32,3 +32,9 @@ Também migradas no piloto: `/primeira-habilitacao`, `/exames-detran`, `/resoluc
 Os objetos JSON-LD foram exportados dos componentes originais sem alterar conteúdo,
 para reutilização pelo head do servidor. Os layouts seguem nos mesmos componentes.
 O adaptador ainda usa navegação nativa; navegação cliente completa e validação em navegador estão pendentes.
+
+## Home migrada
+
+`/` reutiliza `src/pages/Index.tsx`, seus componentes, dados estruturados e FunnelProvider real.
+A ponte useNavigate mantém navegação nativa durante a migração. SSR e links WhatsApp são verificados no CI.
+A home não foi aprovada visualmente nem para cliques em navegador nesta etapa.

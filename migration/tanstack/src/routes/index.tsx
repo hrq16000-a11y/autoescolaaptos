@@ -1,5 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router';
-export const Route = createFileRoute('/')({ component: MigrationStatus });
-function MigrationStatus() {
-  return <main><h1>APTOS — ambiente de validação</h1><p>Estrutura TanStack Start em migração. Este ambiente não substitui o site público.</p></main>;
-}
+import Index, { homeJsonLd } from '@/pages/Index';
+import { FunnelProvider } from '@/hooks/useFunnelModal';
+import { pageHead } from '../page-head';
+export const Route = createFileRoute('/')({
+  head: () => pageHead(
+    'Autoescola em São José dos Pinhais | APTOS — CNH, Aulas e Reciclagem',
+    'Autoescola APTOS em São José dos Pinhais: primeira habilitação, inclusão de categoria, reciclagem, reteste e aulas práticas. Solicite seu orçamento.',
+    '/', homeJsonLd),
+  component: () => <FunnelProvider><Index /></FunnelProvider>,
+});

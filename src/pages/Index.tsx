@@ -18,10 +18,7 @@ import RelatedLinks from "@/components/RelatedLinks";
 import SEO from "@/components/SEO";
 import { useScrollTracking } from "@/hooks/useScrollTracking";
 
-const Index = () => {
-  useScrollTracking();
-
-  const homeJsonLd = {
+export const homeJsonLd = {
     "@context": "https://schema.org",
     "@graph": [
       {
@@ -64,6 +61,10 @@ const Index = () => {
       },
     ],
   };
+
+const Index = () => {
+  useScrollTracking();
+
 
   const homeRelated = [
     {
