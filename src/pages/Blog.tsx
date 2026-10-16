@@ -11,6 +11,22 @@ import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import SEO from "@/components/SEO";
 import { blogPosts, blogCategories } from "@/data/blogData";
 
+export const blogJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Blog Autoescola APTOS",
+    "description": "Dicas de direção, legislação de trânsito e preparação para provas do DETRAN",
+    "url": "https://autoescolaaptos.com.br/blog",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Autoescola APTOS",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://autoescolaaptos.com.br/og-image.jpg"
+      }
+    }
+  };
+
 const Blog = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -26,27 +42,13 @@ const Blog = () => {
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("pt-BR", {
+      timeZone: "UTC",
       day: "2-digit",
       month: "long",
       year: "numeric",
     });
   };
 
-  const blogJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Blog",
-    "name": "Blog Autoescola APTOS",
-    "description": "Dicas de direção, legislação de trânsito e preparação para provas do DETRAN",
-    "url": "https://autoescolaaptos.com.br/blog",
-    "publisher": {
-      "@type": "Organization",
-      "name": "Autoescola APTOS",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://autoescolaaptos.com.br/og-image.jpg"
-      }
-    }
-  };
 
   return (
     <>

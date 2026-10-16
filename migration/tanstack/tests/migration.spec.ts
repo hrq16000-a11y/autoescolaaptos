@@ -28,3 +28,18 @@ test('home hydrates, opens funnel and navigates without a full reload', async ({
   await expect(page.getByText('A idade mínima é 18 anos completos.', { exact: false }).first()).toBeVisible();
   expect(errors).toEqual([]);
 });
+
+test('blog and neighborhood routes render and navigate', async ({ page }) => {
+ const errors: string[] = [];
+ page.on('pageerror', error => errors.push(error.message));
+ await page.goto('/blog');
+ await expect(page.getByRole('heading', { level: 1 })).toContainText('Blog');
+ await page.locator('a[href="/blog/o-que-e-direcao-defensiva"]').first().click();
+ await expect(page).toHaveURL(/\/blog\/o-que-e-direcao-defensiva$/);
+ await expect(page.getByRole('heading', { level: 1 })).toContainText('Direção Defensiva');
+ await page.goto('/bairros/centro');
+ await expect(page.getByRole('heading', { level: 1 })).toContainText('Centro');
+ const missing = await page.goto('/bairros/nao-existe');
+ expect(missing?.status()).toBe(404);
+ expect(errors).toEqual([]);
+});

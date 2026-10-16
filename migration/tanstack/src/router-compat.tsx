@@ -1,11 +1,11 @@
 import { forwardRef, useCallback, type AnchorHTMLAttributes } from 'react';
-import { Link as TanStackLink, useLocation as useTanStackLocation, useRouter } from '@tanstack/react-router';
+import { Link as TanStackLink, useLocation as useTanStackLocation, useRouter, useRouterState } from '@tanstack/react-router';
 
 // Unmigrated destinations continue to open the existing public site.
-const migrated = new Set(['/', '/perguntas-frequentes', '/primeira-habilitacao', '/exames-detran', '/resolucao-1020-2025', '/formas-estudo-teorico', '/aulas-praticas-direcao', '/por-que-autoescola-credenciada', '/carro-automatico']);
+const migrated = new Set(['/', '/perguntas-frequentes', '/primeira-habilitacao', '/exames-detran', '/resolucao-1020-2025', '/formas-estudo-teorico', '/aulas-praticas-direcao', '/por-que-autoescola-credenciada', '/carro-automatico', '/blog', '/bairros']);
 function migratedDestination(to: string) {
   const path = to.split(/[?#]/)[0];
-  return to.startsWith('/') && migrated.has(path);
+  return to.startsWith('/') && (migrated.has(path) || /^\/(blog|bairros)\/[^/]+$/.test(path));
 }
 function publicDestination(to: string) {
   return to.startsWith('/') ? `https://autoescolaaptos.com.br${to}` : to;
@@ -30,3 +30,9 @@ export function useNavigate() {
     else window.location.assign(href);
   }, [router]);
 }
+
+export function useParams<T extends Record<string, string | undefined> = Record<string, string | undefined>>() {
+  const matches = useRouterState({ select: state => state.matches });
+  return (matches[matches.length - 1]?.params ?? {}) as Partial<T>;
+}
+export { Navigate } from '@tanstack/react-router';
