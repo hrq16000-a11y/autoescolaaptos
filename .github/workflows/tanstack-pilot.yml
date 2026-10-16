@@ -25,6 +25,12 @@ jobs:
       - run: ./migration/tanstack/node_modules/.bin/playwright install --with-deps chromium
       - run: npm run test:browser --prefix migration/tanstack
       - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: tanstack-visual-evidence
+          path: migration/tanstack/playwright-report/
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: tanstack-browser-failures
