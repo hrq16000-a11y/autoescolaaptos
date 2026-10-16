@@ -216,3 +216,22 @@ ainda deve ocorrer uma implantação protegida do commit atual e
 testes HTTP de home, orçamento, FAQ, blog, bairros, 404 e controle
 de acesso. Até lá, não confundir o staging R10 com uma publicação R11/R12.
 Não modificar domínio oficial nem desabilitar SSO.
+
+
+## Rodada 13 — simulador de jornada no piloto SSR
+
+A rota `/calculadora-cnh` reutiliza **o componente existente**
+`src/pages/CalculadoraCnh.tsx`; ela não modifica o simulador no domínio
+oficial. O servidor entrega o título, a descrição, canonical e WebPage
+JSON-LD, mantendo o `noindex` global da pré-produção. O
+`FunnelProvider` acompanha a rota para que o botão final continue
+abrindo o formulário original.
+
+O Playwright passa pelas 3 perguntas, confere o resultado e abre/fecha
+o modal sem preencher, enviar mensagens ou gerar leads. Capturas de
+desktop e celular entram no relatório visual dos testes aprovados.
+
+O commit R12 foi implantado e validado com HTTP 200/404 e noindex na
+Vercel protegida, após a liberação da cota. O corte do domínio oficial
+continua pendente de migração das demais rotas, autenticação/OAuth,
+aprovação visual e plano de rollback.

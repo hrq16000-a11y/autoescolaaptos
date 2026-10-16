@@ -144,3 +144,38 @@ test('alternate quote paths keep prequalified WhatsApp message intact', async ({
   }
   expect(outbound).toEqual([]);
 });
+
+test('CNH journey calculator hydrates, simulates steps and opens budget modal without sending leads', async ({ page }) => {
+  const errors: string[] = [];
+  const outbound: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('request', request => {
+    if (/^https:\/\/(api\.whatsapp\.com|wa\.me)(?:\/|$)/.test(request.url())) outbound.push(request.url());
+  });
+  const response = await page.goto('/calculadora-cnh');
+  expect(response?.status()).toBe(200);
+  await expect(page).toHaveTitle(/Simulador de Jornada CNH/);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Simulador de Jornada CNH');
+  const next = page.getByRole('button', { name: 'Próximo' });
+  await expect(next).toBeDisabled();
+  await page.getByRole('button', { name: /1ª Habilitação/ }).click();
+  await expect(next).toBeEnabled();
+  await next.click();
+  await page.getByRole('button', { name: 'Manhã' }).click();
+  await next.click();
+  await page.getByRole('button', { name: /Modo normal/ }).click();
+  await page.getByRole('button', { name: 'Ver minha jornada' }).click();
+  await expect(page.getByRole('heading', { name: /Veja como seu caminho/ })).toBeVisible();
+  await expect(page.getByRole('list', { name: 'Etapas estimadas' }).locator('li').first()).toBeVisible();
+  await test.info().attach('aptos-journey-final-viewport', {
+    body: await page.screenshot({ animations: 'disabled' }),
+    contentType: 'image/png',
+  });
+  await page.getByRole('button', { name: /Ver orçamento para este perfil/ }).click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog')).not.toBeVisible();
+  expect(outbound).toEqual([]);
+  expect(errors).toEqual([]);
+});
