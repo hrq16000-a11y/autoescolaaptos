@@ -70,7 +70,7 @@ const AppRoutes = () => {
   useEngagementTracking();
   // Prefetch em idle das rotas mais navegadas (não roda em 2g/data-saver).
   useEffect(() => {
-    prefetchIdleRoutes();
+    return prefetchIdleRoutes();
   }, []);
   return (
     <Suspense fallback={<RouteFallback />}>

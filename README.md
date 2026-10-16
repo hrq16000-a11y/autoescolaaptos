@@ -76,3 +76,25 @@ Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/c
 ## Identidade visual
 
 A identidade visual oficial e as regras de uso da marca estão documentadas em [IDENTIDADE_VISUAL.md](./IDENTIDADE_VISUAL.md). O asset canônico do portal é `src/assets/logo-aptos-2026-v2.webp`.
+
+## Atualizações independentes pelo GitHub
+
+O código pode ser atualizado sem prompts no Lovable: branch → revisão → build → merge.
+Evite editar os mesmos arquivos simultaneamente no Lovable e no GitHub.
+
+```sh
+npm ci
+npm run build:standalone
+```
+
+O build independente gera `dist/` sem carregar os plugins de MCP e marcação visual do Lovable.
+O comando habitual `npm run build` mantém as integrações existentes.
+Este build não inclui o servidor MCP; ele exige hospedagem própria se for necessário fora do Lovable.
+Login Google ainda usa a integração Lovable: build independente não significa independência total de autenticação.
+Supabase, funções, dados e configurações atuais são preservados. Configure as variáveis públicas
+`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` e `VITE_SUPABASE_PROJECT_ID` no ambiente de build.
+Nunca use chave service-role em variáveis `VITE_`.
+
+Para hospedagem externa, configure fallback das rotas SPA para `index.html` e valide login,
+redirecionamentos OAuth, formulários e WhatsApp em preview antes de trocar domínio.
+Esta etapa não altera hospedagem, domínio nem migra o framework para TanStack Start.

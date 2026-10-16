@@ -15,7 +15,7 @@ const ROUTES: Record<string, Importer> = {
   "/calculadora-cnh": () => import("@/pages/CalculadoraCnh"),
   "/simulado-detran-pr": () => import("@/pages/SimuladoDetranPr"),
   "/primeira-habilitacao": () => import("@/pages/PrimeiraHabilitacao"),
-  "/faq": () => import("@/pages/FAQ"),
+  "/perguntas-frequentes": () => import("@/pages/FAQ"),
 };
 
 function saveData(): boolean {
@@ -30,17 +30,33 @@ function saveData(): boolean {
 
 export function prefetchRoute(path: string) {
   const importer = ROUTES[path];
-  if (!importer || done.has(path) || saveData()) return;
+  if (typeof window === "undefined" || typeof navigator === "undefined") return;
+  if (!importer || done.has(path) || saveData() || document.visibilityState === "hidden") return;
   done.add(path);
   importer().catch(() => done.delete(path));
 }
 
-export function prefetchIdleRoutes(paths: string[] = Object.keys(ROUTES)) {
-  if (typeof window === "undefined" || saveData()) return;
-  const run = () => paths.forEach(prefetchRoute);
-  const ric = (window as Window & {
-    requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
-  }).requestIdleCallback;
-  if (ric) ric(run, { timeout: 4000 });
-  else window.setTimeout(run, 2500);
+// Only the two conversion routes are downloaded speculatively. Other routes
+// remain available through explicit intent-based prefetchRoute calls.
+export function prefetchIdleRoutes(paths: string[] = ["/orcamento", "/1contato"]): () => void {
+  if (typeof window === "undefined" || typeof navigator === "undefined" || saveData()) return () => {};
+  const pending = [...paths];
+  let cancelled = false;
+  let handle: number;
+  const ric = window.requestIdleCallback?.bind(window);
+  const schedule = () => {
+    handle = ric ? ric(run, { timeout: 4000 }) : window.setTimeout(run, 2500);
+  };
+  const run = () => {
+    if (cancelled || document.visibilityState === "hidden" || saveData()) return;
+    const path = pending.shift();
+    if (path) prefetchRoute(path);
+    if (pending.length) schedule();
+  };
+  schedule();
+  return () => {
+    cancelled = true;
+    if (ric) window.cancelIdleCallback(handle);
+    else window.clearTimeout(handle);
+  };
 }
