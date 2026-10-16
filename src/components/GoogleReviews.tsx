@@ -1,8 +1,8 @@
-import { ExternalLink, MessageSquareQuote } from "lucide-react";
+import { ExternalLink, MessageSquareQuote, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const GOOGLE_REVIEWS_SEARCH =
-  "https://www.google.com/search?q=Autoescola+APTOS+S%C3%A3o+Jos%C3%A9+dos+Pinhais";
+  "https://www.google.com/maps/search/?api=1&query=Autoescola%20Aptos%20Sao%20Jose%20dos%20Pinhais&query_place_id=ChIJbXhF6g763JQR9TTJ4hS7wwM";
 
 /**
  * Sem integração de avaliações verificada, não exibir depoimentos,
@@ -25,9 +25,16 @@ const GoogleReviews = () => (
         >
           Conheça as avaliações da Autoescola APTOS
         </h2>
-        <p className="mx-auto mb-8 max-w-2xl text-muted-foreground">
-          Consulte comentários e notas diretamente no Google e conheça opiniões
-          publicadas sobre a APTOS em São José dos Pinhais.
+        <div className="mb-4 flex flex-wrap items-center justify-center gap-2" aria-label="Avaliação de 4,8 em 5 e 794 avaliações na consulta de 16 de outubro de 2026">
+          <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" aria-hidden="true" />
+          <strong className="text-xl text-foreground">4,8/5</strong>
+          <span className="text-sm text-muted-foreground">794 avaliações no Google</span>
+        </div>
+        <p className="mx-auto mb-3 max-w-2xl text-muted-foreground">
+          Consulte os comentários diretamente no Perfil da Empresa no Google.
+        </p>
+        <p className="mb-8 text-xs text-muted-foreground">
+          Dados consultados em 16/10/2026. Nota e quantidade podem mudar.
         </p>
         <Button asChild size="lg" data-intent="reviews_external" data-component="GoogleReviews">
           <a href={GOOGLE_REVIEWS_SEARCH} target="_blank" rel="noopener noreferrer">
