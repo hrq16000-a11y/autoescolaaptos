@@ -180,7 +180,8 @@ O acesso permanece protegido via SSO (deploymentType=all).
 Os checks GitHub e o deploy definitivo pós-merge devem ser validados
 antes do encerramento da rodada; READY sozinho não comprova a publicação.
 
-\n## Rodada 11 — separação de autenticação e conversões
+
+## Rodada 11 — separação de autenticação e conversões
 
 O piloto TanStack na Vercel continua com **SSO habilitado em todos os deploys**
 e cabeçalhos `noindex`; isso é diferente da autenticação funcional do portal.
