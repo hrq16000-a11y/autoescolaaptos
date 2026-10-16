@@ -179,3 +179,23 @@ home e em `/orcamento`, com HTML SSR e `X-Robots-Tag` de noindex.
 O acesso permanece protegido via SSO (deploymentType=all).
 Os checks GitHub e o deploy definitivo pós-merge devem ser validados
 antes do encerramento da rodada; READY sozinho não comprova a publicação.
+
+\n## Rodada 11 — separação de autenticação e conversões
+
+O piloto TanStack na Vercel continua com **SSO habilitado em todos os deploys**
+e cabeçalhos `noindex`; isso é diferente da autenticação funcional do portal.
+O login do portal, o consentimento `/.lovable/oauth/consent`, o admin e a
+página de agradecimento **não** foram migrados: devem retornar 404 no piloto
+até que autenticação, autorização, callbacks, redirecionamentos, prevenção de
+CSRF e sessões sejam migrados e revisados especificamente.
+
+A CI agora verifica essas respostas tanto no SSR como no navegador, sem
+usar contas, tokens, `authorization_id` reais ou credenciais. O navegador
+também percorre mais duas combinações de orçamento (moto e inclusão),
+inspeciona o texto e o número da triagem `554133833627` sem clicar,
+enviar leads ou iniciar uma conversa no WhatsApp.
+
+Esses testes **não validam** autenticação real nem a entrega de mensagens;
+essas duas capacidades precisam de testes separados e autorizados antes de
+qualquer troca de hospedagem. Não desativar SSO ou remover noindex para
+facilitar o teste.
