@@ -40,8 +40,8 @@ const Contact = () => {
     {
       icon: Clock,
       title: "Horário de Atendimento",
-      content: "Segunda a Sexta",
-      subtitle: "Das 9h às 18h",
+      content: "Seg. a sex.: 9h às 19h",
+      subtitle: "Sábado: 9h às 13h",
     },
   ];
 
