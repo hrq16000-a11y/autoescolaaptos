@@ -114,3 +114,9 @@ declare module '@/pages/Comparador' {
   const Page: FunctionComponent;
   export default Page;
 }
+
+declare module '@/pages/HabilitacaoPCD' {
+  import type { FunctionComponent } from 'react';
+  const Page: FunctionComponent;
+  export default Page;
+}
