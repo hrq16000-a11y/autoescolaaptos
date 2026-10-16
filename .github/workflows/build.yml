@@ -22,4 +22,6 @@ jobs:
           cache: npm
       - run: npm ci --no-audit --no-fund
       - run: node scripts/check-triagem-safety.mjs
+      - run: node scripts/test-safe-next.mjs
       - run: npm run ${{ matrix.command }}
+

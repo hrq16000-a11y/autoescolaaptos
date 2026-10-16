@@ -346,3 +346,22 @@ em configurações próprias.
 Esse é um teste de interface com serviços externos simulados,
 **não** uma confirmação de persistência real ou autenticação/OAuth.
 As áreas de gravação continuam exclusivamente no portal oficial.
+
+
+
+## Rodada 18 — login seguro e contrato do banco consolidado
+
+A PR #33 já integrou o teste abrangente do contrato SQL da triagem
+em PostgreSQL 16 descartável, cobrindo permissões da RPC, deduplicação,
+LGPD, recibos, rate-limit e status. Evitar duplicar essa suíte.
+
+A PR #34 complementa a R18 protegendo `/login?next=`: o utilitário
+`safeNext.mjs` aceita apenas caminhos internos da origem oficial;
+rejeita URLs externas, protocol-relative, barras invertidas,
+caracteres de controle e encoding ambíguo. `test-safe-next.mjs`
+exercita casos válidos e ataques de redirecionamento no Build CI.
+
+A autenticação, o consentimento OAuth e as contas continuam
+exclusivamente no site oficial. Migrar para TanStack só após homologar
+callbacks, sessões, cookies, CSRF, controle de acesso administrativo,
+recuperação de senha e autorização em ambiente privado.
