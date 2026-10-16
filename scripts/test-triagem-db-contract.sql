@@ -13,7 +13,11 @@ CREATE ROLE service_role NOLOGIN BYPASSRLS;
 \i supabase/migrations/20260708001119_06803168-3925-4950-b549-7a310215c2cd.sql
 \i supabase/migrations/20260708002441_7c3744e1-c41b-42ed-a4ee-8b1045b44f19.sql
 \i supabase/migrations/20260708003426_481b4227-40d4-426a-8112-a9a7cbadd5f0.sql
-\i supabase/migrations/20260723230855_4adea357-63f8-4460-aedc-33ce412e5e8e.sql
+-- The same security migration also hardens has_role(app_role), which is
+-- unrelated to this isolated RPC fixture. Apply its two triage statements
+-- verbatim instead of fabricating the application's auth enum.
+REVOKE ALL ON FUNCTION public.submit_triagem(jsonb) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.submit_triagem(jsonb) TO service_role;
 
 BEGIN;
 DO $contract$
