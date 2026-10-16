@@ -326,3 +326,23 @@ enviar mensagens ou acessar bases reais. Isso **não substitui** um
 teste integrado de submissão autorizado, validação de políticas de
 retenção LGPD ou migração da autenticação. `/1contato` continua
 no site oficial e retorna 404 no staging TanStack.
+
+
+## Rodada 17 — validação de ponta a ponta da triagem sem dados reais
+
+A suíte `test:triage` executa a versão **Vite compilada** do formulário
+`/1contato`, em desktop e celular. Um interceptador Playwright impede
+toda conexão externa: o pedido `submit-triagem` recebe respostas
+sintéticas de erro HTTP 500, resposta sem recibo e sucesso com ID
+fictício. Não ocorre gravação em Supabase nem envio de WhatsApp.
+
+A CI confirma bloqueio até aceite ativo da LGPD; preservação do
+formulário após erro ou ausência de recibo; CTA WhatsApp apenas
+após recibo validado; proteção do rascunho contra PII e descarte
+de consentimento antigo. O texto contraditório no consentimento
+foi corrigido. A suíte legado e a suíte SSR TanStack estão isoladas
+em configurações próprias.
+
+Esse é um teste de interface com serviços externos simulados,
+**não** uma confirmação de persistência real ou autenticação/OAuth.
+As áreas de gravação continuam exclusivamente no portal oficial.
