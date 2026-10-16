@@ -45,3 +45,11 @@ Rotas migradas agora usam Link e navigate do TanStack; destinos não migrados co
 `npm run test:browser --prefix migration/tanstack` cobre desktop e celular: hidratação da home,
 ausência de overflow horizontal, abertura e fechamento do modal, navegação sem recarga e accordion FAQ.
 O CI instala Chromium e salva screenshots/traces se ocorrer falha. Nenhum envio de formulário ou WhatsApp é executado pelo teste.
+
+## Expansão e validação do build de produção
+
+Rotas adicionais: `/formas-estudo-teorico`, `/aulas-praticas-direcao`, `/por-que-autoescola-credenciada` e `/carro-automatico`.
+São nove páginas reais no piloto, com os schemas originais.
+As variáveis existentes são carregadas do diretório raiz por envDir; nenhuma chave privilegiada é adicionada.
+O Playwright agora usa `serve:production`, um adaptador HTTP local/CI para testar o bundle construído.
+O modo dev apresentou incompatibilidade CommonJS/React e ainda precisa de ajuste; não usar esse adaptador de teste como configuração de hospedagem.

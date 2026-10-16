@@ -124,69 +124,7 @@ const relatedLinks = [
   },
 ];
 
-const CarroAutomatico = () => {
-  const utm = useMemo(() => {
-    if (typeof window === "undefined") return {};
-    return readCampaignUtms();
-  }, []);
-
-  useEffect(() => {
-    track("campaign_view", {
-      page_path: "/carro-automatico",
-      campaign: "polo_automatico",
-      ...utm,
-    });
-    recordCampaignEvent("polo_automatico", "view", "landing");
-  }, [utm]);
-
-  const waHref = whatsappLink(CAMPAIGN_MESSAGE, "direto");
-
-  const handleWhats = (source: string) => {
-    trackWhatsAppClick({
-      source,
-      kind: "direto",
-      service: "aulas_carro_automatico",
-    });
-    track("campaign_whatsapp_click", {
-      source,
-      campaign: "polo_automatico",
-      ...utm,
-    });
-    recordCampaignEvent("polo_automatico", "whatsapp_click", source);
-  };
-
-  const WhatsCTA = ({
-    source,
-    label = "Falar no WhatsApp",
-    className = "",
-  }: {
-    source: string;
-    label?: string;
-    className?: string;
-  }) => (
-    <Button
-      asChild
-      size="lg"
-      className={
-        "min-h-[54px] px-7 text-base font-bold hover:-translate-y-0.5 hover:shadow-glow active:translate-y-0 " +
-        className
-      }
-    >
-      <a
-        href={waHref}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={() => handleWhats(source)}
-        data-component="CarroAutomaticoCTA"
-        data-intent="whatsapp"
-      >
-        <MessageCircle className="w-5 h-5" aria-hidden />
-        {label}
-      </a>
-    </Button>
-  );
-
-  const jsonLd = {
+export const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
       {
@@ -250,6 +188,69 @@ const CarroAutomatico = () => {
       },
     ],
   };
+
+const CarroAutomatico = () => {
+  const utm = useMemo(() => {
+    if (typeof window === "undefined") return {};
+    return readCampaignUtms();
+  }, []);
+
+  useEffect(() => {
+    track("campaign_view", {
+      page_path: "/carro-automatico",
+      campaign: "polo_automatico",
+      ...utm,
+    });
+    recordCampaignEvent("polo_automatico", "view", "landing");
+  }, [utm]);
+
+  const waHref = whatsappLink(CAMPAIGN_MESSAGE, "direto");
+
+  const handleWhats = (source: string) => {
+    trackWhatsAppClick({
+      source,
+      kind: "direto",
+      service: "aulas_carro_automatico",
+    });
+    track("campaign_whatsapp_click", {
+      source,
+      campaign: "polo_automatico",
+      ...utm,
+    });
+    recordCampaignEvent("polo_automatico", "whatsapp_click", source);
+  };
+
+  const WhatsCTA = ({
+    source,
+    label = "Falar no WhatsApp",
+    className = "",
+  }: {
+    source: string;
+    label?: string;
+    className?: string;
+  }) => (
+    <Button
+      asChild
+      size="lg"
+      className={
+        "min-h-[54px] px-7 text-base font-bold hover:-translate-y-0.5 hover:shadow-glow active:translate-y-0 " +
+        className
+      }
+    >
+      <a
+        href={waHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => handleWhats(source)}
+        data-component="CarroAutomaticoCTA"
+        data-intent="whatsapp"
+      >
+        <MessageCircle className="w-5 h-5" aria-hidden />
+        {label}
+      </a>
+    </Button>
+  );
+
 
   return (
     <>

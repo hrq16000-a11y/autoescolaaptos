@@ -23,8 +23,7 @@ import {
   Building
 } from "lucide-react";
 
-const PorQueAutoescola = () => {
-  const jsonLd = {
+export const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": "Por que Escolher uma Autoescola Credenciada - Autoescola APTOS",
@@ -34,6 +33,8 @@ const PorQueAutoescola = () => {
       "name": "Autoescola APTOS"
     }
   };
+
+const PorQueAutoescola = () => {
 
   const vantagens = [
     {

@@ -35,3 +35,31 @@ declare module '@/hooks/useFunnelModal' {
   import type { FunctionComponent, ReactNode } from 'react';
   export const FunnelProvider: FunctionComponent<{ children: ReactNode }>;
 }
+
+declare module '@/pages/FormasEstudoTeorico' {
+  import type { FunctionComponent } from 'react';
+  export const jsonLd: object;
+  const Page: FunctionComponent;
+  export default Page;
+}
+
+declare module '@/pages/AulasPraticasDirecao' {
+  import type { FunctionComponent } from 'react';
+  export const jsonLd: object;
+  const Page: FunctionComponent;
+  export default Page;
+}
+
+declare module '@/pages/PorQueAutoescola' {
+  import type { FunctionComponent } from 'react';
+  export const jsonLd: object;
+  const Page: FunctionComponent;
+  export default Page;
+}
+
+declare module '@/pages/CarroAutomatico' {
+  import type { FunctionComponent } from 'react';
+  export const jsonLd: object;
+  const Page: FunctionComponent;
+  export default Page;
+}
