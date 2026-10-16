@@ -92,7 +92,8 @@ test('quote funnel validates WhatsApp destination without contacting anyone', as
   expect(errors).toEqual([]);
 });
 
-\n// Guardrails for routes which are deliberately NOT ported to this SSR pilot.
+
+// Guardrails for routes which are deliberately NOT ported to this SSR pilot.
 test('login, OAuth, admin and thank-you remain isolated from staging', async ({ page }) => {
   const forbidden = [
     '/login',
