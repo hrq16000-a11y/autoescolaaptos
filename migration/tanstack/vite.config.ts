@@ -3,7 +3,16 @@ import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'node:url';
 const local = (path: string) => fileURLToPath(new URL(path, import.meta.url));
-export default defineConfig({
+// Vercel needs Nitro to generate serverless SSR routes; CI/local keep the tested
+// fetch-based build used by check:ssr and the independent Node preview server.
+export default defineConfig(async () => {
+  const plugins = [tanstackStart()];
+  if (process.env.VERCEL === '1') {
+    const { nitro } = await import('nitro/vite');
+    plugins.push(nitro({ preset: 'vercel' }));
+  }
+  plugins.push(react());
+  return {
   envDir: local('../../'),
   resolve: {
     dedupe: ['react', 'react-dom'],
@@ -16,5 +25,6 @@ export default defineConfig({
   },
   ssr: { noExternal: true },
   css: { postcss: local('./') },
-  plugins: [tanstackStart(), react()],
+  plugins,
+  };
 });
