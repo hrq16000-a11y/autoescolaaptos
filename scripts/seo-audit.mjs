@@ -11,7 +11,7 @@
  * Saída: public/seo-audit.json (relatório visualizável em /admin/growth),
  * mantendo o snapshot anterior em `previous` para comparação Antes/Depois.
  *
- * Nunca falha o build (exit 0) — é um relatório, não um guard.
+ * Falha o build somente com erros críticos (summary.errors > 0); avisos são informativos.
  */
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
@@ -138,3 +138,9 @@ writeFileSync(OUT, JSON.stringify(report, null, 2));
 console.log(
   `seo-audit: ${summary.errors} erro(s), ${summary.warnings} aviso(s), ${summary.sitemapUrls} URLs, ${summary.pagesOk}/${summary.pagesChecked} páginas OK → public/seo-audit.json`
 );
+
+// Erros reais de SEO devem impedir integração/publicação; avisos não bloqueiam.
+if (summary.errors > 0) {
+  console.error(`seo-audit: build interrompido por ${summary.errors} erro(s) crítico(s) de SEO.`);
+  process.exitCode = 1;
+}
