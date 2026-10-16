@@ -66,9 +66,9 @@ test('quote funnel validates WhatsApp destination without contacting anyone', as
   await expect(page.getByRole('heading', { level: 1 })).toContainText('orçamento');
   await expect(page).toHaveTitle(/Solicitar Orçamento de CNH/);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
-  await page.getByRole('button', { name: 'Carro', exact: true }).click();
-  await page.getByRole('button', { name: 'Hoje', exact: true }).click();
-  await page.getByRole('button', { name: 'Nunca', exact: true }).click();
+  await page.getByRole('button', { name: /^Carro\\s*→$/ }).click();
+  await page.getByRole('button', { name: /^Hoje\\s*→$/ }).click();
+  await page.getByRole('button', { name: /^Nunca\\s*→$/ }).click();
   const checkout = page.getByRole('link', { name: /Receber meu orçamento agora/i });
   await expect(checkout).toBeVisible();
   const href = await checkout.getAttribute('href');
