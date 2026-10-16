@@ -13,7 +13,8 @@
     "test:browser": "playwright test",
     "serve:production": "node scripts/serve-production.mjs",
     "serve:preview": "node scripts/serve-preview.mjs",
-    "check:preview": "node scripts/check-preview.mjs"
+    "check:preview": "node scripts/check-preview.mjs",
+    "check:boundary": "node scripts/check-protected-boundary.mjs"
   },
   "dependencies": {
     "@tanstack/react-router": "1.170.44",

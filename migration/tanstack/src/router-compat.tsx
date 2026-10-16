@@ -1,10 +1,15 @@
 import { forwardRef, useCallback, type AnchorHTMLAttributes } from 'react';
 import { Link as TanStackLink, useLocation as useTanStackLocation, useRouter, useRouterState } from '@tanstack/react-router';
+import protectedRoutes from '../protected-routes.json';
 
 // Unmigrated destinations continue to open the existing public site.
 const migrated = new Set(['/', '/perguntas-frequentes', '/primeira-habilitacao', '/exames-detran', '/resolucao-1020-2025', '/formas-estudo-teorico', '/aulas-praticas-direcao', '/por-que-autoescola-credenciada', '/carro-automatico', '/orcamento', '/calculadora-cnh', '/comparador', '/blog', '/bairros']);
+function isLegacyProtectedPath(path: string): boolean {
+  return protectedRoutes.exact.includes(path) || protectedRoutes.prefixes.some(prefix => path.startsWith(prefix));
+}
 function migratedDestination(to: string) {
   const path = to.split(/[?#]/)[0];
+  if (isLegacyProtectedPath(path)) return false;
   return to.startsWith('/') && (migrated.has(path) || /^\/(blog|bairros)\/[^/]+$/.test(path));
 }
 function publicDestination(to: string) {
