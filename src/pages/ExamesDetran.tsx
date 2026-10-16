@@ -21,8 +21,7 @@ import {
   BookOpen
 } from "lucide-react";
 
-const ExamesDetran = () => {
-  const jsonLd = {
+export const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
       {
@@ -42,6 +41,8 @@ const ExamesDetran = () => {
       }
     ]
   };
+
+const ExamesDetran = () => {
 
   const topicosProvaTeórica = [
     { tema: "Legislação de Trânsito", questoes: "18 questões" },

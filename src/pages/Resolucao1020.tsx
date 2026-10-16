@@ -19,8 +19,7 @@ import {
   ArrowRight
 } from "lucide-react";
 
-const Resolucao1020 = () => {
-  const jsonLd = {
+export const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
       {
@@ -41,6 +40,8 @@ const Resolucao1020 = () => {
       }
     ]
   };
+
+const Resolucao1020 = () => {
 
   const principaisMudancas = [
     {

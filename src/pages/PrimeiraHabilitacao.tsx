@@ -21,8 +21,7 @@ import {
   Award
 } from "lucide-react";
 
-const PrimeiraHabilitacao = () => {
-  const jsonLd = {
+export const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
       {
@@ -47,6 +46,8 @@ const PrimeiraHabilitacao = () => {
       }
     ]
   };
+
+const PrimeiraHabilitacao = () => {
 
   const etapas = [
     {

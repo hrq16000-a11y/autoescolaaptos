@@ -10,11 +10,19 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ExamesDetranRouteImport } from './routes/exames-detran'
 import { Route as PerguntasFrequentesRouteImport } from './routes/perguntas-frequentes'
+import { Route as PrimeiraHabilitacaoRouteImport } from './routes/primeira-habilitacao'
+import { Route as Resolucao10202025RouteImport } from './routes/resolucao-1020-2025'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExamesDetranRoute = ExamesDetranRouteImport.update({
+  id: '/exames-detran',
+  path: '/exames-detran',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PerguntasFrequentesRoute = PerguntasFrequentesRouteImport.update({
@@ -22,31 +30,69 @@ const PerguntasFrequentesRoute = PerguntasFrequentesRouteImport.update({
   path: '/perguntas-frequentes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrimeiraHabilitacaoRoute = PrimeiraHabilitacaoRouteImport.update({
+  id: '/primeira-habilitacao',
+  path: '/primeira-habilitacao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Resolucao10202025Route = Resolucao10202025RouteImport.update({
+  id: '/resolucao-1020-2025',
+  path: '/resolucao-1020-2025',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/exames-detran': typeof ExamesDetranRoute
   '/perguntas-frequentes': typeof PerguntasFrequentesRoute
+  '/primeira-habilitacao': typeof PrimeiraHabilitacaoRoute
+  '/resolucao-1020-2025': typeof Resolucao10202025Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/exames-detran': typeof ExamesDetranRoute
   '/perguntas-frequentes': typeof PerguntasFrequentesRoute
+  '/primeira-habilitacao': typeof PrimeiraHabilitacaoRoute
+  '/resolucao-1020-2025': typeof Resolucao10202025Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/exames-detran': typeof ExamesDetranRoute
   '/perguntas-frequentes': typeof PerguntasFrequentesRoute
+  '/primeira-habilitacao': typeof PrimeiraHabilitacaoRoute
+  '/resolucao-1020-2025': typeof Resolucao10202025Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/perguntas-frequentes'
+  fullPaths:
+    | '/'
+    | '/exames-detran'
+    | '/perguntas-frequentes'
+    | '/primeira-habilitacao'
+    | '/resolucao-1020-2025'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/perguntas-frequentes'
-  id: '__root__' | '/' | '/perguntas-frequentes'
+  to:
+    | '/'
+    | '/exames-detran'
+    | '/perguntas-frequentes'
+    | '/primeira-habilitacao'
+    | '/resolucao-1020-2025'
+  id:
+    | '__root__'
+    | '/'
+    | '/exames-detran'
+    | '/perguntas-frequentes'
+    | '/primeira-habilitacao'
+    | '/resolucao-1020-2025'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ExamesDetranRoute: typeof ExamesDetranRoute
   PerguntasFrequentesRoute: typeof PerguntasFrequentesRoute
+  PrimeiraHabilitacaoRoute: typeof PrimeiraHabilitacaoRoute
+  Resolucao10202025Route: typeof Resolucao10202025Route
 }
 
 declare module '@tanstack/react-router' {
@@ -58,6 +104,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/exames-detran': {
+      id: '/exames-detran'
+      path: '/exames-detran'
+      fullPath: '/exames-detran'
+      preLoaderRoute: typeof ExamesDetranRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/perguntas-frequentes': {
       id: '/perguntas-frequentes'
       path: '/perguntas-frequentes'
@@ -65,12 +118,29 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PerguntasFrequentesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/primeira-habilitacao': {
+      id: '/primeira-habilitacao'
+      path: '/primeira-habilitacao'
+      fullPath: '/primeira-habilitacao'
+      preLoaderRoute: typeof PrimeiraHabilitacaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/resolucao-1020-2025': {
+      id: '/resolucao-1020-2025'
+      path: '/resolucao-1020-2025'
+      fullPath: '/resolucao-1020-2025'
+      preLoaderRoute: typeof Resolucao10202025RouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ExamesDetranRoute: ExamesDetranRoute,
   PerguntasFrequentesRoute: PerguntasFrequentesRoute,
+  PrimeiraHabilitacaoRoute: PrimeiraHabilitacaoRoute,
+  Resolucao10202025Route: Resolucao10202025Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

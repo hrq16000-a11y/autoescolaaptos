@@ -14,3 +14,16 @@ const css = readdirSync(assets).filter(p => p.endsWith('.css')).map(p => readFil
 assert.ok(css.includes('.min-h-screen'), 'Missing generated Tailwind utilities');
 assert.ok(!/@tailwind|@apply/.test(css), 'Unprocessed Tailwind directives');
 console.log('PASS FAQ SSR, metadata, JSON-LD and generated CSS');
+
+for (const path of ['/primeira-habilitacao', '/exames-detran', '/resolucao-1020-2025']) {
+  const response = await server.fetch(new Request(`http://localhost:3001${path}`));
+  const html = await response.text();
+  assert.equal(response.status, 200);
+  for (const expected of ['<h1', 'application/ld+json', `https://autoescolaaptos.com.br${path}`, 'noindex, nofollow']) {
+    assert.ok(html.includes(expected), `${path}: missing ${expected}`);
+  }
+  const scripts = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
+  assert.ok(scripts.length > 0);
+  for (const script of scripts) assert.doesNotThrow(() => JSON.parse(script[1]));
+  console.log(`PASS SSR and valid schema: ${path}`);
+}
