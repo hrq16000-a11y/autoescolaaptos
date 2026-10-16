@@ -63,3 +63,32 @@ declare module '@/pages/CarroAutomatico' {
   const Page: FunctionComponent;
   export default Page;
 }
+
+declare module '@/pages/Blog' {
+ import type { FunctionComponent } from 'react';
+ export const blogJsonLd: object;
+ const Page: FunctionComponent; export default Page;
+}
+
+declare module '@/pages/NeighborhoodsIndex' {
+ import type { FunctionComponent } from 'react';
+ export const jsonLd: object;
+ const Page: FunctionComponent; export default Page;
+}
+
+declare module '@/pages/BlogPost' {
+ import type { FunctionComponent } from 'react';
+ export function getArticleJsonLd(data: unknown): object;
+ const Page: FunctionComponent; export default Page;
+}
+
+declare module '@/pages/NeighborhoodPage' {
+ import type { FunctionComponent } from 'react';
+ export function getNeighborhoodJsonLd(data: unknown): object;
+ const Page: FunctionComponent; export default Page;
+}
+
+declare module '@/pages/NotFound' {
+ import type { FunctionComponent } from 'react';
+ const Page: FunctionComponent; export default Page;
+}

@@ -18,15 +18,7 @@ import { CheckCircle, MapPin, Phone, MessageCircle, ArrowRight } from "lucide-re
 import { motion } from "framer-motion";
 import NotFound from "./NotFound";
 
-const NeighborhoodPage = () => {
-  const { slug } = useParams<{ slug: string }>();
-  const neighborhood = slug ? getNeighborhoodBySlug(slug) : undefined;
-
-  if (!neighborhood) {
-    return <NotFound />;
-  }
-
-  const jsonLd = {
+export function getNeighborhoodJsonLd(neighborhood: NonNullable<ReturnType<typeof getNeighborhoodBySlug>>) { return {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": `Autoescola APTOS - ${neighborhood.name}`,
@@ -44,7 +36,17 @@ const NeighborhoodPage = () => {
       "@type": "Place",
       "name": `${neighborhood.name}, São José dos Pinhais`
     }
-  };
+  }; }
+
+const NeighborhoodPage = () => {
+  const { slug } = useParams<{ slug: string }>();
+  const neighborhood = slug ? getNeighborhoodBySlug(slug) : undefined;
+
+  if (!neighborhood) {
+    return <NotFound />;
+  }
+
+  const jsonLd = getNeighborhoodJsonLd(neighborhood);
 
   const services = [
     { name: "Primeira Habilitação", link: "/#servicos" },

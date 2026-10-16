@@ -9,38 +9,7 @@ import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import SEO from "@/components/SEO";
 import { getPostBySlug, getRelatedPosts, blogCategories } from "@/data/blogData";
 
-const BlogPost = () => {
-  const { slug } = useParams<{ slug: string }>();
-  const post = slug ? getPostBySlug(slug) : null;
-  const relatedPosts = slug ? getRelatedPosts(slug, 3) : [];
-
-  if (!post) {
-    return <Navigate to="/blog" replace />;
-  }
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("pt-BR", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    });
-  };
-
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: post.title,
-          text: post.description,
-          url: window.location.href,
-        });
-      } catch {
-        /* usuário cancelou o compartilhamento */
-      }
-    }
-  };
-
-  const articleJsonLd = {
+export function getArticleJsonLd(post: NonNullable<ReturnType<typeof getPostBySlug>>) { return {
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": post.title,
@@ -62,7 +31,41 @@ const BlogPost = () => {
       "@type": "WebPage",
       "@id": `https://autoescolaaptos.com.br/blog/${post.slug}`
     }
+  }; }
+
+const BlogPost = () => {
+  const { slug } = useParams<{ slug: string }>();
+  const post = slug ? getPostBySlug(slug) : null;
+  const relatedPosts = slug ? getRelatedPosts(slug, 3) : [];
+
+  if (!post) {
+    return <Navigate to="/blog" replace />;
+  }
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("pt-BR", {
+      timeZone: "UTC",
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
   };
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: post.title,
+          text: post.description,
+          url: window.location.href,
+        });
+      } catch {
+        /* usuário cancelou o compartilhamento */
+      }
+    }
+  };
+
+  const articleJsonLd = getArticleJsonLd(post);
 
   return (
     <>

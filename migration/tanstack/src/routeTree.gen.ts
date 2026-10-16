@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AulasPraticasDirecaoRouteImport } from './routes/aulas-praticas-direcao'
+import { Route as BairrosRouteImport } from './routes/bairros'
+import { Route as BlogRouteImport } from './routes/blog'
 import { Route as CarroAutomaticoRouteImport } from './routes/carro-automatico'
 import { Route as ExamesDetranRouteImport } from './routes/exames-detran'
 import { Route as FormasEstudoTeoricoRouteImport } from './routes/formas-estudo-teorico'
@@ -18,6 +20,8 @@ import { Route as PerguntasFrequentesRouteImport } from './routes/perguntas-freq
 import { Route as PorQueAutoescolaCredenciadaRouteImport } from './routes/por-que-autoescola-credenciada'
 import { Route as PrimeiraHabilitacaoRouteImport } from './routes/primeira-habilitacao'
 import { Route as Resolucao10202025RouteImport } from './routes/resolucao-1020-2025'
+import { Route as BairrosSlugRouteImport } from './routes/bairros_.$slug'
+import { Route as BlogSlugRouteImport } from './routes/blog_.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -27,6 +31,16 @@ const IndexRoute = IndexRouteImport.update({
 const AulasPraticasDirecaoRoute = AulasPraticasDirecaoRouteImport.update({
   id: '/aulas-praticas-direcao',
   path: '/aulas-praticas-direcao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BairrosRoute = BairrosRouteImport.update({
+  id: '/bairros',
+  path: '/bairros',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CarroAutomaticoRoute = CarroAutomaticoRouteImport.update({
@@ -65,10 +79,22 @@ const Resolucao10202025Route = Resolucao10202025RouteImport.update({
   path: '/resolucao-1020-2025',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BairrosSlugRoute = BairrosSlugRouteImport.update({
+  id: '/bairros_/$slug',
+  path: '/bairros/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog_/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/aulas-praticas-direcao': typeof AulasPraticasDirecaoRoute
+  '/bairros': typeof BairrosRoute
+  '/blog': typeof BlogRoute
   '/carro-automatico': typeof CarroAutomaticoRoute
   '/exames-detran': typeof ExamesDetranRoute
   '/formas-estudo-teorico': typeof FormasEstudoTeoricoRoute
@@ -76,10 +102,14 @@ export interface FileRoutesByFullPath {
   '/por-que-autoescola-credenciada': typeof PorQueAutoescolaCredenciadaRoute
   '/primeira-habilitacao': typeof PrimeiraHabilitacaoRoute
   '/resolucao-1020-2025': typeof Resolucao10202025Route
+  '/bairros/$slug': typeof BairrosSlugRoute
+  '/blog/$slug': typeof BlogSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/aulas-praticas-direcao': typeof AulasPraticasDirecaoRoute
+  '/bairros': typeof BairrosRoute
+  '/blog': typeof BlogRoute
   '/carro-automatico': typeof CarroAutomaticoRoute
   '/exames-detran': typeof ExamesDetranRoute
   '/formas-estudo-teorico': typeof FormasEstudoTeoricoRoute
@@ -87,11 +117,15 @@ export interface FileRoutesByTo {
   '/por-que-autoescola-credenciada': typeof PorQueAutoescolaCredenciadaRoute
   '/primeira-habilitacao': typeof PrimeiraHabilitacaoRoute
   '/resolucao-1020-2025': typeof Resolucao10202025Route
+  '/bairros/$slug': typeof BairrosSlugRoute
+  '/blog/$slug': typeof BlogSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/aulas-praticas-direcao': typeof AulasPraticasDirecaoRoute
+  '/bairros': typeof BairrosRoute
+  '/blog': typeof BlogRoute
   '/carro-automatico': typeof CarroAutomaticoRoute
   '/exames-detran': typeof ExamesDetranRoute
   '/formas-estudo-teorico': typeof FormasEstudoTeoricoRoute
@@ -99,12 +133,16 @@ export interface FileRoutesById {
   '/por-que-autoescola-credenciada': typeof PorQueAutoescolaCredenciadaRoute
   '/primeira-habilitacao': typeof PrimeiraHabilitacaoRoute
   '/resolucao-1020-2025': typeof Resolucao10202025Route
+  '/bairros_/$slug': typeof BairrosSlugRoute
+  '/blog_/$slug': typeof BlogSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/aulas-praticas-direcao'
+    | '/bairros'
+    | '/blog'
     | '/carro-automatico'
     | '/exames-detran'
     | '/formas-estudo-teorico'
@@ -112,10 +150,14 @@ export interface FileRouteTypes {
     | '/por-que-autoescola-credenciada'
     | '/primeira-habilitacao'
     | '/resolucao-1020-2025'
+    | '/bairros/$slug'
+    | '/blog/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/aulas-praticas-direcao'
+    | '/bairros'
+    | '/blog'
     | '/carro-automatico'
     | '/exames-detran'
     | '/formas-estudo-teorico'
@@ -123,10 +165,14 @@ export interface FileRouteTypes {
     | '/por-que-autoescola-credenciada'
     | '/primeira-habilitacao'
     | '/resolucao-1020-2025'
+    | '/bairros/$slug'
+    | '/blog/$slug'
   id:
     | '__root__'
     | '/'
     | '/aulas-praticas-direcao'
+    | '/bairros'
+    | '/blog'
     | '/carro-automatico'
     | '/exames-detran'
     | '/formas-estudo-teorico'
@@ -134,11 +180,15 @@ export interface FileRouteTypes {
     | '/por-que-autoescola-credenciada'
     | '/primeira-habilitacao'
     | '/resolucao-1020-2025'
+    | '/bairros_/$slug'
+    | '/blog_/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AulasPraticasDirecaoRoute: typeof AulasPraticasDirecaoRoute
+  BairrosRoute: typeof BairrosRoute
+  BlogRoute: typeof BlogRoute
   CarroAutomaticoRoute: typeof CarroAutomaticoRoute
   ExamesDetranRoute: typeof ExamesDetranRoute
   FormasEstudoTeoricoRoute: typeof FormasEstudoTeoricoRoute
@@ -146,6 +196,8 @@ export interface RootRouteChildren {
   PorQueAutoescolaCredenciadaRoute: typeof PorQueAutoescolaCredenciadaRoute
   PrimeiraHabilitacaoRoute: typeof PrimeiraHabilitacaoRoute
   Resolucao10202025Route: typeof Resolucao10202025Route
+  BairrosSlugRoute: typeof BairrosSlugRoute
+  BlogSlugRoute: typeof BlogSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -162,6 +214,20 @@ declare module '@tanstack/react-router' {
       path: '/aulas-praticas-direcao'
       fullPath: '/aulas-praticas-direcao'
       preLoaderRoute: typeof AulasPraticasDirecaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bairros': {
+      id: '/bairros'
+      path: '/bairros'
+      fullPath: '/bairros'
+      preLoaderRoute: typeof BairrosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/carro-automatico': {
@@ -213,12 +279,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Resolucao10202025RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bairros_/$slug': {
+      id: '/bairros_/$slug'
+      path: '/bairros/$slug'
+      fullPath: '/bairros/$slug'
+      preLoaderRoute: typeof BairrosSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog_/$slug': {
+      id: '/blog_/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AulasPraticasDirecaoRoute: AulasPraticasDirecaoRoute,
+  BairrosRoute: BairrosRoute,
+  BlogRoute: BlogRoute,
   CarroAutomaticoRoute: CarroAutomaticoRoute,
   ExamesDetranRoute: ExamesDetranRoute,
   FormasEstudoTeoricoRoute: FormasEstudoTeoricoRoute,
@@ -226,6 +308,8 @@ const rootRouteChildren: RootRouteChildren = {
   PorQueAutoescolaCredenciadaRoute: PorQueAutoescolaCredenciadaRoute,
   PrimeiraHabilitacaoRoute: PrimeiraHabilitacaoRoute,
   Resolucao10202025Route: Resolucao10202025Route,
+  BairrosSlugRoute: BairrosSlugRoute,
+  BlogSlugRoute: BlogSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

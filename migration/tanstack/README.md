@@ -53,3 +53,10 @@ São nove páginas reais no piloto, com os schemas originais.
 As variáveis existentes são carregadas do diretório raiz por envDir; nenhuma chave privilegiada é adicionada.
 O Playwright agora usa `serve:production`, um adaptador HTTP local/CI para testar o bundle construído.
 O modo dev apresentou incompatibilidade CommonJS/React e ainda precisa de ajuste; não usar esse adaptador de teste como configuração de hospedagem.
+
+## Blog e bairros
+
+Índices e páginas por slug reutilizam componentes e dados originais, com schema entregue no head.
+Artigo inexistente redireciona para `/blog` com HTTP 302; bairro inexistente retorna HTTP 404.
+Datas do blog usam UTC para preservar o dia publicado entre servidor e navegador.
+As novas rotas têm verificações SSR e cenários Playwright próprios.

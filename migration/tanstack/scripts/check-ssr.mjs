@@ -37,3 +37,17 @@ for (const expected of ['Conquiste Sua', 'CNH', 'Conhecer carro automático', 'W
 assert.ok(!homeHtml.includes('ambiente de validação'));
 assert.ok(homeHtml.includes('api.whatsapp.com/send'));
 console.log('PASS home SSR, structured data and WhatsApp links');
+
+for (const path of ['/blog', '/blog/o-que-e-direcao-defensiva', '/bairros', '/bairros/centro']) {
+ const response = await server.fetch(new Request(`http://localhost:3001${path}`));
+ const html = await response.text();
+ assert.equal(response.status, 200, path);
+ for (const expected of ['<h1', 'application/ld+json', `https://autoescolaaptos.com.br${path}`]) assert.ok(html.includes(expected), `${path}: ${expected}`);
+ console.log(`PASS content SSR: ${path}`);
+}
+const missingPost = await server.fetch(new Request('http://localhost:3001/blog/nao-existe'));
+assert.equal(missingPost.status, 302);
+assert.equal(missingPost.headers.get('location'), '/blog');
+const missingNeighborhood = await server.fetch(new Request('http://localhost:3001/bairros/nao-existe'));
+assert.equal(missingNeighborhood.status, 404);
+console.log('PASS missing article redirect and neighborhood HTTP 404');

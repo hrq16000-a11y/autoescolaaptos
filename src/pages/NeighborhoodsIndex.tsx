@@ -16,8 +16,7 @@ import {
 import { MapPin, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 
-const NeighborhoodsIndex = () => {
-  const jsonLd = {
+export const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
     "name": "Bairros atendidos pela Autoescola APTOS",
@@ -32,6 +31,8 @@ const NeighborhoodsIndex = () => {
       }
     }))
   };
+
+const NeighborhoodsIndex = () => {
 
   return (
     <>
