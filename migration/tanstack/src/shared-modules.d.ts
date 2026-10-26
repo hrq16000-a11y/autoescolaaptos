@@ -120,3 +120,21 @@ declare module '@/pages/HabilitacaoPCD' {
   const Page: FunctionComponent;
   export default Page;
 }
+
+declare module '@/pages/PingSolucoes' {
+  import type { FunctionComponent } from 'react';
+  const Page: FunctionComponent;
+  export default Page;
+}
+
+declare module '@/pages/MestreDosServicos' {
+  import type { FunctionComponent } from 'react';
+  const Page: FunctionComponent;
+  export default Page;
+}
+
+declare module '@/pages/PrecisoDeTecnico' {
+  import type { FunctionComponent } from 'react';
+  const Page: FunctionComponent;
+  export default Page;
+}
