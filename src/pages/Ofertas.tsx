@@ -21,6 +21,7 @@ export default function Ofertas() {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showFallback, setShowFallback] = useState(false);
 
   const { campaignSource, template, origemUrl } = useMemo(() => {
     if (typeof window === "undefined") return { campaignSource: null, template: null, origemUrl: null };
@@ -45,6 +46,7 @@ export default function Ofertas() {
     if (!canSubmit) return;
     setLoading(true);
     setError(null);
+    setShowFallback(false);
     try {
       const { data, error: fnError } = await supabase.functions.invoke("marketing-optin", {
         body: {
@@ -61,9 +63,11 @@ export default function Ofertas() {
         setDone(true);
       } else {
         setError(res?.message || "Não foi possível concluir. Tente novamente.");
+        setShowFallback(!res?.duplicate);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Falha ao enviar.");
+      setError("Não foi possível concluir o cadastro. Tente novamente.");
+      setShowFallback(true);
     } finally {
       setLoading(false);
     }
@@ -144,8 +148,19 @@ export default function Ofertas() {
                   </label>
 
                   {error && (
-                    <div className="text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md px-3 py-2">
-                      {error}
+                    <div role="alert" className="text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md px-3 py-3 space-y-3">
+                      <p>{error}</p>
+                      {showFallback && <p>Não foi possível confirmar seu cadastro automático. Você pode entrar em contato pelo WhatsApp para solicitar a participação.</p>}
+                      {showFallback && aceite && valid && (
+                        <a
+                          href={`https://api.whatsapp.com/send?phone=554133833627&text=${encodeURIComponent(`Quero participar do Programa de Ofertas Exclusivas. Meu WhatsApp é ${telefone}. Autorizo a Autoescola APTOS a enviar campanhas promocionais pelo WhatsApp.`)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex min-h-11 items-center rounded-lg bg-[#25D366] px-4 py-2 font-semibold text-white"
+                        >
+                          Solicitar participação pelo WhatsApp
+                        </a>
+                      )}
                     </div>
                   )}
 
