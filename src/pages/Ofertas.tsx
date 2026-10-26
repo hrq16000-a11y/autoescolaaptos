@@ -144,8 +144,19 @@ export default function Ofertas() {
                   </label>
 
                   {error && (
-                    <div className="text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md px-3 py-2">
-                      {error}
+                    <div role="alert" className="text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md px-3 py-3 space-y-3">
+                      <p>{error}</p>
+                      <p>Não foi possível confirmar seu cadastro automático. Você pode entrar em contato pelo WhatsApp para solicitar a participação.</p>
+                      {aceite && valid && (
+                        <a
+                          href={`https://api.whatsapp.com/send?phone=554133833627&text=${encodeURIComponent(`Quero participar do Programa de Ofertas Exclusivas. Meu WhatsApp é ${telefone}. Autorizo a Autoescola APTOS a enviar campanhas promocionais pelo WhatsApp.`)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex min-h-11 items-center rounded-lg bg-[#25D366] px-4 py-2 font-semibold text-white"
+                        >
+                          Solicitar participação pelo WhatsApp
+                        </a>
+                      )}
                     </div>
                   )}
 
