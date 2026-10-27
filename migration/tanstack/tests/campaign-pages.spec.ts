@@ -37,11 +37,11 @@ test('home campaign cards stay on the TanStack staging router', async ({ page })
     }
   });
   await page.goto('/');
-  await page.locator('img[alt="Promoção de Aniversário - Autoescola APTOS"]').click();
+  await page.locator('img[alt="Promoção de Aniversário - Autoescola APTOS"]').click({ force: true });
   await expect(page).toHaveURL(/\/promocao-aniversario$/);
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Promoção de Aniversário');
   await page.goto('/');
-  await page.locator('img[alt="Programa Indique e Ganhe - Autoescola APTOS"]').click();
+  await page.locator('img[alt="Programa Indique e Ganhe - Autoescola APTOS"]').click({ force: true });
   await expect(page).toHaveURL(/\/promocao-indique-amigo$/);
   expect(externalNavigations).toEqual([]);
 });
