@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import server from '../dist/server/server.js';
 
+const method = await server.fetch(new Request('http://localhost:3001/api/marketing-optin'));
+assert.equal(method.status, 405, 'GET must be rejected explicitly');
+
 const invalid = await server.fetch(new Request('http://localhost:3001/api/marketing-optin', {
   method: 'POST',
   headers: { 'content-type': 'application/json' },
