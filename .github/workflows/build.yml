@@ -24,5 +24,6 @@ jobs:
       - run: node scripts/check-triagem-safety.mjs
       - run: node scripts/test-safe-next.mjs
       - run: node --experimental-strip-types --test tests/admin-marketing-optins.test.mjs
+      - run: node --experimental-strip-types --test tests/marketing-optin-roundtrip.test.mjs
       - run: npm run ${{ matrix.command }}
 
