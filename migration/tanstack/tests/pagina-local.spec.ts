@@ -7,7 +7,9 @@ test('página local e alias preservam navegação para orçamento', async ({ pag
     expect(response?.status()).toBe(200);
     await expect(page.getByRole('heading', { level: 1 })).toContainText('São José dos Pinhais');
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://autoescolaaptos.com.br/autoescola-sao-jose-dos-pinhais');
-    await expect(page.getByRole('link', { name: /Simular meu Orçamento/ })).toHaveAttribute('href', '/orcamento');
+    const links = page.getByRole('link', { name: /Simular meu Orçamento/ });
+    expect(await links.count()).toBeGreaterThan(0);
+    for (const link of await links.all()) await expect(link).toHaveAttribute('href', '/orcamento');
   }
   expect(errors).toEqual([]);
 });
