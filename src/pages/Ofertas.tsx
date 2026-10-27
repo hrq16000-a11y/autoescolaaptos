@@ -59,11 +59,11 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
         },
       });
       if (fnError) throw fnError;
-      const res = data as { success?: boolean; message?: string; duplicate?: boolean };
-      if (res?.success) {
+      const res = data as { success?: boolean; id?: unknown; message?: string; duplicate?: boolean };
+      if (res?.success === true && typeof res.id === "string" && res.id.trim().length > 0) {
         setDone(true);
       } else {
-        setError(res?.message || "Não foi possível concluir. Tente novamente.");
+        setError(res?.duplicate ? (res.message || "Este número já está participando.") : "Não foi possível confirmar o cadastro. Tente novamente.");
         setShowFallback(!res?.duplicate);
       }
     } catch (err) {
