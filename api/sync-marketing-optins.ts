@@ -1,6 +1,6 @@
 import { createHash, timingSafeEqual } from "node:crypto";
-import { listOptins } from "./admin-marketing-optins";
-import { sheetsConfigured, syncOptinsToSheets } from "../src/server/googleOptinSheets";
+import { listOptins } from "./admin-marketing-optins.ts";
+import { sheetsConfigured, syncOptinsToSheets } from "../src/server/googleOptinSheets.ts";
 
 function respond(res: any, code: number, body: unknown) {
   res.statusCode = code;
