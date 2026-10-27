@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
   BookOpen,
@@ -190,6 +191,7 @@ export const jsonLd = {
   };
 
 const CarroAutomatico = () => {
+  const reducedMotion = useReducedMotion();
   const utm = useMemo(() => {
     if (typeof window === "undefined") return {};
     return readCampaignUtms();
@@ -346,15 +348,30 @@ const CarroAutomatico = () => {
 
               <div className="relative">
                 <div className="absolute -inset-3 rounded-[2rem] bg-primary/10 blur-2xl" aria-hidden />
-                <figure className="relative overflow-hidden rounded-3xl border border-border bg-card shadow-2xl">
-                  <img
-                    src={poloAutomatico}
-                    alt="Volkswagen Polo automático da Autoescola APTOS, com identidade visual preta e amarela"
-                    className="aspect-video w-full object-contain object-center bg-zinc-950"
-                    loading="eager"
-                    decoding="async"
-                    {...({ fetchpriority: "high" } as Record<string, string>)}
-                  />
+                <figure className="relative overflow-hidden rounded-3xl border border-border bg-zinc-950 shadow-2xl">
+                  <div className="relative aspect-video overflow-hidden">
+                    <motion.img
+                      src={poloAutomatico}
+                      alt="Volkswagen Polo automático da Autoescola APTOS em frente à sede, com identidade visual preta e amarela"
+                      className="absolute inset-0 h-full w-full object-contain object-center"
+                      loading="eager"
+                      decoding="async"
+                      {...({ fetchpriority: "high" } as Record<string, string>)}
+                      initial={false}
+                      animate={reducedMotion ? { scale: 1, x: 0 } : { scale: [1, 1.045, 1], x: ["0%", "-0.5%", "0%"] }}
+                      transition={reducedMotion ? { duration: 0 } : { duration: 13, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/60 to-transparent" aria-hidden="true" />
+                    <motion.span
+                      className="absolute left-4 bottom-4 rounded-full border border-white/25 bg-black/65 px-4 py-2 text-xs font-bold tracking-wide text-white backdrop-blur-sm sm:text-sm"
+                      initial={reducedMotion ? false : { opacity: 0, y: 8 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      Conheça o Polo automático APTOS
+                    </motion.span>
+                  </div>
                   <figcaption className="border-t border-border bg-card px-5 py-4 text-sm text-muted-foreground">
                     Polo automático APTOS para aulas práticas. Consulte a equipe para confirmar
                     agenda e disponibilidade do veículo automático.
