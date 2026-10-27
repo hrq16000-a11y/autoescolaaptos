@@ -22,7 +22,7 @@ import { track } from "@/lib/analytics";
 import { trackWhatsAppClick } from "@/lib/events";
 import { whatsappLink } from "@/lib/whatsapp";
 import { recordCampaignEvent, readCampaignUtms } from "@/lib/campaignTracking";
-import carroAptos from "@/assets/carro-aptos.webp";
+import poloAutomatico from "@/assets/aptos-polo-automatico-pagina.webp";
 
 const CAMPAIGN_MESSAGE =
   "Olá! Vim pelo anúncio do Polo automático da Autoescola APTOS e gostaria de saber mais sobre as aulas.";
@@ -348,9 +348,9 @@ const CarroAutomatico = () => {
                 <div className="absolute -inset-3 rounded-[2rem] bg-primary/10 blur-2xl" aria-hidden />
                 <figure className="relative overflow-hidden rounded-3xl border border-border bg-card shadow-2xl">
                   <img
-                    src={carroAptos}
+                    src={poloAutomatico}
                     alt="Volkswagen Polo automático da Autoescola APTOS, com identidade visual preta e amarela"
-                    className="aspect-[16/10] w-full object-contain object-center bg-zinc-950 p-2 sm:p-4 lg:aspect-[4/3]"
+                    className="aspect-video w-full object-contain object-center bg-zinc-950"
                     loading="eager"
                     decoding="async"
                     {...({ fetchpriority: "high" } as Record<string, string>)}
