@@ -28,3 +28,20 @@ for (const scenario of [
     expect(writes).toEqual([]);
   });
 }
+
+test('home campaign cards stay on the TanStack staging router', async ({ page }) => {
+  const externalNavigations: string[] = [];
+  page.on('request', request => {
+    if (request.isNavigationRequest() && request.url().startsWith('https://autoescolaaptos.com.br/')) {
+      externalNavigations.push(request.url());
+    }
+  });
+  await page.goto('/');
+  await page.locator('img[alt="Promoção de Aniversário - Autoescola APTOS"]').click();
+  await expect(page).toHaveURL(/\/promocao-aniversario$/);
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Promoção de Aniversário');
+  await page.goto('/');
+  await page.locator('img[alt="Programa Indique e Ganhe - Autoescola APTOS"]').click();
+  await expect(page).toHaveURL(/\/promocao-indique-amigo$/);
+  expect(externalNavigations).toEqual([]);
+});
