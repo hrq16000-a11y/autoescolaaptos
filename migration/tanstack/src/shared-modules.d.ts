@@ -141,6 +141,7 @@ declare module '@/pages/PrecisoDeTecnico' {
 
 declare module '@/pages/Servico' {
   import type { FunctionComponent } from 'react';
+  export function getServicoJsonLd(data: unknown): object;
   const Page: FunctionComponent;
   export default Page;
 }
