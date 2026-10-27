@@ -207,6 +207,13 @@ Deno.serve(async (req) => {
     }, 200);
   }
 
+  // A RPC is the source of truth. Never report a successful opt-in without
+  // both an explicit ok flag and a persisted row id for the client receipt.
+  if (result?.ok !== true || typeof result.id !== "string" || !result.id.trim()) {
+    console.error("marketing_optin missing receipt:", result);
+    return json({ success: false, message: "Falha temporária. Tente novamente." }, 500);
+  }
+
   if (result?.id) {
     const { data: row } = await admin
       .from("marketing_optin")
