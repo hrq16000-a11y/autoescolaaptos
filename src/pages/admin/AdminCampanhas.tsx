@@ -1,9 +1,21 @@
 import { useCallback, useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import { ArrowLeft, BarChart3, Loader2, MousePointerClick, RefreshCw, Users } from "lucide-react";
+import { ArrowLeft, BarChart3, Copy, Loader2, MousePointerClick, RefreshCw, Sparkles, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
+interface RecentLead {
+  id: string;
+  nome: string | null;
+  servico: string | null;
+  utm_campaign: string | null;
+  origem: string | null;
+  created_at: string;
+  ai_summary: string | null;
+  ai_reply: string | null;
+  ai_status: string | null;
+}
 
 interface CampaignMetrics {
   campaign: string;
@@ -31,6 +43,8 @@ export default function AdminCampanhas() {
   const [from, setFrom] = useState(defaultFrom);
   const [to, setTo] = useState(() => new Date().toISOString().slice(0, 10));
   const [campaigns, setCampaigns] = useState<CampaignMetrics[]>([]);
+  const [recent, setRecent] = useState<RecentLead[]>([]);
+  const [busyId, setBusyId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -49,12 +63,31 @@ export default function AdminCampanhas() {
       }
       if (!response.ok) throw new Error(result.message || "Falha ao carregar campanhas.");
       setCampaigns(result.campaigns || []);
+      setRecent(result.recentLeads || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro ao carregar campanhas.");
     } finally {
       setLoading(false);
     }
   }, [from, to, token]);
+
+  const summarize = async (id: string) => {
+    setBusyId(id);
+    try {
+      const response = await fetch(FN_URL, {
+        method: "POST",
+        headers: { "x-admin-token": token, "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "summarize", id }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Falha ao gerar resumo.");
+      setRecent((list) => list.map((l) => (l.id === id ? { ...l, ai_summary: result.summary, ai_reply: result.reply, ai_status: "done" } : l)));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Falha ao gerar resumo.");
+    } finally {
+      setBusyId(null);
+    }
+  };
 
   useEffect(() => {
     if (authed) void load();
@@ -127,6 +160,36 @@ export default function AdminCampanhas() {
               </div>
             </article>
           ))}
+        </section>
+
+        <section className="rounded-lg border border-border bg-card p-5 shadow-smooth">
+          <h2 className="mb-1 flex items-center gap-2 font-heading text-xl font-bold"><Sparkles className="text-primary" aria-hidden /> Novos leads — resumo e resposta sugerida</h2>
+          <p className="mb-4 text-xs text-muted-foreground">Gerado automaticamente por IA a cada lead recebido. Revise antes de enviar.</p>
+          {recent.length === 0 && <p className="text-sm text-muted-foreground">Nenhum lead no período.</p>}
+          <ul className="space-y-3">
+            {recent.map((lead) => (
+              <li key={lead.id} className="rounded-md border border-border p-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="font-bold">{lead.nome || "Sem nome"} <span className="text-xs font-normal text-muted-foreground">· {lead.servico || "—"} · {lead.utm_campaign || lead.origem || "direto"} · {new Date(lead.created_at).toLocaleString("pt-BR")}</span></p>
+                  <Button size="sm" variant="outline" disabled={busyId === lead.id} onClick={() => void summarize(lead.id)}>
+                    {busyId === lead.id ? <Loader2 className="animate-spin" /> : <Sparkles />} {lead.ai_summary ? "Gerar de novo" : "Gerar resumo"}
+                  </Button>
+                </div>
+                {lead.ai_summary ? (
+                  <div className="mt-3 grid gap-3 md:grid-cols-2">
+                    <div><h3 className="text-xs font-bold uppercase text-muted-foreground">Resumo</h3><p className="text-sm">{lead.ai_summary}</p></div>
+                    <div>
+                      <h3 className="text-xs font-bold uppercase text-muted-foreground">Resposta sugerida</h3>
+                      <p className="whitespace-pre-wrap text-sm">{lead.ai_reply || "—"}</p>
+                      {lead.ai_reply && <Button size="sm" variant="ghost" className="mt-1" onClick={() => void navigator.clipboard.writeText(lead.ai_reply!)}><Copy /> Copiar</Button>}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="mt-2 text-sm text-muted-foreground">{lead.ai_status === "error" ? "Não foi possível gerar o resumo. Tente novamente." : "Resumo ainda não gerado."}</p>
+                )}
+              </li>
+            ))}
+          </ul>
         </section>
       </div>
     </main>
