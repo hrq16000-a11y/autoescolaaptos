@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet";
+import { supabase } from "@/integrations/supabase/client";
 
-const MARKETING_OPTIN_API_URL = "https://autoescolaaptos-marketing-api-msolus.vercel.app/api/marketing-optin";
 const APTOS_WHATSAPP = "554133833627";
 
 function whatsappOptinUrl(telefone: string, confirmado: boolean, jaParticipa = false) {
@@ -71,25 +71,19 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
     setAlreadyRegistered(false);
     try {
       if (preview) throw new Error("Preview: cadastro desativado");
-      const response = await fetch(MARKETING_OPTIN_API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      // Reutiliza a conexão original de Ofertas, que já sincroniza
+      // cadastros autorizados com a planilha Google Sheets existente.
+      const { data: res, error: invokeError } = await supabase.functions.invoke("marketing-optin", {
+        body: {
           telefone,
           campaign_source: campaignSource,
           ultimo_template_enviado: template,
           origem_url: origemUrl,
           lgpd_aceite: true,
-        }),
+        },
       });
-      const res = await response.json().catch(() => ({})) as {
-        success?: boolean;
-        id?: unknown;
-        message?: string;
-        duplicate?: boolean;
-      };
-      if (!response.ok) {
-        throw new Error(res?.message || "Não foi possível confirmar o cadastro. Tente novamente.");
+      if (invokeError) {
+        throw new Error("Não foi possível confirmar o cadastro na planilha. Tente novamente.");
       }
       if (res?.success === true && typeof res.id === "string" && res.id.trim().length > 0) {
         setDone(true);
