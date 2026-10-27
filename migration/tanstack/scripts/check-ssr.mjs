@@ -15,7 +15,7 @@ assert.ok(css.includes('.min-h-screen'), 'Missing generated Tailwind utilities')
 assert.ok(!/@tailwind|@apply/.test(css), 'Unprocessed Tailwind directives');
 console.log('PASS FAQ SSR, metadata, JSON-LD and generated CSS');
 
-for (const path of ['/categoria-a', '/categoria-b', '/categoria-ab', '/inclusao-categoria', '/reciclagem-cnh', '/reteste-pratico', '/aulas-praticas', '/parceiros/ping-solucoes', '/parceiros/mestre-dos-servicos', '/parceiros/preciso-de-um-tecnico', '/pcd', '/comparador', '/calculadora-cnh', '/orcamento', '/primeira-habilitacao', '/exames-detran', '/resolucao-1020-2025', '/formas-estudo-teorico', '/aulas-praticas-direcao', '/por-que-autoescola-credenciada', '/carro-automatico']) {
+for (const path of ['/autoescola-sao-jose-dos-pinhais', '/categoria-a', '/categoria-b', '/categoria-ab', '/inclusao-categoria', '/reciclagem-cnh', '/reteste-pratico', '/aulas-praticas', '/parceiros/ping-solucoes', '/parceiros/mestre-dos-servicos', '/parceiros/preciso-de-um-tecnico', '/pcd', '/comparador', '/calculadora-cnh', '/orcamento', '/primeira-habilitacao', '/exames-detran', '/resolucao-1020-2025', '/formas-estudo-teorico', '/aulas-praticas-direcao', '/por-que-autoescola-credenciada', '/carro-automatico']) {
   const response = await server.fetch(new Request(`http://localhost:3001${path}`));
   const html = await response.text();
   assert.equal(response.status, 200);
@@ -88,3 +88,8 @@ for (const path of [
   assert.ok(!html.includes('Conectar esse aplicativo'), `OAuth consent unexpectedly served: ${path}`);
   console.log(`PASS isolated sensitive route: ${path}`);
 }
+
+const localAlias = await server.fetch(new Request('http://localhost:3001/cnh-sao-jose-dos-pinhais'));
+const aliasHtml = await localAlias.text();
+assert.equal(localAlias.status, 200);
+assert.ok(aliasHtml.includes('https://autoescolaaptos.com.br/autoescola-sao-jose-dos-pinhais'));
