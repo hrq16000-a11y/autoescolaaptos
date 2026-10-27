@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { sheetsConfigured, syncOptinsToSheets } from "../src/server/googleOptinSheets.ts";
 
 type OptinPayload = {
   telefone?: unknown;
@@ -159,6 +160,17 @@ export default async function handler(req: any, res: any) {
         duplicate: true,
         message: "Este número já está participando do Programa de Ofertas Exclusivas.",
       }, 200, origin);
+    }
+    // O Blob privado continua sendo a fonte de verdade. Falha do Google Sheets
+    // não apaga o consentimento: o cron protegido reprocessa depois.
+    if (sheetsConfigured()) {
+      try {
+        await syncOptinsToSheets([payload]);
+      } catch (error) {
+        console.warn("marketing sheet sync pending", error instanceof Error ? error.name : "unknown");
+      }
+    } else {
+      console.warn("marketing sheet sync pending: service account not configured");
     }
     return responseBody(res, {
       success: true,
