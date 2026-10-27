@@ -42,8 +42,8 @@ async function getBlobRecord(pathname: string, storeId: string, token: string) {
     throw new Error("Unexpected blob pathname");
   }
   const response = await fetch(
-    \`https://\${storeId}.private.blob.vercel-storage.com/\${pathname}\`,
-    { headers: { Authorization: \`Bearer \${token}\` }, signal: AbortSignal.timeout(8000) },
+    `https://${storeId}.private.blob.vercel-storage.com/${pathname}`,
+    { headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(8000) },
   );
   if (!response.ok) throw new Error("Unable to read private blob");
   const length = Number(response.headers.get("content-length") || "0");
@@ -70,9 +70,9 @@ async function getBlobRecord(pathname: string, storeId: string, token: string) {
 async function listOptins(token: string, storeId: string, cursor: string | null, limit: number) {
   const params = new URLSearchParams({ prefix, limit: String(limit) });
   if (cursor) params.set("cursor", cursor);
-  const response = await fetch(\`https://vercel.com/api/blob/?\${params}\`, {
+  const response = await fetch(`https://vercel.com/api/blob/?${params}`, {
     headers: {
-      Authorization: \`Bearer \${token}\`,
+      Authorization: `Bearer ${token}`,
       "x-vercel-blob-store-id": storeId,
       "x-api-version": "13",
     },
