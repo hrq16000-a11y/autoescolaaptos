@@ -6,7 +6,7 @@ test('ofertas mantém consentimento e oferece contato apenas após falha', async
   await page.route('**/*', async route => {
     const req = route.request();
     if (req.url().startsWith('http://127.0.0.1:4178/')) return route.continue();
-    if (/\/functions\/v1\/marketing-optin(?:\?|$)/.test(req.url())) {
+    if (/(?:\/functions\/v1|\/api)\/marketing-optin(?:\?|$)/.test(req.url())) {
       const headers = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': '*', 'Content-Type': 'application/json' };
       if (req.method() === 'OPTIONS') return route.fulfill({ status: 200, headers, body: '{}' });
       calls++;
