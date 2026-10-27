@@ -188,3 +188,10 @@ declare module '@/pages/Aprovados' {
   const Page: FunctionComponent;
   export default Page;
 }
+
+
+declare module '@/pages/SimuladoDetranPr' {
+  import type { FunctionComponent } from 'react';
+  const Page: FunctionComponent;
+  export default Page;
+}
