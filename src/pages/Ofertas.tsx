@@ -92,9 +92,13 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
         // O cadastro é salvo antes de abrir o WhatsApp. O envio da mensagem exige
         // que o participante confirme "Enviar" no aplicativo.
         window.location.assign(whatsappOptinUrl(telefone, true));
+      } else if (res?.duplicate === true) {
+        // O cadastro existente não é sobrescrito: a pessoa pode continuar no WhatsApp.
+        setError("Este número já está participando. Você pode continuar pelo WhatsApp sem fazer outro cadastro.");
+        setShowFallback(true);
       } else {
-        setError(res?.duplicate ? (res.message || "Este número já está participando.") : "Não foi possível confirmar o cadastro. Tente novamente.");
-        setShowFallback(!res?.duplicate);
+        setError("Não foi possível confirmar o cadastro. Tente novamente.");
+        setShowFallback(true);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Não foi possível concluir o cadastro. Tente novamente.");
@@ -193,7 +197,7 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
                           rel="noopener noreferrer"
                           className="inline-flex min-h-11 items-center rounded-lg bg-[#25D366] px-4 py-2 font-semibold text-white"
                         >
-                          Solicitar participação pelo WhatsApp
+                          Continuar pelo WhatsApp
                         </a>
                       )}
                     </div>
