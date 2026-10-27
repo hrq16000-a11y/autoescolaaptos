@@ -148,3 +148,9 @@ declare module '@/pages/Servico' {
 declare module '@/data/servicosData' {
   export const SERVICOS: Record<string, { metaTitle: string; metaDescription: string; serviceType: string }>;
 }
+
+declare module '@/pages/Ofertas' {
+  import type { FunctionComponent } from 'react';
+  const Page: FunctionComponent<{ preview?: boolean }>;
+  export default Page;
+}
