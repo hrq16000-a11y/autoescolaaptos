@@ -211,7 +211,7 @@ test('CNH comparator renders four categories and keeps lead funnel protected', a
 });
 
 test('data-writing routes are isolated from staging without sending form data', async ({ page }) => {
-  const blocked = ['/1contato', '/triagem', '/ofertas', '/campanha'];
+  const blocked = ['/1contato', '/triagem', '/campanha'];
   const outgoingWrites: string[] = [];
   page.on('request', request => {
     if (request.method() !== 'GET' && request.method() !== 'HEAD') outgoingWrites.push(request.url());
@@ -222,6 +222,12 @@ test('data-writing routes are isolated from staging without sending form data', 
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
     await expect(page.locator('form')).toHaveCount(0);
   }
+  // Ofertas is intentionally public now; rendering it must not submit anything.
+  const offersResponse = await page.goto('/ofertas');
+  expect(offersResponse?.status()).toBe(200);
+  await expect(page.getByRole('heading', { name: 'Programa de Ofertas Exclusivas' })).toBeVisible();
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, follow');
+  await expect(page.locator('form')).toHaveCount(1);
   expect(outgoingWrites).toEqual([]);
 });
 
