@@ -1,0 +1,58 @@
+name: Ofertas - smoke do dominio oficial
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/ofertas-public-smoke.yml'
+      - 'src/pages/Ofertas.tsx'
+      - 'src/pages/admin/AdminOptinVercel.tsx'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/ofertas-public-smoke.yml'
+      - 'src/pages/Ofertas.tsx'
+      - 'src/pages/admin/AdminOptinVercel.tsx'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Validar paginas reais sem enviar qualquer cadastro
+        shell: bash
+        run: |
+          set -euo pipefail
+          site="https://autoescolaaptos.com.br"
+          for path in /ofertas /admin/ofertas-vercel; do
+            page="$(mktemp)"
+            status="$(curl -fsSL --max-time 18 --retry 1 -o "$page" -w '%{http_code}' "$site$path")"
+            if [[ "$status" != 200 ]]; then
+              echo "::error::$path em dominio oficial retornou $status"
+              exit 1
+            fi
+            if ! grep -Eqi 'id=["'\'']root["'\'']|<main|<html' "$page"; then
+              echo "::error::$path nao devolveu a pagina esperada"
+              exit 1
+            fi
+            echo "PASS pagina publica $path HTTP 200"
+            rm -f "$page"
+          done
+      - name: Validar fronteira da API sem criar registros
+        shell: bash
+        run: |
+          set -euo pipefail
+          api="https://autoescolaaptos-marketing-api-msolus.vercel.app"
+          response="$(mktemp)"
+          trap 'rm -f "$response"' EXIT
+          status="$(curl -sSL --max-time 18 --retry 1 -o "$response" -w '%{http_code}' "$api/api/marketing-optin")"
+          if [[ "$status" != 405 ]]; then
+            echo "::error::GET da API de cadastro retornou $status em vez de 405"
+            exit 1
+          fi
+          node -e '
+            const fs = require("fs");
+            const body = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+            if (body.success !== false) throw new Error("GET nao deve relatar cadastro bem-sucedido");
+          ' "$response"
+          echo "PASS API de cadastro protegida contra GET"
