@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { sheetsConfigured, syncOptinsToSheets } from "../src/server/googleOptinSheets";
+import { sheetsConfigured, syncOptinsToSheets } from "../src/server/googleOptinSheets.ts";
 
 type OptinPayload = {
   telefone?: unknown;
