@@ -1,0 +1,33 @@
+name: Validate existing APTOS Offers → Sheets connection
+
+on:
+  pull_request:
+    paths:
+      - "src/pages/Ofertas.tsx"
+      - ".github/workflows/ofertas-sheets-legacy-smoke.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-original-connection:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - name: Existing opt-in function is reachable without submitting participant data
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://jbvepseodqytqxxckgtu.supabase.co/functions/v1"
+          response="$(curl --max-time 12 -sS -o /dev/null -w '%{http_code}' "$base/marketing-optin")"
+          echo "marketing-optin GET status: $response"
+          test "$response" = "405"
+      - name: Confirm existing Google Sheets connector with a read-only provider check
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://jbvepseodqytqxxckgtu.supabase.co/functions/v1"
+          response="$(curl --max-time 18 -sS -o /dev/null -w '%{http_code}' "$base/optin-sync-worker?test=1")"
+          echo "Google Sheets connection health status: $response"
+          test "$response" = "200"
