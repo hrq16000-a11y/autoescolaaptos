@@ -77,7 +77,6 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
     } catch (err) {
       setError(err instanceof Error ? err.message : "Não foi possível concluir o cadastro. Tente novamente.");
       setShowFallback(true);
-    }
     } finally {
       setLoading(false);
     }
