@@ -23,7 +23,7 @@ jobs:
       - name: Verify production API denies anonymous access
         shell: bash
         env:
-          URL: https://autoescolaaptos-marketing-api.vercel.app/api/admin-marketing-optins
+          URL: https://autoescolaaptos-marketing-api-msolus.vercel.app/api/admin-marketing-optins
         run: |
           set -euo pipefail
           body="$(mktemp)"
