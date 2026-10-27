@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig, type PluginOption } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
@@ -6,7 +6,7 @@ import path from "path";
 export default defineConfig(async ({ mode }) => {
   // Keep Lovable integrations by default; standalone builds do not load its plugins.
   const standalone = process.env.APTOS_STANDALONE === "1";
-  const plugins = [react()];
+  const plugins: PluginOption[] = [react()];
   if (!standalone) {
     if (mode === "development") {
       const { componentTagger } = await import("lovable-tagger");
