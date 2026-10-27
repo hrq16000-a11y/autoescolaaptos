@@ -1,0 +1,56 @@
+name: Offers admin API — public security smoke
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'api/admin-marketing-optins.ts'
+      - '.github/workflows/offers-admin-smoke.yml'
+  pull_request:
+    paths:
+      - 'api/admin-marketing-optins.ts'
+      - '.github/workflows/offers-admin-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deny-anonymous:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - name: Verify production API denies anonymous access
+        shell: bash
+        env:
+          URL: https://autoescolaaptos-marketing-api.vercel.app/api/admin-marketing-optins
+        run: |
+          set -euo pipefail
+          body="$(mktemp)"
+          headers="$(mktemp)"
+          trap 'rm -f "$body" "$headers"' EXIT
+          status="$(curl --silent --show-error --max-time 20 \
+            --retry 2 --retry-delay 1 \
+            --header 'Origin: https://autoescolaaptos.com.br' \
+            --dump-header "$headers" --output "$body" \
+            --write-out '%{http_code}' "$URL")"
+          if [[ "$status" != "401" ]]; then
+            echo "::error::Admin API anonymous request returned HTTP $status instead of 401"
+            exit 1
+          fi
+          if ! grep -Eiq '^access-control-allow-origin: https://autoescolaaptos.com.br\r?$' "$headers"; then
+            echo "::error::Admin API missing expected CORS origin"
+            exit 1
+          fi
+          if ! grep -Eiq '^cache-control: .*no-store' "$headers"; then
+            echo "::error::Admin API must disable caching"
+            exit 1
+          fi
+          node -e '
+            const fs = require("node:fs");
+            const payload = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+            if (payload.message !== "Credencial administrativa inválida." || "records" in payload) {
+              throw new Error("Anonymous response was not the expected authentication denial");
+            }
+          ' "$body"
+          echo 'PASS: production admin route rejects anonymous GET without disclosing records'
