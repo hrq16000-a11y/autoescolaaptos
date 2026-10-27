@@ -24,6 +24,7 @@ jobs:
       - run: npm run check:ssr --prefix migration/tanstack
       - run: npm run check:preview --prefix migration/tanstack
       - run: npm run check:boundary --prefix migration/tanstack
+      - run: node migration/tanstack/scripts/check-offers-api.mjs
       - run: ./migration/tanstack/node_modules/.bin/playwright install --with-deps chromium
       - run: npm run test:browser --prefix migration/tanstack
       - uses: actions/upload-artifact@v4
