@@ -25,6 +25,7 @@ test('preview de ofertas não envia cadastros nem confirma gravação', async ({
   await expect(page.getByRole('link', { name: 'Solicitar participação pelo WhatsApp' })).toBeVisible();
   expect(external).toEqual([]);
   expect(errors).toEqual([]);
-  const blocked = await page.goto('/ofertas');
-  expect(blocked?.status()).toBe(404);
+  const published = await page.goto('/ofertas');
+  expect(published?.status()).toBe(200);
+  await expect(page.getByRole('heading', { name: 'Programa de Ofertas Exclusivas' })).toBeVisible();
 });
