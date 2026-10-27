@@ -1,0 +1,1 @@
+ALTER TABLE public.triagem_leads ADD COLUMN IF NOT EXISTS ai_summary text, ADD COLUMN IF NOT EXISTS ai_reply text, ADD COLUMN IF NOT EXISTS ai_status text, ADD COLUMN IF NOT EXISTS ai_updated_at timestamptz;

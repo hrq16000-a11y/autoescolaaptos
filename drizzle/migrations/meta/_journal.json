@@ -15,6 +15,13 @@
       "when": 1789966039484,
       "tag": "0001_lock_campaign_events_direct_access",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793140435221,
+      "tag": "0002_lead_ai_summary",
+      "breakpoints": true
     }
   ]
 }

@@ -5,6 +5,7 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { summarizeLead } from "../_shared/leadAi.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -97,6 +98,13 @@ Deno.serve(async (req) => {
     if (!(webhookResult as { ok?: boolean }).ok) {
       console.error("webhook forward failed after retries:", webhookResult);
     }
+  }
+
+  // Resumo por IA em segundo plano (não bloqueia o visitante)
+  if (rpcData?.id && !rpcData?.skipped) {
+    const task = summarizeLead(admin, rpcData.id).catch((e) => console.error("ai bg:", e));
+    // deno-lint-ignore no-explicit-any
+    (globalThis as any).EdgeRuntime?.waitUntil?.(task);
   }
 
   return json({ ...(data as Record<string, unknown>), webhook: webhookResult });
