@@ -2,6 +2,23 @@ import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet";
 
 const MARKETING_OPTIN_API_URL = "https://autoescolaaptos-marketing-api-msolus.vercel.app/api/marketing-optin";
+const APTOS_WHATSAPP = "554133833627";
+
+function whatsappOptinUrl(telefone: string, confirmado: boolean) {
+  const mensagem = [
+    "Olá, equipe da Autoescola APTOS! 👋🚗",
+    confirmado
+      ? "Acabei de confirmar minha participação no Programa de Ofertas Exclusivas! 🎁"
+      : "Quero participar do Programa de Ofertas Exclusivas! 🎁",
+    "",
+    "✅ Autorizo receber novidades, campanhas e condições especiais da APTOS por WhatsApp.",
+    `📱 Meu número: ${telefone}.`,
+    "Quando surgirem oportunidades para minha habilitação, podem me avisar por aqui?",
+    "Obrigado(a)! 😊",
+  ].join("\n");
+  return `https://api.whatsapp.com/send?phone=${APTOS_WHATSAPP}&text=${encodeURIComponent(mensagem)}`;
+}
+
 
 function formatBR(v: string) {
   const d = v.replace(/\D/g, "").slice(0, 11);
@@ -72,6 +89,9 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
       }
       if (res?.success === true && typeof res.id === "string" && res.id.trim().length > 0) {
         setDone(true);
+        // O cadastro é salvo antes de abrir o WhatsApp. O envio da mensagem exige
+        // que o participante confirme "Enviar" no aplicativo.
+        window.location.assign(whatsappOptinUrl(telefone, true));
       } else {
         setError(res?.duplicate ? (res.message || "Este número já está participando.") : "Não foi possível confirmar o cadastro. Tente novamente.");
         setShowFallback(!res?.duplicate);
@@ -124,6 +144,9 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
                   <li>Quando informado na campanha, o benefício poderá ser utilizado apenas uma única vez pelo participante.</li>
                 </ul>
 
+                <p className="text-sm text-foreground/80 mb-4">
+                  Após confirmar o cadastro, abriremos o WhatsApp com uma mensagem pronta. Você só precisa tocar em Enviar.
+                </p>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
                     <label htmlFor="telefone" className="block text-sm font-medium text-foreground mb-1">
@@ -165,7 +188,7 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
                       {showFallback && <p>Não foi possível confirmar seu cadastro automático. Você pode entrar em contato pelo WhatsApp para solicitar a participação.</p>}
                       {showFallback && aceite && valid && (
                         <a
-                          href={`https://api.whatsapp.com/send?phone=554133833627&text=${encodeURIComponent(`Quero participar do Programa de Ofertas Exclusivas. Meu WhatsApp é ${telefone}. Autorizo a Autoescola APTOS a enviar campanhas promocionais pelo WhatsApp.`)}`}
+                          href={whatsappOptinUrl(telefone, false)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex min-h-11 items-center rounded-lg bg-[#25D366] px-4 py-2 font-semibold text-white"
@@ -197,7 +220,7 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
                 </p>
 
                 <a
-                  href={`https://api.whatsapp.com/send?phone=554133833627&text=${encodeURIComponent("Quero participar das promoções!")}`}
+                  href={whatsappOptinUrl(telefone, true)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center w-full h-14 rounded-lg bg-[#25D366] hover:bg-[#20BA5A] text-white font-bold text-lg shadow-lg transition mb-4 gap-2"
