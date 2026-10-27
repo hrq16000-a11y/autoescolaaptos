@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet";
-import { supabase } from "@/integrations/supabase/client";
 
 function formatBR(v: string) {
   const d = v.replace(/\D/g, "").slice(0, 11);
@@ -49,17 +48,26 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
     setShowFallback(false);
     try {
       if (preview) throw new Error("Preview: cadastro desativado");
-      const { data, error: fnError } = await supabase.functions.invoke("marketing-optin", {
-        body: {
+      const response = await fetch("/api/marketing-optin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           telefone,
           campaign_source: campaignSource,
           ultimo_template_enviado: template,
           origem_url: origemUrl,
           lgpd_aceite: true,
-        },
+        }),
       });
-      if (fnError) throw fnError;
-      const res = data as { success?: boolean; id?: unknown; message?: string; duplicate?: boolean };
+      const res = await response.json().catch(() => ({})) as {
+        success?: boolean;
+        id?: unknown;
+        message?: string;
+        duplicate?: boolean;
+      };
+      if (!response.ok) {
+        throw new Error(res?.message || "Não foi possível confirmar o cadastro. Tente novamente.");
+      }
       if (res?.success === true && typeof res.id === "string" && res.id.trim().length > 0) {
         setDone(true);
       } else {
@@ -67,7 +75,7 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
         setShowFallback(!res?.duplicate);
       }
     } catch (err) {
-      setError("Não foi possível concluir o cadastro. Tente novamente.");
+      setError(err instanceof Error ? err.message : "Não foi possível concluir o cadastro. Tente novamente.");
       setShowFallback(true);
     } finally {
       setLoading(false);

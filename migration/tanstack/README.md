@@ -365,3 +365,10 @@ A autenticação, o consentimento OAuth e as contas continuam
 exclusivamente no site oficial. Migrar para TanStack só após homologar
 callbacks, sessões, cookies, CSRF, controle de acesso administrativo,
 recuperação de senha e autorização em ambiente privado.
+
+
+## API própria de ofertas
+
+A rota `/api/marketing-optin` recebe e valida o opt-in sem Supabase. Ela encaminha o evento para o endpoint definido em `MARKETING_OPTIN_WEBHOOK_URL` e só confirma sucesso quando o webhook responde com HTTP 2xx. O segredo opcional `MARKETING_OPTIN_WEBHOOK_SECRET` é enviado no header `X-Aptos-Webhook-Secret`.
+
+Copie `migration/tanstack/.env.example` para o ambiente de hospedagem e configure o webhook antes de habilitar o fluxo em produção. Sem essa variável, a API responde 503 e a tela oferece o fallback para WhatsApp; nenhum sucesso falso é exibido.
