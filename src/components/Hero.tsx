@@ -135,7 +135,7 @@ const Hero = () => {
         ))}
       </div>
 
-      <div className={`container mx-auto px-4 relative z-10 ${selectedIndex === 0 ? "hidden" : ""}`}>
+      <div className={`container mx-auto px-4 relative z-10 ${selectedIndex === 0 ? "invisible pointer-events-none" : ""}`}>
         <div className="max-w-3xl">
           {/* Badge */}
           <motion.div
@@ -290,9 +290,9 @@ const Hero = () => {
       </div>
 
       {selectedIndex === 0 && (
-        <div className="container mx-auto relative z-10 px-6 pt-4 pb-[48vh] sm:py-24 lg:py-32 pointer-events-none">
-          <div className="max-w-xl pointer-events-auto text-center sm:text-left">
-            <img src={logoAptos} alt="Autoescola APTOS" className="mx-auto sm:mx-0 mb-4 h-14 sm:h-20 lg:h-24 w-auto max-w-[75vw] object-contain" />
+        <div className="absolute inset-x-0 top-20 bottom-0 z-10 flex items-start sm:items-center pointer-events-none overflow-hidden">
+          <div className="container mx-auto px-12 sm:px-16 lg:px-20 pt-5 sm:pt-0 pb-0 sm:pb-16 pointer-events-none">
+            <div className="max-w-xl text-center sm:text-left pointer-events-auto"><img src={logoAptos} alt="Autoescola APTOS" className="mx-auto sm:mx-0 mb-4 h-12 sm:h-20 lg:h-24 w-auto max-w-[65vw] object-contain" />
             <p className="text-yellow-400 text-xs sm:text-sm uppercase tracking-[0.2em] font-bold mb-3">Novidade • Polo automático</p>
             <h1 className="text-white text-3xl sm:text-4xl lg:text-6xl font-black leading-tight drop-shadow-lg">Seu próximo passo é no automático</h1>
             <p className="text-white/90 mt-3 mb-5 text-sm sm:text-base lg:text-lg max-w-md">Novo Polo automático APTOS. Aulas práticas com confiança, conforto e instrutores qualificados em São José dos Pinhais.</p>
@@ -301,6 +301,7 @@ const Hero = () => {
                 Conhecer o carro automático <ChevronRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
+          </div>
           </div>
         </div>
       )}
