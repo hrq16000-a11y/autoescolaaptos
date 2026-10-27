@@ -13,8 +13,11 @@ import heroSlide1 from "@/assets/hero-slide-1.webp";
 import heroSlide2 from "@/assets/hero-slide-2.webp";
 import heroSlide3 from "@/assets/hero-slide-3.webp";
 import heroImage from "@/assets/hero-image.webp";
+import carroAptos from "@/assets/carro-aptos.webp";
+import logoAptos from "@/assets/logo-aptos-2026-v2.webp";
 
 const slides = [
+  { image: carroAptos, alt: "Carro automático da Autoescola APTOS", automatico: true },
   {
     image: heroSlide1,
     alt: "Aluna feliz com CNH conquistada na Autoescola APTOS",
@@ -91,9 +94,9 @@ const Hero = () => {
                 loading={index === 0 ? "eager" : "lazy"}
                 {...({ fetchpriority: index === 0 ? "high" : "auto" } as Record<string, string>)}
                 decoding="async"
-                className="w-full h-full object-cover"
+                className={slide.automatico ? "absolute right-0 bottom-[14%] h-[40%] w-[95%] object-contain object-right sm:bottom-[9%] sm:h-[56%] sm:w-[73%] lg:bottom-[6%] lg:h-[80%] lg:w-[66%] drop-shadow-2xl" : "w-full h-full object-cover"}
               />
-              <div className="absolute inset-0 gradient-overlay" />
+              {slide.automatico ? <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-800 sm:bg-gradient-to-r sm:from-zinc-950 sm:via-zinc-900 sm:to-zinc-700 -z-10" /> : <div className="absolute inset-0 gradient-overlay" />}
             </div>
           ))}
         </div>
@@ -131,7 +134,7 @@ const Hero = () => {
         ))}
       </div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className={`container mx-auto px-4 relative z-10 ${selectedIndex === 0 ? "hidden" : ""}`}>
         <div className="max-w-3xl">
           {/* Badge */}
           <motion.div
@@ -284,6 +287,22 @@ const Hero = () => {
           </motion.div>
         </div>
       </div>
+
+      {selectedIndex === 0 && (
+        <div className="container mx-auto relative z-10 px-6 pt-4 pb-[48vh] sm:py-24 lg:py-32 pointer-events-none">
+          <div className="max-w-xl pointer-events-auto text-center sm:text-left">
+            <img src={logoAptos} alt="Autoescola APTOS" className="mx-auto sm:mx-0 mb-4 h-14 sm:h-20 lg:h-24 w-auto max-w-[75vw] object-contain" />
+            <p className="text-yellow-400 text-xs sm:text-sm uppercase tracking-[0.2em] font-bold mb-3">Novidade • Carro automático</p>
+            <h2 className="text-white text-3xl sm:text-4xl lg:text-6xl font-black leading-tight drop-shadow-lg">Sua CNH com mais conforto</h2>
+            <p className="text-white/90 mt-3 mb-5 text-sm sm:text-base lg:text-lg max-w-md">Conheça as aulas práticas em carro automático da APTOS, em São José dos Pinhais.</p>
+            <Button size="lg" asChild className="bg-red-600 hover:bg-red-700 text-white font-bold shadow-lg w-full sm:w-auto min-h-12">
+              <Link to="/carro-automatico" data-component="HeroPoloAutomaticoCTA" data-intent="internal" onClick={() => trackEvent("hero_automatico_click", { source: "hero_slide_0" })}>
+                Conhecer o carro automático <ChevronRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Scroll Indicator */}
       <motion.div
