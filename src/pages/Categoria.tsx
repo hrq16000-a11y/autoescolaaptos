@@ -24,7 +24,7 @@ interface CategoriaData {
   faqs: { q: string; a: string }[];
 }
 
-const CATEGORIAS: Record<Slug, CategoriaData> = {
+export const CATEGORIAS: Record<Slug, CategoriaData> = {
   a: {
     slug: "a",
     letra: "A",
@@ -114,20 +114,8 @@ const CATEGORIAS: Record<Slug, CategoriaData> = {
   },
 };
 
-const Categoria = () => {
-  const { slug } = useParams<{ slug: string }>();
-  const data = slug ? CATEGORIAS[slug as Slug] : undefined;
-
-  if (!data) return <Navigate to="/" replace />;
-  const Icon = data.icon;
-
-  return (
-    <div className="min-h-screen bg-background">
-      <SEO
-        title={`${data.hero} | Autoescola APTOS`}
-        description={`${data.subtitle.slice(0, 155)}`}
-        canonical={`/categoria-${data.slug}`}
-        jsonLd={{
+export function getCategoriaJsonLd(data: CategoriaData) {
+  return {
           "@context": "https://schema.org",
           "@graph": [
             {
@@ -154,7 +142,24 @@ const Categoria = () => {
               ],
             },
           ],
-        }}
+        };
+}
+
+const Categoria = ({ categorySlug }: { categorySlug?: Slug } = {}) => {
+  const { slug: routeSlug } = useParams<{ slug: string }>();
+  const slug = categorySlug ?? routeSlug;
+  const data = slug ? CATEGORIAS[slug as Slug] : undefined;
+
+  if (!data) return <Navigate to="/" replace />;
+  const Icon = data.icon;
+
+  return (
+    <div className="min-h-screen bg-background">
+      <SEO
+        title={`${data.hero} | Autoescola APTOS`}
+        description={`${data.subtitle.slice(0, 155)}`}
+        canonical={`/categoria-${data.slug}`}
+        jsonLd={getCategoriaJsonLd(data)}
       />
       <Navbar />
 
