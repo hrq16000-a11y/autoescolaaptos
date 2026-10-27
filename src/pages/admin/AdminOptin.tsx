@@ -478,6 +478,19 @@ const AdminOptin = () => {
         </div>
       </header>
 
+      <section
+        role="status"
+        aria-label="Aviso sobre a origem dos cadastros de ofertas"
+        className="container mx-auto mt-4 px-4"
+      >
+        <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">
+          <strong className="block mb-1">Atenção: este painel consulta apenas a base legada do Supabase.</strong>
+          O formulário público de ofertas passou a gravar cadastros em armazenamento privado da Vercel.
+          Os novos participantes não são incluídos automaticamente nesta lista, nos indicadores ou no CSV deste painel.
+          Até a migração administrativa da leitura, não utilize estes números como total consolidado de participantes.
+        </div>
+      </section>
+
       <main className="container mx-auto px-4 py-6 space-y-6">
         {/* Configuração de alertas */}
         <section className="bg-card border border-border rounded-xl p-4">
