@@ -349,14 +349,14 @@ const CarroAutomatico = () => {
                 <figure className="relative overflow-hidden rounded-3xl border border-border bg-card shadow-2xl">
                   <img
                     src={carroAptos}
-                    alt="Veículo da Autoescola APTOS usado nas aulas práticas em São José dos Pinhais"
-                    className="aspect-[4/3] w-full object-cover"
+                    alt="Volkswagen Polo automático da Autoescola APTOS, com identidade visual preta e amarela"
+                    className="aspect-[16/10] w-full object-contain object-center bg-zinc-950 p-2 sm:p-4 lg:aspect-[4/3]"
                     loading="eager"
                     decoding="async"
                     {...({ fetchpriority: "high" } as Record<string, string>)}
                   />
                   <figcaption className="border-t border-border bg-card px-5 py-4 text-sm text-muted-foreground">
-                    Frota APTOS para aulas práticas. Consulte a equipe para confirmar
+                    Polo automático APTOS para aulas práticas. Consulte a equipe para confirmar
                     agenda e disponibilidade do veículo automático.
                   </figcaption>
                 </figure>
