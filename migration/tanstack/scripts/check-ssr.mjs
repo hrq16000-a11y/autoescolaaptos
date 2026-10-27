@@ -24,7 +24,7 @@ for (const path of ['/inclusao-categoria', '/reciclagem-cnh', '/reteste-pratico'
   }
   const scripts = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
   assert.ok(scripts.length > 0);
-  for (const script of scripts) assert.doesNotThrow(() => JSON.parse(script[1]));
+  for (const script of scripts) { try { JSON.parse(script[1]); } catch (error) { throw new Error(`${path}: JSON-LD inválido ${JSON.stringify(script[1])}`, { cause: error }); } }
   console.log(`PASS SSR and valid schema: ${path}`);
 }
 
