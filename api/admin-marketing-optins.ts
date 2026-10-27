@@ -67,7 +67,7 @@ async function getBlobRecord(pathname: string, storeId: string, token: string) {
   };
 }
 
-async function listOptins(token: string, storeId: string, cursor: string | null, limit: number) {
+export async function listOptins(token: string, storeId: string, cursor: string | null, limit: number) {
   const params = new URLSearchParams({ prefix, limit: String(limit) });
   if (cursor) params.set("cursor", cursor);
   const response = await fetch(`https://vercel.com/api/blob/?${params}`, {
