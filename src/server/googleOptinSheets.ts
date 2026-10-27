@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { createSign } from "node:crypto";
 
 export type MarketingOptinForSheet = {

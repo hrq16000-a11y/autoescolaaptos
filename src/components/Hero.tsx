@@ -13,12 +13,11 @@ import heroSlide1 from "@/assets/hero-slide-1.webp";
 import heroSlide2 from "@/assets/hero-slide-2.webp";
 import heroSlide3 from "@/assets/hero-slide-3.webp";
 import heroImage from "@/assets/hero-image.webp";
-import carroAptos from "@/assets/carro-aptos.webp";
-import fachadaAptos from "@/assets/fachada-aptos.webp";
+import poloAutomatico from "@/assets/aptos-polo-automatico-pagina.webp";
 import logoAptos from "@/assets/logo-aptos-2026-v2.webp";
 
 const slides = [
-  { image: carroAptos, alt: "Carro automático da Autoescola APTOS", automatico: true },
+  { image: poloAutomatico, alt: "Polo automático da Autoescola APTOS", automatico: true },
   {
     image: heroSlide1,
     alt: "Aluna feliz com CNH conquistada na Autoescola APTOS",
@@ -88,17 +87,17 @@ const Hero = () => {
       <div className="absolute inset-0 z-0 overflow-hidden" ref={emblaRef}>
         <div className="flex h-full">
           {slides.map((slide, index) => (
-            <div key={index} className={`flex-[0_0_100%] min-w-0 relative h-full ${slide.automatico ? "bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-800 sm:bg-gradient-to-r sm:from-zinc-950 sm:via-zinc-900 sm:to-zinc-700" : ""}`}>
+            <div key={index} className={`flex-[0_0_100%] min-w-0 relative h-full ${slide.automatico ? "bg-foreground" : ""}`}>
               <img
                 src={slide.image}
                 alt={slide.alt}
                 loading={index === 0 ? "eager" : "lazy"}
                 {...({ fetchpriority: index === 0 ? "high" : "auto" } as Record<string, string>)}
                 decoding="async"
-                className={slide.automatico ? "hidden" : "w-full h-full object-cover"}
+                className={slide.automatico ? "absolute inset-x-0 top-[min(32rem,60svh)] w-full h-auto object-contain sm:top-0 sm:h-full sm:object-bottom" : "w-full h-full object-cover"}
               />
               {slide.automatico && <Link to="/carro-automatico" aria-label="Conhecer as aulas no Polo automático da APTOS" data-component="HeroPoloSlideLink" data-intent="internal" onClick={() => trackEvent("hero_automatico_click", { source: "hero_slide_image" })} className="absolute inset-0 z-10" />}
-              {slide.automatico ? <><img src={fachadaAptos} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover opacity-25" /><div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/55 to-black/50 sm:bg-gradient-to-r sm:from-black/95 sm:via-black/75 sm:to-transparent" /><img src={carroAptos} alt="Polo automático da Autoescola APTOS" className="absolute bottom-[10%] sm:bottom-[8%] right-0 w-[96%] h-[42%] sm:w-[74%] sm:h-[65%] lg:w-[65%] lg:h-[85%] object-contain object-right drop-shadow-2xl" /></> : <div className="absolute inset-0 gradient-overlay" />}
+              {!slide.automatico && <div className="absolute inset-0 gradient-overlay" />}
             </div>
           ))}
         </div>

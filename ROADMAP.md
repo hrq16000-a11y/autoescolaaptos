@@ -2,6 +2,13 @@
 
 Priorização com foco em impacto financeiro (matrículas geradas).
 
+## Solicitação atual — Banner e ofertas
+
+- [x] Substituir somente a imagem do slide 0 e validar celular, tablet e desktop; CTA e controles preservados.
+- [x] Validar os testes existentes de sincronização de ofertas, sem cadastros reais de teste (7 testes passaram).
+- [ ] Confirmar credencial Google na Vercel e conciliar pendências sem alterar os 22 registros históricos (depende de acesso externo).
+- [ ] Publicar após validação e informar os limites de confirmação do Git sincronizado.
+
 ## Em execução — Campanha Polo automático
 
 - [x] Publicar e validar `/carro-automatico` em celular e desktop
