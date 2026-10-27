@@ -162,3 +162,10 @@ declare module '@/pages/Categoria' {
   const Page: FunctionComponent<{ categorySlug?: 'a' | 'b' | 'ab' }>;
   export default Page;
 }
+
+declare module '@/pages/AutoescolaSaoJoseDosPinhais' {
+  import type { FunctionComponent } from 'react';
+  export const localJsonLd: object;
+  const Page: FunctionComponent;
+  export default Page;
+}
