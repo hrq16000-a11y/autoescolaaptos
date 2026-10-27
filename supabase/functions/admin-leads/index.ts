@@ -6,6 +6,7 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { summarizeLead } from "../_shared/leadAi.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -117,7 +118,15 @@ Deno.serve(async (req) => {
           bySource,
         };
       });
-      return json({ campaigns });
+      let recentQuery = admin
+        .from("triagem_leads")
+        .select("id, nome, servico, utm_campaign, origem, created_at, ai_summary, ai_reply, ai_status")
+        .order("created_at", { ascending: false })
+        .limit(20);
+      if (from) recentQuery = recentQuery.gte("created_at", from);
+      if (to) recentQuery = recentQuery.lte("created_at", to);
+      const { data: recentLeads } = await recentQuery;
+      return json({ campaigns, recentLeads: recentLeads ?? [] });
     }
 
     // ---- Modo métricas: agrega contagens/taxas de conversão ----
@@ -176,11 +185,15 @@ Deno.serve(async (req) => {
   }
 
   if (req.method === "POST") {
-    let body: { id?: string; status_funil?: string };
+    let body: { id?: string; status_funil?: string; action?: string };
     try {
       body = await req.json();
     } catch {
       return json({ error: "invalid_json" }, 400);
+    }
+    if (body.action === "summarize" && body.id) {
+      const r = await summarizeLead(admin, body.id);
+      return json(r, r.ok ? 200 : 502);
     }
     if (!body.id || !body.status_funil || !ALLOWED_STATUS.includes(body.status_funil as never)) {
       return json({ error: "invalid_payload", message: "id e status_funil válidos são obrigatórios." }, 400);
