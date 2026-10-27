@@ -245,6 +245,10 @@ export type Database = {
         Row: {
           aceita_email: boolean | null
           aceita_whats: boolean | null
+          ai_reply: string | null
+          ai_status: string | null
+          ai_summary: string | null
+          ai_updated_at: string | null
           categoria: string | null
           conhece_procedimento: string | null
           created_at: string
@@ -276,6 +280,10 @@ export type Database = {
         Insert: {
           aceita_email?: boolean | null
           aceita_whats?: boolean | null
+          ai_reply?: string | null
+          ai_status?: string | null
+          ai_summary?: string | null
+          ai_updated_at?: string | null
           categoria?: string | null
           conhece_procedimento?: string | null
           created_at?: string
@@ -307,6 +315,10 @@ export type Database = {
         Update: {
           aceita_email?: boolean | null
           aceita_whats?: boolean | null
+          ai_reply?: string | null
+          ai_status?: string | null
+          ai_summary?: string | null
+          ai_updated_at?: string | null
           categoria?: string | null
           conhece_procedimento?: string | null
           created_at?: string
