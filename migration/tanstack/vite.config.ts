@@ -15,6 +15,7 @@ export default defineConfig({
     alias: [
       { find: '@/components/SEO', replacement: local('./src/legacy-seo.tsx') },
       { find: '@/lib/featureFlags', replacement: local('./src/pilot-feature-flags.ts') },
+      { find: '@/lib/campaignTracking', replacement: local('./src/campaign-tracking.ts') },
       { find: 'react-router-dom', replacement: local('./src/router-compat.tsx') },
       { find: '@', replacement: local('../../src') },
     ],

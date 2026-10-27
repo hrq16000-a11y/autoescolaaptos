@@ -169,3 +169,15 @@ declare module '@/pages/AutoescolaSaoJoseDosPinhais' {
   const Page: FunctionComponent;
   export default Page;
 }
+
+declare module '@/pages/PromoAniversario' {
+  import type { FunctionComponent } from 'react';
+  const Page: FunctionComponent;
+  export default Page;
+}
+
+declare module '@/pages/PromoIndiqueAmigo' {
+  import type { FunctionComponent } from 'react';
+  const Page: FunctionComponent;
+  export default Page;
+}
