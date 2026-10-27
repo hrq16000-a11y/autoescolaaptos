@@ -23,6 +23,16 @@ jobs:
           response="$(curl --max-time 12 -sS -o /dev/null -w '%{http_code}' "$base/marketing-optin")"
           echo "marketing-optin GET status: $response"
           test "$response" = "405"
+      - name: Browser CORS preflight permits original offers flow
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://jbvepseodqytqxxckgtu.supabase.co/functions/v1/marketing-optin"
+          headers="$(curl --max-time 12 -sS -D - -o /dev/null -X OPTIONS \
+            -H 'Origin: https://autoescolaaptos.com.br' \
+            -H 'Access-Control-Request-Method: POST' \
+            -H 'Access-Control-Request-Headers: authorization,apikey,content-type,x-client-info' "$base")"
+          echo "$headers" | grep -qi '^access-control-allow-origin:'
       - name: Confirm existing Google Sheets connector with a read-only provider check
         shell: bash
         run: |
