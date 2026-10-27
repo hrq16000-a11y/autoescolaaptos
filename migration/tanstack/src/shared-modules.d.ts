@@ -181,3 +181,10 @@ declare module '@/pages/PromoIndiqueAmigo' {
   const Page: FunctionComponent;
   export default Page;
 }
+
+
+declare module '@/pages/Aprovados' {
+  import type { FunctionComponent } from 'react';
+  const Page: FunctionComponent;
+  export default Page;
+}
