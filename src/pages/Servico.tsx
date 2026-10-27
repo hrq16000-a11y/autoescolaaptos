@@ -10,16 +10,10 @@ import SocialProof from "@/components/SocialProof";
 import RelatedLinks from "@/components/RelatedLinks";
 import { SERVICOS } from "@/data/servicosData";
 
-const Servico = () => {
-  const location = useLocation();
-  const slug = location.pathname.replace(/^\//, "");
-  const data = slug ? SERVICOS[slug] : undefined;
-  if (!data) return <Navigate to="/" replace />;
-
-  const Icon = data.icon;
+export function getServicoJsonLd(data: (typeof SERVICOS)[string]) {
   const url = `https://autoescolaaptos.com.br/${data.slug}`;
 
-  const jsonLd = {
+  return {
     "@context": "https://schema.org",
     "@graph": [
       {
@@ -70,6 +64,16 @@ const Servico = () => {
     ],
   };
 
+}
+
+const Servico = () => {
+  const location = useLocation();
+  const slug = location.pathname.replace(/^\//, "");
+  const data = slug ? SERVICOS[slug] : undefined;
+  if (!data) return <Navigate to="/" replace />;
+
+  const Icon = data.icon;
+  const jsonLd = getServicoJsonLd(data);
   const relatedLinks = Object.values(SERVICOS)
     .filter((s) => s.slug !== data.slug)
     .slice(0, 3)

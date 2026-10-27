@@ -25,6 +25,11 @@ for (const path of ['/inclusao-categoria', '/reciclagem-cnh', '/reteste-pratico'
   const scripts = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
   assert.ok(scripts.length > 0);
   for (const script of scripts) { try { JSON.parse(script[1]); } catch (error) { throw new Error(`${path}: JSON-LD inválido ${JSON.stringify(script[1])}`, { cause: error }); } }
+  if (['/inclusao-categoria', '/reciclagem-cnh', '/reteste-pratico', '/aulas-praticas'].includes(path)) {
+    const graph = JSON.parse(scripts[0][1])['@graph'];
+    assert.deepEqual(graph.map(item => item['@type']), ['Service', 'FAQPage', 'BreadcrumbList'], `${path}: schema incompleto`);
+    assert.ok(graph[1].mainEntity.length > 0, `${path}: perguntas ausentes`);
+  }
   console.log(`PASS SSR and valid schema: ${path}`);
 }
 
