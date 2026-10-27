@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/sync-marketing-optins",
+      "schedule": "0 10 * * *"
+    }
+  ]
+}
