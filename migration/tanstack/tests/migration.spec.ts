@@ -226,7 +226,7 @@ test('data-writing routes are isolated from staging without sending form data', 
   const offersResponse = await page.goto('/ofertas');
   expect(offersResponse?.status()).toBe(200);
   await expect(page.getByRole('heading', { name: 'Programa de Ofertas Exclusivas' })).toBeVisible();
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, follow');
+  await expect(page.locator('meta[name="robots"]').first()).toHaveAttribute('content', 'noindex, follow');
   await expect(page.locator('form')).toHaveCount(1);
   expect(outgoingWrites).toEqual([]);
 });
