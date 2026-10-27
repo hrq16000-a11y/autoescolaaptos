@@ -37,14 +37,7 @@ const faqs = [
   },
 ];
 
-const AutoescolaSaoJoseDosPinhais = () => {
-  return (
-    <div className="min-h-screen bg-background">
-      <SEO
-        title="Autoescola em São José dos Pinhais | CNH com Aprovação | APTOS"
-        description="Autoescola APTOS em São José dos Pinhais: +15 anos, 95% de aprovação no DETRAN-PR, carros novos, curso online e próximo ao DETRAN. Solicite seu orçamento."
-        canonical="/autoescola-sao-jose-dos-pinhais"
-        jsonLd={{
+export const localJsonLd = {
           "@context": "https://schema.org",
           "@graph": [
             {
@@ -53,7 +46,7 @@ const AutoescolaSaoJoseDosPinhais = () => {
               "url": "https://autoescolaaptos.com.br/autoescola-sao-jose-dos-pinhais",
               "telephone": "+554133833627",
               "image": "https://autoescolaaptos.com.br/og-image.png",
-              "priceRange": "$$",
+              "priceRange": "$",
               "address": {
                 "@type": "PostalAddress",
                 "addressLocality": "São José dos Pinhais",
@@ -80,7 +73,16 @@ const AutoescolaSaoJoseDosPinhais = () => {
               ],
             },
           ],
-        }}
+        };
+
+const AutoescolaSaoJoseDosPinhais = () => {
+  return (
+    <div className="min-h-screen bg-background">
+      <SEO
+        title="Autoescola em São José dos Pinhais | CNH com Aprovação | APTOS"
+        description="Autoescola APTOS em São José dos Pinhais: +15 anos, 95% de aprovação no DETRAN-PR, carros novos, curso online e próximo ao DETRAN. Solicite seu orçamento."
+        canonical="/autoescola-sao-jose-dos-pinhais"
+        jsonLd={localJsonLd}
       />
       <Navbar />
 
