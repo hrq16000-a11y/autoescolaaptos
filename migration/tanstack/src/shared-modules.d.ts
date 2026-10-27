@@ -154,3 +154,11 @@ declare module '@/pages/Ofertas' {
   const Page: FunctionComponent<{ preview?: boolean }>;
   export default Page;
 }
+
+declare module '@/pages/Categoria' {
+  import type { FunctionComponent } from 'react';
+  export const CATEGORIAS: Record<'a' | 'b' | 'ab', { hero: string; subtitle: string }>;
+  export function getCategoriaJsonLd(data: unknown): object;
+  const Page: FunctionComponent<{ categorySlug?: 'a' | 'b' | 'ab' }>;
+  export default Page;
+}
