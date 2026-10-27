@@ -8,6 +8,6 @@ export function pageHead(title: string, description: string, path: string, jsonL
       { property: 'og:image', content: `${origin}/og-image.png` },
       { name: 'twitter:card', content: 'summary_large_image' }],
     links: [{ rel: 'canonical', href: canonical }],
-    scripts: [{ type: 'application/ld+json', children: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }],
+    scripts: [{ type: 'application/ld+json', children: JSON.stringify(jsonLd).replace(/[<\u007f-\uffff]/g, char => '\\u' + char.charCodeAt(0).toString(16).padStart(4, '0')) }],
   };
 }

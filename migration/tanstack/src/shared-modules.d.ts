@@ -138,3 +138,12 @@ declare module '@/pages/PrecisoDeTecnico' {
   const Page: FunctionComponent;
   export default Page;
 }
+
+declare module '@/pages/Servico' {
+  import type { FunctionComponent } from 'react';
+  const Page: FunctionComponent;
+  export default Page;
+}
+declare module '@/data/servicosData' {
+  export const SERVICOS: Record<string, { metaTitle: string; metaDescription: string; serviceType: string }>;
+}

@@ -15,7 +15,7 @@ assert.ok(css.includes('.min-h-screen'), 'Missing generated Tailwind utilities')
 assert.ok(!/@tailwind|@apply/.test(css), 'Unprocessed Tailwind directives');
 console.log('PASS FAQ SSR, metadata, JSON-LD and generated CSS');
 
-for (const path of ['/parceiros/ping-solucoes', '/parceiros/mestre-dos-servicos', '/parceiros/preciso-de-um-tecnico', '/pcd', '/comparador', '/calculadora-cnh', '/orcamento', '/primeira-habilitacao', '/exames-detran', '/resolucao-1020-2025', '/formas-estudo-teorico', '/aulas-praticas-direcao', '/por-que-autoescola-credenciada', '/carro-automatico']) {
+for (const path of ['/inclusao-categoria', '/reciclagem-cnh', '/reteste-pratico', '/aulas-praticas', '/parceiros/ping-solucoes', '/parceiros/mestre-dos-servicos', '/parceiros/preciso-de-um-tecnico', '/pcd', '/comparador', '/calculadora-cnh', '/orcamento', '/primeira-habilitacao', '/exames-detran', '/resolucao-1020-2025', '/formas-estudo-teorico', '/aulas-praticas-direcao', '/por-que-autoescola-credenciada', '/carro-automatico']) {
   const response = await server.fetch(new Request(`http://localhost:3001${path}`));
   const html = await response.text();
   assert.equal(response.status, 200);
@@ -24,7 +24,7 @@ for (const path of ['/parceiros/ping-solucoes', '/parceiros/mestre-dos-servicos'
   }
   const scripts = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
   assert.ok(scripts.length > 0);
-  for (const script of scripts) assert.doesNotThrow(() => JSON.parse(script[1]));
+  for (const script of scripts) { try { JSON.parse(script[1]); } catch (error) { throw new Error(`${path}: JSON-LD inválido ${JSON.stringify(script[1])}`, { cause: error }); } }
   console.log(`PASS SSR and valid schema: ${path}`);
 }
 
