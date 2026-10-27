@@ -45,6 +45,7 @@ const GrowthDashboard = lazy(() => import("./pages/admin/GrowthDashboard"));
 const AdminLeads = lazy(() => import("./pages/admin/AdminLeads"));
 const AdminMetricas = lazy(() => import("./pages/admin/AdminMetricas"));
 const AdminOptin = lazy(() => import("./pages/admin/AdminOptin"));
+const AdminOptinVercel = lazy(() => import("./pages/admin/AdminOptinVercel"));
 const AdminIndex = lazy(() => import("./pages/admin/AdminIndex"));
 const Login = lazy(() => import("./pages/Login"));
 const OAuthConsent = lazy(() => import("./pages/OAuthConsent"));
@@ -117,6 +118,7 @@ const AppRoutes = () => {
         <Route path="/admin/leads" element={<AdminLeads />} />
         <Route path="/admin/metricas" element={<AdminMetricas />} />
         <Route path="/admin/ofertas" element={<AdminOptin />} />
+        <Route path="/admin/ofertas-vercel" element={<AdminOptinVercel />} />
         <Route path="/admin/campanhas" element={<AdminCampanhas />} />
         <Route path="/login" element={<Login />} />
         <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />

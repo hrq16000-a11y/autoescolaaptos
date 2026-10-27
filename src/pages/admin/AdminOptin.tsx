@@ -487,7 +487,10 @@ const AdminOptin = () => {
           <strong className="block mb-1">Atenção: este painel consulta apenas a base legada do Supabase.</strong>
           O formulário público de ofertas passou a gravar cadastros em armazenamento privado da Vercel.
           Os novos participantes não são incluídos automaticamente nesta lista, nos indicadores ou no CSV deste painel.
-          Até a migração administrativa da leitura, não utilize estes números como total consolidado de participantes.
+          Este painel exibe somente a base antiga. Para consultar os novos participantes, abra{" "}
+          <Link to="/admin/ofertas-vercel" className="font-semibold underline">
+            Cadastros novos (Vercel)
+          </Link>. Não utilize os indicadores antigos como total consolidado.
         </div>
       </section>
 
