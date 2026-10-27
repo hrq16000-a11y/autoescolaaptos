@@ -15,7 +15,7 @@ function isValidBRMobile(v: string) {
   return d.length === 10 || d.length === 11;
 }
 
-export default function Ofertas() {
+export default function Ofertas({ preview = false }: { preview?: boolean } = {}) {
   const [telefone, setTelefone] = useState("");
   const [aceite, setAceite] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -48,6 +48,7 @@ export default function Ofertas() {
     setError(null);
     setShowFallback(false);
     try {
+      if (preview) throw new Error("Preview: cadastro desativado");
       const { data, error: fnError } = await supabase.functions.invoke("marketing-optin", {
         body: {
           telefone,
@@ -75,7 +76,7 @@ export default function Ofertas() {
 
   return (
     <>
-      <Helmet>
+      {!preview && <Helmet>
         <title>Programa de Ofertas Exclusivas | Autoescola APTOS</title>
         <meta
           name="description"
@@ -83,10 +84,11 @@ export default function Ofertas() {
         />
         <meta name="robots" content="noindex, follow" />
         <link rel="canonical" href="https://autoescolaaptos.com.br/ofertas" />
-      </Helmet>
+      </Helmet>}
 
       <main className="min-h-screen bg-background flex items-center justify-center px-4 py-10">
         <div className="w-full max-w-md">
+          {preview && <p role="status" className="mb-4 rounded-lg bg-muted p-3 text-sm">Pré-produção: nenhum cadastro é enviado ou registrado.</p>}
           <div className="bg-card border border-border rounded-2xl shadow-lg p-6 sm:p-8">
             {!done ? (
               <>
