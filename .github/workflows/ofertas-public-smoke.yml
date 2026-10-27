@@ -38,14 +38,14 @@ jobs:
             echo "PASS pagina publica $path HTTP 200"
             rm -f "$page"
           done
-      - name: Validar fronteira da API sem criar registros
+      - name: Validar cadastro original sem criar registros
         shell: bash
         run: |
           set -euo pipefail
-          api="https://autoescolaaptos-marketing-api-msolus.vercel.app"
+          api="https://jbvepseodqytqxxckgtu.supabase.co/functions/v1"
           response="$(mktemp)"
           trap 'rm -f "$response"' EXIT
-          status="$(curl -sSL --max-time 18 --retry 1 -o "$response" -w '%{http_code}' "$api/api/marketing-optin")"
+          status="$(curl -sSL --max-time 18 --retry 1 -o "$response" -w '%{http_code}' "$api/marketing-optin")"
           if [[ "$status" != 405 ]]; then
             echo "::error::GET da API de cadastro retornou $status em vez de 405"
             exit 1
@@ -55,4 +55,4 @@ jobs:
             const body = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
             if (body.success !== false) throw new Error("GET nao deve relatar cadastro bem-sucedido");
           ' "$response"
-          echo "PASS API de cadastro protegida contra GET"
+          echo "PASS cadastro original protegido contra GET"
