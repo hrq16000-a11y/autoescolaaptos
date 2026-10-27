@@ -4,12 +4,14 @@ import { Helmet } from "react-helmet";
 const MARKETING_OPTIN_API_URL = "https://autoescolaaptos-marketing-api-msolus.vercel.app/api/marketing-optin";
 const APTOS_WHATSAPP = "554133833627";
 
-function whatsappOptinUrl(telefone: string, confirmado: boolean) {
+function whatsappOptinUrl(telefone: string, confirmado: boolean, jaParticipa = false) {
   const mensagem = [
     "Olá, equipe da Autoescola APTOS! 👋🚗",
-    confirmado
-      ? "Acabei de confirmar minha participação no Programa de Ofertas Exclusivas! 🎁"
-      : "Quero participar do Programa de Ofertas Exclusivas! 🎁",
+    jaParticipa
+      ? "Já participo do Programa de Ofertas Exclusivas e quero continuar em contato! 🎁"
+      : confirmado
+        ? "Acabei de confirmar minha participação no Programa de Ofertas Exclusivas! 🎁"
+        : "Quero participar do Programa de Ofertas Exclusivas! 🎁",
     "",
     "✅ Autorizo receber novidades, campanhas e condições especiais da APTOS por WhatsApp.",
     `📱 Meu número: ${telefone}.`,
@@ -40,6 +42,7 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showFallback, setShowFallback] = useState(false);
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
 
   const { campaignSource, template, origemUrl } = useMemo(() => {
     if (typeof window === "undefined") return { campaignSource: null, template: null, origemUrl: null };
@@ -65,6 +68,7 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
     setLoading(true);
     setError(null);
     setShowFallback(false);
+    setAlreadyRegistered(false);
     try {
       if (preview) throw new Error("Preview: cadastro desativado");
       const response = await fetch(MARKETING_OPTIN_API_URL, {
@@ -92,9 +96,14 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
         // O cadastro é salvo antes de abrir o WhatsApp. O envio da mensagem exige
         // que o participante confirme "Enviar" no aplicativo.
         window.location.assign(whatsappOptinUrl(telefone, true));
+      } else if (res?.duplicate === true) {
+        // O cadastro existente não é sobrescrito: a pessoa pode continuar no WhatsApp.
+        setError("Este número já está participando. Você pode continuar pelo WhatsApp sem fazer outro cadastro.");
+        setShowFallback(true);
+        setAlreadyRegistered(true);
       } else {
-        setError(res?.duplicate ? (res.message || "Este número já está participando.") : "Não foi possível confirmar o cadastro. Tente novamente.");
-        setShowFallback(!res?.duplicate);
+        setError("Não foi possível confirmar o cadastro. Tente novamente.");
+        setShowFallback(true);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Não foi possível concluir o cadastro. Tente novamente.");
@@ -188,12 +197,12 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
                       {showFallback && <p>Não foi possível confirmar seu cadastro automático. Você pode entrar em contato pelo WhatsApp para solicitar a participação.</p>}
                       {showFallback && aceite && valid && (
                         <a
-                          href={whatsappOptinUrl(telefone, false)}
+                          href={whatsappOptinUrl(telefone, false, alreadyRegistered)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex min-h-11 items-center rounded-lg bg-[#25D366] px-4 py-2 font-semibold text-white"
                         >
-                          Solicitar participação pelo WhatsApp
+                          {alreadyRegistered ? "Continuar pelo WhatsApp" : "Solicitar participação pelo WhatsApp"}
                         </a>
                       )}
                     </div>

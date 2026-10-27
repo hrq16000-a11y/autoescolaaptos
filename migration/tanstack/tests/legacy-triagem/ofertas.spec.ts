@@ -38,7 +38,11 @@ test('ofertas mantém consentimento e oferece contato apenas após falha', async
   outcome = 'duplicate';
   await submit.click();
   await expect(page.getByText(/já está participando/)).toBeVisible();
-  await expect(fallback).toHaveCount(0);
+  const existing = page.getByRole('link', { name: 'Continuar pelo WhatsApp' });
+  await expect(existing).toBeVisible();
+  const duplicateText = new URL((await existing.getAttribute('href'))!).searchParams.get('text') || '';
+  expect(duplicateText).toContain('Já participo do Programa de Ofertas Exclusivas');
+  await expect(page.getByText('Cadastro realizado com sucesso!')).toHaveCount(0);
   outcome = 'missing';
   await submit.click();
   await expect(page.getByRole('alert')).toContainText('Não foi possível confirmar');
