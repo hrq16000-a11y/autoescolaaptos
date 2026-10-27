@@ -1,9 +1,8 @@
 {
-  "description": "Rotas do portal oficial que envolvem credenciais, consentimento ou gravação de informações e não podem ser servidas no piloto SSR sem migração validada.",
+  "description": "Rotas do portal oficial que envolvem credenciais, consentimento ou gravação de informações e permanecem bloqueadas no piloto SSR até migração validada.",
   "exact": [
     "/1contato",
     "/triagem",
-    "/ofertas",
     "/campanha",
     "/obrigado",
     "/login",
