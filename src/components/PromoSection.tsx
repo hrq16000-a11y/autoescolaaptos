@@ -6,7 +6,7 @@ import promoAniversario from "@/assets/promo-aniversario.webp";
 import promoIndique from "@/assets/promo-indique-amigo.webp";
 import promoDiferenciais from "@/assets/promo-diferenciais.webp";
 import fachadaAptos from "@/assets/fachada-aptos.webp";
-import carroAptos from "@/assets/carro-aptos.webp";
+import poloAutomatico from "@/assets/aptos-polo-automatico-pagina.webp";
 import cnhSuccess from "@/assets/cnh-success.webp";
 import { Button } from "@/components/ui/button";
 
@@ -50,9 +50,10 @@ const PromoSection = () => {
       title: "Nossa Sede",
     },
     {
-      image: carroAptos,
-      alt: "Veículo de aulas práticas - Autoescola APTOS",
-      title: "Nosso Veículo",
+      image: poloAutomatico,
+      alt: "Polo automático da Autoescola APTOS em frente à sede",
+      title: "Polo Automático",
+      link: "/carro-automatico",
     },
   ];
 
