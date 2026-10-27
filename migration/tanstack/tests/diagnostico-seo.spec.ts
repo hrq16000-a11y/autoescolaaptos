@@ -6,5 +6,5 @@ test('SEO diagnostics page renders as noindex internal tooling', async ({ page }
   await expect(page).toHaveTitle(/Diagnóstico SEO/);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Diagnóstico SEO & 404');
-  await expect(page.getByText(/Dashboard interno de monitoramento/)).toBeVisible();
+  await expect(page.getByText(/Acompanhe URLs não encontradas/)).toBeVisible();
 });
