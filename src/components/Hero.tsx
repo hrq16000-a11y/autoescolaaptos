@@ -14,6 +14,7 @@ import heroSlide2 from "@/assets/hero-slide-2.webp";
 import heroSlide3 from "@/assets/hero-slide-3.webp";
 import heroImage from "@/assets/hero-image.webp";
 import carroAptos from "@/assets/carro-aptos.webp";
+import fachadaAptos from "@/assets/fachada-aptos.webp";
 import logoAptos from "@/assets/logo-aptos-2026-v2.webp";
 
 const slides = [
@@ -94,9 +95,9 @@ const Hero = () => {
                 loading={index === 0 ? "eager" : "lazy"}
                 {...({ fetchpriority: index === 0 ? "high" : "auto" } as Record<string, string>)}
                 decoding="async"
-                className={slide.automatico ? "absolute right-0 bottom-[14%] h-[40%] w-[95%] object-contain object-right sm:bottom-[9%] sm:h-[56%] sm:w-[73%] lg:bottom-[6%] lg:h-[80%] lg:w-[66%] drop-shadow-2xl" : "w-full h-full object-cover"}
+                className={slide.automatico ? "hidden" : "w-full h-full object-cover"}
               />
-              {!slide.automatico && <div className="absolute inset-0 gradient-overlay" />}
+              {slide.automatico ? <><img src={fachadaAptos} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover opacity-25" /><div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/55 to-black/50 sm:bg-gradient-to-r sm:from-black/95 sm:via-black/75 sm:to-transparent" /><img src={carroAptos} alt="Polo automático da Autoescola APTOS" className="absolute bottom-[10%] sm:bottom-[8%] right-0 w-[96%] h-[42%] sm:w-[74%] sm:h-[65%] lg:w-[65%] lg:h-[85%] object-contain object-right drop-shadow-2xl" /></> : <div className="absolute inset-0 gradient-overlay" />}
             </div>
           ))}
         </div>
@@ -292,9 +293,9 @@ const Hero = () => {
         <div className="container mx-auto relative z-10 px-6 pt-4 pb-[48vh] sm:py-24 lg:py-32 pointer-events-none">
           <div className="max-w-xl pointer-events-auto text-center sm:text-left">
             <img src={logoAptos} alt="Autoescola APTOS" className="mx-auto sm:mx-0 mb-4 h-14 sm:h-20 lg:h-24 w-auto max-w-[75vw] object-contain" />
-            <p className="text-yellow-400 text-xs sm:text-sm uppercase tracking-[0.2em] font-bold mb-3">Novidade • Carro automático</p>
-            <h1 className="text-white text-3xl sm:text-4xl lg:text-6xl font-black leading-tight drop-shadow-lg">Sua CNH com mais conforto</h1>
-            <p className="text-white/90 mt-3 mb-5 text-sm sm:text-base lg:text-lg max-w-md">Conheça as aulas práticas em carro automático da APTOS, em São José dos Pinhais.</p>
+            <p className="text-yellow-400 text-xs sm:text-sm uppercase tracking-[0.2em] font-bold mb-3">Novidade • Polo automático</p>
+            <h1 className="text-white text-3xl sm:text-4xl lg:text-6xl font-black leading-tight drop-shadow-lg">Seu próximo passo é no automático</h1>
+            <p className="text-white/90 mt-3 mb-5 text-sm sm:text-base lg:text-lg max-w-md">Novo Polo automático APTOS. Aulas práticas com confiança, conforto e instrutores qualificados em São José dos Pinhais.</p>
             <Button size="lg" asChild className="bg-red-600 hover:bg-red-700 text-white font-bold shadow-lg w-full sm:w-auto min-h-12">
               <Link to="/carro-automatico" data-component="HeroPoloAutomaticoCTA" data-intent="internal" onClick={() => trackEvent("hero_automatico_click", { source: "hero_slide_0" })}>
                 Conhecer o carro automático <ChevronRight className="ml-2 h-5 w-5" />
