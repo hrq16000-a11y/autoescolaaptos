@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('ofertas mantém consentimento e oferece contato apenas após falha', async ({ page }) => {
-  let outcome: 'error' | 'duplicate' | 'success' = 'error';
+  let outcome: 'error' | 'duplicate' | 'missing' | 'success' = 'error';
   let calls = 0;
   await page.route('**/*', async route => {
     const req = route.request();
@@ -13,7 +13,7 @@ test('ofertas mantém consentimento e oferece contato apenas após falha', async
       expect(req.postDataJSON().lgpd_aceite).toBe(true);
       const body = outcome === 'error' ? { message: 'Falha temporária' } : outcome === 'duplicate'
         ? { success: false, duplicate: true, message: 'Este número já está participando do Programa de Ofertas Exclusivas.' }
-        : { success: true, id: 'ficticio' };
+        : outcome === 'missing' ? { success: true } : { success: true, id: 'ficticio' };
       return route.fulfill({ status: outcome === 'error' ? 500 : 200, headers, body: JSON.stringify(body) });
     }
     return route.abort();
@@ -34,8 +34,13 @@ test('ofertas mantém consentimento e oferece contato apenas após falha', async
   await submit.click();
   await expect(page.getByText(/já está participando/)).toBeVisible();
   await expect(fallback).toHaveCount(0);
+  outcome = 'missing';
+  await submit.click();
+  await expect(page.getByRole('alert')).toContainText('Não foi possível confirmar');
+  await expect(fallback).toBeVisible();
+  await expect(page.getByText('Cadastro realizado com sucesso!')).toHaveCount(0);
   outcome = 'success';
   await submit.click();
   await expect(page.getByText('Cadastro realizado com sucesso!')).toBeVisible();
-  expect(calls).toBe(3);
+  expect(calls).toBe(4);
 });
