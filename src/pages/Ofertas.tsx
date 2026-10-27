@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet";
 
+const MARKETING_OPTIN_API_URL = "https://autoescolaaptos-marketing-api-msolus.vercel.app/api/marketing-optin";
+
 function formatBR(v: string) {
   const d = v.replace(/\D/g, "").slice(0, 11);
   if (d.length <= 2) return d;
@@ -48,7 +50,7 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
     setShowFallback(false);
     try {
       if (preview) throw new Error("Preview: cadastro desativado");
-      const response = await fetch("/api/marketing-optin", {
+      const response = await fetch(MARKETING_OPTIN_API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
