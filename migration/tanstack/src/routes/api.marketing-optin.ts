@@ -39,6 +39,7 @@ function clientIp(request: Request) {
 export const Route = createFileRoute('/api/marketing-optin')({
   server: {
     handlers: {
+      GET: () => json({ success: false, message: 'Método não permitido.' }, 405),
       OPTIONS: () => new Response(null, { status: 204, headers: jsonHeaders }),
       POST: async ({ request }) => {
         let body: OptinPayload;
