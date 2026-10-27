@@ -195,3 +195,10 @@ declare module '@/pages/SimuladoDetranPr' {
   const Page: FunctionComponent;
   export default Page;
 }
+
+
+declare module '@/pages/DiagnosticoSeo' {
+  import type { FunctionComponent } from 'react';
+  const Page: FunctionComponent;
+  export default Page;
+}
