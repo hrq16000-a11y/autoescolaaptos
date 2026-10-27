@@ -94,7 +94,7 @@ const Hero = () => {
                 loading={index === 0 ? "eager" : "lazy"}
                 {...({ fetchpriority: index === 0 ? "high" : "auto" } as Record<string, string>)}
                 decoding="async"
-                className={slide.automatico ? "w-full h-full object-contain object-bottom" : "w-full h-full object-cover"}
+                className={slide.automatico ? "absolute inset-x-0 top-[min(32rem,60svh)] w-full h-auto object-contain sm:top-0 sm:h-full sm:object-bottom" : "w-full h-full object-cover"}
               />
               {slide.automatico && <Link to="/carro-automatico" aria-label="Conhecer as aulas no Polo automático da APTOS" data-component="HeroPoloSlideLink" data-intent="internal" onClick={() => trackEvent("hero_automatico_click", { source: "hero_slide_image" })} className="absolute inset-0 z-10" />}
               {!slide.automatico && <div className="absolute inset-0 gradient-overlay" />}
