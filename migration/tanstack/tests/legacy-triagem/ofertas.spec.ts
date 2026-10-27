@@ -29,7 +29,7 @@ test('ofertas mantém consentimento e oferece contato apenas após falha', async
   await expect(submit).toBeDisabled();
   await page.getByRole('checkbox').check();
   await submit.click();
-  const fallback = page.getByRole('link', { name: 'Continuar pelo WhatsApp' });
+  const fallback = page.getByRole('link', { name: 'Solicitar participação pelo WhatsApp' });
   await expect(fallback).toBeVisible();
   const url = new URL((await fallback.getAttribute('href'))!);
   expect(url.searchParams.get('phone')).toBe('554133833627');
@@ -38,7 +38,11 @@ test('ofertas mantém consentimento e oferece contato apenas após falha', async
   outcome = 'duplicate';
   await submit.click();
   await expect(page.getByText(/já está participando/)).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Continuar pelo WhatsApp' })).toBeVisible();
+  const existing = page.getByRole('link', { name: 'Continuar pelo WhatsApp' });
+  await expect(existing).toBeVisible();
+  const duplicateText = new URL((await existing.getAttribute('href'))!).searchParams.get('text') || '';
+  expect(duplicateText).toContain('Já participo do Programa de Ofertas Exclusivas');
+  await expect(page.getByText('Cadastro realizado com sucesso!')).toHaveCount(0);
   outcome = 'missing';
   await submit.click();
   await expect(page.getByRole('alert')).toContainText('Não foi possível confirmar');
