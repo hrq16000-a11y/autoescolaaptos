@@ -34,7 +34,9 @@ const SimuladoDetranPr = lazy(() => import("./pages/SimuladoDetranPr"));
 const Orcamento = lazy(() => import("./pages/Orcamento"));
 const UmContato = lazy(() => import("./pages/UmContato"));
 const AutoescolaSaoJoseDosPinhais = lazy(() => import("./pages/AutoescolaSaoJoseDosPinhais"));
-const Categoria = lazy(() => import("./pages/Categoria"));
+const CategoriaA = lazy(() => import("./pages/Categoria").then((m) => ({ default: () => <m.default categorySlug="a" /> })));
+const CategoriaB = lazy(() => import("./pages/Categoria").then((m) => ({ default: () => <m.default categorySlug="b" /> })));
+const CategoriaAB = lazy(() => import("./pages/Categoria").then((m) => ({ default: () => <m.default categorySlug="ab" /> })));
 const Servico = lazy(() => import("./pages/Servico"));
 const CalculadoraCnh = lazy(() => import("./pages/CalculadoraCnh"));
 const Comparador = lazy(() => import("./pages/Comparador"));
@@ -100,7 +102,9 @@ const AppRoutes = () => {
         <Route path="/triagem" element={<Navigate to="/1contato" replace />} />
         <Route path="/autoescola-sao-jose-dos-pinhais" element={<AutoescolaSaoJoseDosPinhais />} />
         <Route path="/cnh-sao-jose-dos-pinhais" element={<AutoescolaSaoJoseDosPinhais />} />
-        <Route path="/categoria-:slug" element={<Categoria />} />
+        <Route path="/categoria-a" element={<CategoriaA />} />
+        <Route path="/categoria-b" element={<CategoriaB />} />
+        <Route path="/categoria-ab" element={<CategoriaAB />} />
         <Route path="/inclusao-categoria" element={<Servico />} />
         <Route path="/reciclagem-cnh" element={<Servico />} />
         <Route path="/reteste-pratico" element={<Servico />} />
