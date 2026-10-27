@@ -105,7 +105,7 @@ export const Route = createFileRoute('/api/marketing-optin')({
             });
           }
 
-          if (!response.ok || (result.id && result.id !== id)) {
+          if (!response.ok || result.id !== id) {
             console.error('marketing_optin webhook failed', response.status, result);
             return json({ success: false, message: 'Falha temporária. Tente novamente.' }, 502);
           }
