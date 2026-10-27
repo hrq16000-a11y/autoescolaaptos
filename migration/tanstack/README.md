@@ -369,6 +369,14 @@ recuperação de senha e autorização em ambiente privado.
 
 ## API própria de ofertas
 
-A rota `/api/marketing-optin` recebe e valida o opt-in sem Supabase. Ela encaminha o evento para o endpoint definido em `MARKETING_OPTIN_WEBHOOK_URL` e só confirma sucesso quando o webhook responde com HTTP 2xx. O segredo opcional `MARKETING_OPTIN_WEBHOOK_SECRET` é enviado no header `X-Aptos-Webhook-Secret`.
+A rota `/api/marketing-optin` recebe e valida o opt-in sem Supabase.
+Ela usa `MARKETING_OPTIN_WEBHOOK_URL` quando configurado. Quando esse webhook
+não existe, grava cada telefone em um Blob privado do Vercel, usando o
+`BLOB_READ_WRITE_TOKEN` criado automaticamente ao conectar o store
+`aptos-marketing-optins` ao projeto de staging. A chave é determinística e
+privada para impedir duplicidade sem expor o telefone na URL.
 
-Copie `migration/tanstack/.env.example` para o ambiente de hospedagem e configure o webhook antes de habilitar o fluxo em produção. Sem essa variável, a API responde 503 e a tela oferece o fallback para WhatsApp; nenhum sucesso falso é exibido.
+A API só confirma sucesso após a persistência confirmar HTTP 2xx. Repetição do
+mesmo telefone retorna duplicidade; falhas retornam erro e deixam o fallback
+para WhatsApp disponível na tela. `MARKETING_OPTIN_WEBHOOK_SECRET` continua
+opcional para integrações externas.
