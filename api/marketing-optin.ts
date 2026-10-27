@@ -34,7 +34,7 @@ function text(value: unknown, max = 500) {
 }
 
 function phone(value: unknown) {
-  const digits = String(value ?? "").replace(/\\D/g, "");
+  const digits = String(value ?? "").replace(/\D/g, "");
   return digits.length >= 10 && digits.length <= 13 ? digits : null;
 }
 
