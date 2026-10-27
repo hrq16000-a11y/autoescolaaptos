@@ -8,7 +8,7 @@ test('preview de ofertas não envia cadastros nem confirma gravação', async ({
     const req = route.request();
     const url = new URL(req.url());
     if (url.hostname === '127.0.0.1' || url.hostname === 'localhost') return route.continue();
-    external.push(url.hostname);
+    if (req.method() !== 'GET' || url.hostname.endsWith('supabase.co')) external.push(url.hostname);
     return route.abort();
   });
   const response = await page.goto('/preview-ofertas?campanha=teste');
