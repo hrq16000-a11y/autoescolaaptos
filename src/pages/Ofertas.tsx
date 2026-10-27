@@ -76,7 +76,7 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
 
   return (
     <>
-      <Helmet>
+      {!preview && <Helmet>
         <title>Programa de Ofertas Exclusivas | Autoescola APTOS</title>
         <meta
           name="description"
@@ -84,7 +84,7 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
         />
         <meta name="robots" content="noindex, follow" />
         <link rel="canonical" href="https://autoescolaaptos.com.br/ofertas" />
-      </Helmet>
+      </Helmet>}
 
       <main className="min-h-screen bg-background flex items-center justify-center px-4 py-10">
         <div className="w-full max-w-md">
