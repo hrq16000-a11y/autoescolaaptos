@@ -97,6 +97,7 @@ const Hero = () => {
                 decoding="async"
                 className={slide.automatico ? "hidden" : "w-full h-full object-cover"}
               />
+              {slide.automatico && <Link to="/carro-automatico" aria-label="Conhecer as aulas no Polo automático da APTOS" data-component="HeroPoloSlideLink" data-intent="internal" onClick={() => trackEvent("hero_automatico_click", { source: "hero_slide_image" })} className="absolute inset-0 z-10" />}
               {slide.automatico ? <><img src={fachadaAptos} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover opacity-25" /><div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/55 to-black/50 sm:bg-gradient-to-r sm:from-black/95 sm:via-black/75 sm:to-transparent" /><img src={carroAptos} alt="Polo automático da Autoescola APTOS" className="absolute bottom-[10%] sm:bottom-[8%] right-0 w-[96%] h-[42%] sm:w-[74%] sm:h-[65%] lg:w-[65%] lg:h-[85%] object-contain object-right drop-shadow-2xl" /></> : <div className="absolute inset-0 gradient-overlay" />}
             </div>
           ))}
