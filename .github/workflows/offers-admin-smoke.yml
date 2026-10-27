@@ -1,4 +1,4 @@
-name: Offers admin API — public security smoke
+name: Offers admin API security smoke
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 4
     steps:
-      - name: Verify production API denies anonymous access
+      - name: Verify public production API denies anonymous access
         shell: bash
         env:
           URL: https://autoescolaaptos-marketing-api-msolus.vercel.app/api/admin-marketing-optins
@@ -35,38 +35,13 @@ jobs:
             --dump-header "$headers" --output "$body" \
             --write-out '%{http_code}' "$URL")"
           if [[ "$status" != "401" ]]; then
-            echo "::error::Admin API anonymous request returned HTTP $status instead of 401"
+            echo "::error::Anonymous admin GET returned HTTP $status instead of 401"
             exit 1
           fi
-          if ! grep -Eiq '^access-control-allow-origin: https://autoescolaaptos.com.br\r?
-          if ! grep -Eiq '^cache-control: .*no-store' "$headers"; then
-            echo "::error::Admin API must disable caching"
-            exit 1
-          fi
-          node -e '
-            const fs = require("node:fs");
-            const payload = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
-            if (payload.message !== "Credencial administrativa inválida." || "records" in payload) {
-              throw new Error("Anonymous response was not the expected authentication denial");
-            }
-          ' "$body"
-          echo 'PASS: production admin route rejects anonymous GET without disclosing records'
- "$headers"; then
-            echo "::error::Admin API missing expected CORS origin"
-            echo "Safe diagnostic: response content-type:"
+          if ! tr -d '\r' < "$headers" | grep -Eiq '^access-control-allow-origin:[[:space:]]*https://autoescolaaptos\.com\.br[[:space:]]*$'; then
+            echo "::error::Admin API does not return the expected CORS origin"
+            echo "Response content type:"
             grep -i '^content-type:' "$headers" || true
-            echo "Safe diagnostic: response server headers:"
-            grep -Ei '^(server|x-vercel-id|x-vercel-error|www-authenticate|location):' "$headers" || true
-            node -e '
-              const fs = require("node:fs");
-              try {
-                const v = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
-                console.log("Response JSON error fields:", JSON.stringify({
-                  message: typeof v.message === "string" ? v.message.slice(0, 100) : undefined,
-                  code: typeof v.code === "string" ? v.code.slice(0, 60) : undefined,
-                }));
-              } catch { console.log("Response body is not JSON"); }
-            ' "$body"
             exit 1
           fi
           if ! grep -Eiq '^cache-control: .*no-store' "$headers"; then
@@ -77,7 +52,7 @@ jobs:
             const fs = require("node:fs");
             const payload = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
             if (payload.message !== "Credencial administrativa inválida." || "records" in payload) {
-              throw new Error("Anonymous response was not the expected authentication denial");
+              throw new Error("Anonymous response must be a JSON authorization denial without records");
             }
           ' "$body"
-          echo 'PASS: production admin route rejects anonymous GET without disclosing records'
+          echo 'PASS: production API rejects anonymous GET without disclosing records'
