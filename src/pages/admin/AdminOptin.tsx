@@ -49,6 +49,29 @@ interface Metrics {
   bySync?: Record<string, number>;
 }
 
+function metricsFromLoadedRows(rows: OptinRow[]): Metrics {
+  const byStatus: Metrics["byStatus"] = {};
+  const byCampaign: Metrics["byCampaign"] = {};
+  const byTemplate: Metrics["byTemplate"] = {};
+  const byDay: Metrics["byDay"] = {};
+  const bySync: Record<string, number> = { ok: 0, pending: 0, error: 0 };
+  for (const r of rows) {
+    const status = r.status || "indefinido";
+    byStatus[status] = (byStatus[status] || 0) + 1;
+    const campaign = r.campaign_source || "(sem campanha)";
+    if (!byCampaign[campaign]) byCampaign[campaign] = { optins: 0, retorno: 0, taxa: 0 };
+    byCampaign[campaign].optins++;
+    if ((r.quantidade_campanhas ?? 0) > 0) byCampaign[campaign].retorno++;
+    if (r.ultimo_template_enviado) byTemplate[r.ultimo_template_enviado] = (byTemplate[r.ultimo_template_enviado] || 0) + 1;
+    const day = new Date(r.created_at).toISOString().slice(0, 10);
+    byDay[day] = (byDay[day] || 0) + 1;
+    const sync = r.sheet_sync_status || "pending";
+    bySync[sync] = (bySync[sync] || 0) + 1;
+  }
+  for (const v of Object.values(byCampaign)) v.taxa = v.optins ? v.retorno / v.optins : 0;
+  return { total: rows.length, byStatus, byCampaign, byTemplate, byDay, bySync };
+}
+
 const FN_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-optin`;
 const TOKEN_KEY = "aptos_admin_leads_token";
 
@@ -134,8 +157,9 @@ const AdminOptin = () => {
       const metJson = await metRes.json();
       if (!listRes.ok) throw new Error(listJson.message || "Falha ao carregar lista");
       if (!metRes.ok) throw new Error(metJson.message || "Falha ao carregar métricas");
-      setRows(listJson.optins || []);
-      setMetrics(metJson);
+      const fetchedRows = (listJson.optins || []) as OptinRow[];
+      setRows(fetchedRows);
+      setMetrics(filters.q ? metricsFromLoadedRows(fetchedRows) : metJson);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Erro desconhecido");
       if (String(e).includes("401")) {
@@ -759,7 +783,7 @@ const AdminOptin = () => {
           <>
             {filters.q && (
               <p role="status" data-component="AdminOptinFiltroTelefone" className="rounded-xl border border-primary/30 bg-primary/5 px-4 py-3 text-sm">
-                Lista e indicadores consideram a pesquisa por telefone. {rows.length} cadastro(s) encontrado(s).
+                Lista e indicadores consideram a pesquisa por telefone nos registros carregados (até 2.000). {rows.length} cadastro(s) encontrado(s).
               </p>
             )}
             {/* Cards de status */}
