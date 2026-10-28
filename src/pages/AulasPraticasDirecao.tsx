@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
@@ -6,6 +7,8 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { whatsappLink } from "@/lib/whatsapp";
 import poloAutomatico from "@/assets/aptos-polo-automatico-pagina.webp";
 import { 
   Car, 
@@ -44,6 +47,19 @@ export const jsonLd = {
   };
 
 const AulasPraticasDirecao = () => {
+  const [triagemAberta, setTriagemAberta] = useState(false);
+  const [modalidade, setModalidade] = useState("");
+  const [objetivo, setObjetivo] = useState("");
+  const [periodo, setPeriodo] = useState("");
+  const [nome, setNome] = useState("");
+  const mensagemAgendamento = [
+    "Olá! Vim pela página de aulas práticas da Autoescola APTOS e gostaria de agendar aulas.",
+    "Modalidade: " + modalidade,
+    "Objetivo: " + objetivo,
+    "Período de preferência: " + periodo,
+    nome.trim() ? "Meu nome: " + nome.trim().slice(0, 80) : "",
+  ].filter(Boolean).join("\n");
+
 
   const diferenciais = [
     {
@@ -100,6 +116,72 @@ const AulasPraticasDirecao = () => {
         jsonLd={jsonLd}
       />
       
+      <Dialog open={triagemAberta} onOpenChange={setTriagemAberta}>
+        <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Vamos agendar suas aulas?</DialogTitle>
+            <DialogDescription>Responda três perguntas rápidas e siga ao WhatsApp com a mensagem pronta. A equipe confirma a disponibilidade.</DialogDescription>
+          </DialogHeader>
+          <form className="space-y-4" onSubmit={(event) => {
+            event.preventDefault();
+            if (!modalidade || !objetivo || !periodo) return;
+            window.open(whatsappLink(mensagemAgendamento, "direto"), "_blank", "noopener,noreferrer");
+            setTriagemAberta(false);
+          }}>
+            <div className="space-y-2">
+              <label htmlFor="aulas-modalidade" className="block text-sm font-semibold">Modalidade *</label>
+              <select id="aulas-modalidade" required value={modalidade} onChange={(event) => setModalidade(event.target.value)}
+                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground">
+                <option value="">Selecione</option>
+                <option value="Carro manual (categoria B)">Carro manual (categoria B)</option>
+                <option value="Polo automático (categoria B)">Polo automático (categoria B)</option>
+                <option value="Moto (categoria A)">Moto (categoria A)</option>
+                <option value="Preciso de orientação">Preciso de orientação</option>
+              </select>
+              {modalidade === "Polo automático (categoria B)" && (
+                <Link to="/carro-automatico" onClick={() => setTriagemAberta(false)}
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline">
+                  Conhecer o Polo automático <ArrowRight className="h-3 w-3" aria-hidden />
+                </Link>
+              )}
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="aulas-objetivo" className="block text-sm font-semibold">O que você precisa? *</label>
+              <select id="aulas-objetivo" required value={objetivo} onChange={(event) => setObjetivo(event.target.value)}
+                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground">
+                <option value="">Selecione</option>
+                <option value="Primeira habilitação">Primeira habilitação</option>
+                <option value="Aulas avulsas">Aulas avulsas</option>
+                <option value="Preparação para reteste">Preparação para reteste</option>
+                <option value="Tirar dúvidas">Tirar dúvidas</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="aulas-periodo" className="block text-sm font-semibold">Melhor período *</label>
+              <select id="aulas-periodo" required value={periodo} onChange={(event) => setPeriodo(event.target.value)}
+                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground">
+                <option value="">Selecione</option>
+                <option value="Manhã">Manhã</option>
+                <option value="Tarde">Tarde</option>
+                <option value="Noite">Noite</option>
+                <option value="A combinar">A combinar</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="aulas-nome" className="block text-sm font-semibold">Primeiro nome (opcional)</label>
+              <input id="aulas-nome" autoComplete="given-name" maxLength={80} value={nome}
+                onChange={(event) => setNome(event.target.value)} placeholder="Como podemos chamar você?"
+                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground" />
+            </div>
+            <p className="text-xs text-muted-foreground">Suas respostas serão incluídas na mensagem. Nenhum horário será reservado automaticamente.</p>
+            <Button type="submit" size="lg" className="min-h-12 w-full" disabled={!modalidade || !objetivo || !periodo}
+              data-component="AulasPraticasTriagemSubmit" data-intent="whatsapp">
+              <MessageCircle className="mr-2 h-5 w-5" aria-hidden /> Continuar no WhatsApp
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
       <Navbar />
       
       <main className="min-h-screen pt-20">
@@ -137,15 +219,10 @@ const AulasPraticasDirecao = () => {
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Button size="lg" className="shadow-glow" asChild>
-                    <a
-                      href="https://api.whatsapp.com/send?phone=5541991453627&text=Olá,%20gostaria%20de%20agendar%20aulas%20práticas%20de%20direção"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <MessageCircle className="w-5 h-5 mr-2" />
-                      Agendar Aulas
-                    </a>
+                  <Button type="button" size="lg" className="shadow-glow" onClick={() => setTriagemAberta(true)}
+                    data-component="AulasPraticasAgendarCTA" data-intent="triagem">
+                    <MessageCircle className="w-5 h-5 mr-2" />
+                    Agendar Aulas
                   </Button>
                 </div>
               </motion.div>
