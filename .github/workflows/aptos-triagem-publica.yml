@@ -7,6 +7,8 @@ on:
       - '.github/workflows/aptos-triagem-publica.yml'
       - 'scripts/test-public-triage.cjs'
       - 'scripts/test-public-visual.cjs'
+      - 'scripts/test-public-hero-mobile.cjs'
+      - 'src/components/Hero.tsx'
       - 'scripts/test-public-navbar.cjs'
       - 'scripts/test-public-home-funnel.cjs'
       - 'scripts/test-public-service-links.cjs'
@@ -36,6 +38,10 @@ jobs:
         env:
           NODE_PATH: /tmp/aptos-smoke/node_modules
         run: node scripts/test-public-visual.cjs
+      - name: Validar Hero mobile publicada em quatro larguras
+        env:
+          NODE_PATH: /tmp/aptos-smoke/node_modules
+        run: node scripts/test-public-hero-mobile.cjs
       - name: Validar menu mobile em navegador real
         env:
           NODE_PATH: /tmp/aptos-smoke/node_modules
