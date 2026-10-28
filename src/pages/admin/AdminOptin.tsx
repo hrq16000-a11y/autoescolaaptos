@@ -392,7 +392,10 @@ const AdminOptin = () => {
       "data_aceite",
     ];
     const esc = (v: unknown) => {
-      const s = v === null || v === undefined ? "" : String(v);
+      let s = v === null || v === undefined ? "" : String(v);
+      // Evita execução de fórmulas em Excel/Sheets ao abrir o CSV.
+      // Protege também fórmulas após espaços e caracteres de controle.
+      if (/^[\\s\\u0000-\\u001f]*[=+@-]/.test(s)) s = "'" + s;
       return `"${s.replace(/"/g, '""')}"`;
     };
     const csv = [
