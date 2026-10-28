@@ -4,7 +4,22 @@ import { Helmet } from "react-helmet";
 
 const APTOS_WHATSAPP = "554133833627";
 
-function whatsappOptinUrl(telefone: string, confirmado: boolean, jaParticipa = false) {
+function whatsappOptinUrl(
+  telefone: string,
+  confirmado: boolean,
+  jaParticipa = false,
+  origem?: { campaignSource: string | null; origemUrl: string | null },
+) {
+  // Atribuição do clique, quando disponível: não representa localização física.
+  const origemLabel = origem?.campaignSource || "Direto / não identificado";
+  let paginaDeOrigem = "Não identificada";
+  if (origem?.origemUrl) {
+    try {
+      const endereco = new URL(origem.origemUrl);
+      const referencia = endereco.searchParams.get("referencia");
+      paginaDeOrigem = referencia || endereco.origin + endereco.pathname;
+    } catch { /* Dados opcionais */ }
+  }
   const mensagem = [
     "Olá, equipe da Autoescola APTOS! 👋🚗",
     jaParticipa
@@ -15,6 +30,10 @@ function whatsappOptinUrl(telefone: string, confirmado: boolean, jaParticipa = f
     "",
     "✅ Autorizo receber novidades, campanhas e condições especiais da APTOS por WhatsApp.",
     `📱 Meu número: ${telefone}.`,
+    "",
+    "📊 Origem deste contato (informada pelo link):",
+    `• Canal/campanha: ${origemLabel}`,
+    `• Página/referência: ${paginaDeOrigem}`,
     "Quando surgirem oportunidades para minha habilitação, podem me avisar por aqui?",
     "Obrigado(a)! 😊",
   ].join("\n");
@@ -131,7 +150,7 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
         setDone(true);
         // O cadastro é salvo antes de abrir o WhatsApp. O envio da mensagem exige
         // que o participante confirme "Enviar" no aplicativo.
-        window.location.assign(whatsappOptinUrl(telefone, true));
+        window.location.assign(whatsappOptinUrl(telefone, true, false, { campaignSource, origemUrl }));
       } else if (res?.duplicate === true) {
         // Cadastro já existente: não houve falha nem nova gravação.
         setAlreadyRegistered(true);
@@ -252,7 +271,7 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
                       )}
                       {showFallback && aceite && valid && (
                         <a
-                          href={whatsappOptinUrl(telefone, false, alreadyRegistered)}
+                          href={whatsappOptinUrl(telefone, false, alreadyRegistered, { campaignSource, origemUrl })}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex min-h-11 items-center rounded-lg bg-[#25D366] px-4 py-2 font-semibold text-white"
@@ -284,7 +303,7 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
                 </p>
 
                 <a
-                  href={whatsappOptinUrl(telefone, true)}
+                  href={whatsappOptinUrl(telefone, true, false, { campaignSource, origemUrl })}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center w-full h-14 rounded-lg bg-[#25D366] hover:bg-[#20BA5A] text-white font-bold text-lg shadow-lg transition mb-4 gap-2"
