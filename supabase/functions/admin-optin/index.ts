@@ -409,6 +409,7 @@ Deno.serve(async (req) => {
     if (status) query = query.eq("status", status);
     if (campaign) query = query.eq("campaign_source", campaign);
     if (syncStatus) query = query.eq("sheet_sync_status", syncStatus);
+    if (q) query = query.ilike("telefone", `%${q.replace(/\\D/g, "")}%`);
 
     const { data, error } = await query;
     if (error) return json({ error: "query_failed", message: error.message }, 500);
