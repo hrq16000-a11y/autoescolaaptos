@@ -105,7 +105,7 @@ const Hero = () => {
 
   return (
     <div id="inicio" className="contents">
-    <section id="inicio-mobile" data-component="MobileHero" className="relative md:hidden bg-slate-950 text-white pt-16 pb-5">
+    <section id="inicio-mobile" data-component="MobileHero" className="relative md:hidden bg-slate-950 text-white pt-20 pb-5">
       <div className="mx-auto max-w-lg">
         <div ref={mobileRef} className="overflow-hidden touch-pan-y" aria-label="Banners da Autoescola APTOS" aria-roledescription="carrossel">
           <div className="flex">
