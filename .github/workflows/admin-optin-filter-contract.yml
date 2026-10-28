@@ -1,0 +1,28 @@
+name: Admin Optin filter consistency
+on:
+  pull_request:
+    paths:
+      - 'src/pages/admin/AdminOptin.tsx'
+      - 'supabase/functions/admin-optin/index.ts'
+      - 'tests/admin-optin-filter-contract.test.mjs'
+      - '.github/workflows/admin-optin-filter-contract.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'src/pages/admin/AdminOptin.tsx'
+      - 'supabase/functions/admin-optin/index.ts'
+      - 'tests/admin-optin-filter-contract.test.mjs'
+      - '.github/workflows/admin-optin-filter-contract.yml'
+permissions:
+  contents: read
+jobs:
+  filter-contract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check list and metrics filter contract
+        run: node --test tests/admin-optin-filter-contract.test.mjs
