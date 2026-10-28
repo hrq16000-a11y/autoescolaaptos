@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, CheckCircle, Award, Users, ChevronLeft, ChevronRight } from "lucide-react";
+import { MessageCircle, CheckCircle, Award, Users, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
@@ -43,6 +43,28 @@ const Hero = () => {
   const ctaLabel =
     ctaVariant === "urgencia" ? "Quero minha CNH agora" : "Simular meu Orçamento";
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [mobileIndex, setMobileIndex] = useState(0);
+  const [mobilePlaying, setMobilePlaying] = useState(false);
+  const [mobileRef, mobileApi] = useEmblaCarousel({ loop: true, watchDrag: true });
+  const mobileSelect = useCallback(() => {
+    if (mobileApi) setMobileIndex(mobileApi.selectedScrollSnap());
+  }, [mobileApi]);
+  useEffect(() => {
+    if (!mobileApi) return;
+    mobileSelect();
+    mobileApi.on("select", mobileSelect);
+    return () => { mobileApi.off("select", mobileSelect); };
+  }, [mobileApi, mobileSelect]);
+  useEffect(() => {
+    if (!mobilePlaying || !mobileApi) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setMobilePlaying(false);
+      return;
+    }
+    const timer = window.setInterval(() => mobileApi.scrollNext(), 8000);
+    return () => window.clearInterval(timer);
+  }, [mobilePlaying, mobileApi]);
+
   
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { loop: true },
@@ -82,7 +104,42 @@ const Hero = () => {
   ];
 
   return (
-    <section id="inicio" className="relative min-h-screen flex items-center pt-20">
+    <>
+    <section id="inicio" data-component="MobileHero" className="relative md:hidden bg-slate-950 text-white pt-16 pb-5">
+      <div className="mx-auto max-w-lg">
+        <div ref={mobileRef} className="overflow-hidden touch-pan-y" aria-label="Banners da Autoescola APTOS" aria-roledescription="carrossel">
+          <div className="flex">
+            {slides.map((slide, index) => (
+              <article key={slide.alt} className="min-w-0 flex-[0_0_100%] px-3" aria-roledescription="slide" aria-label={`Banner ${index + 1} de ${slides.length}`}>
+                <div className="rounded-xl overflow-hidden border border-white/15 bg-slate-900">
+                  <div className="relative bg-slate-900 flex items-center justify-center">
+                    <img src={slide.image} alt={slide.alt} loading={index === 0 ? "eager" : "lazy"} decoding="async" className="block w-full h-auto max-h-[42svh] object-contain" />
+                  </div>
+                  <div className="px-4 py-5 space-y-3">
+                    <p className="text-xs uppercase tracking-widest font-bold text-amber-300">{index === 0 ? "Novidade · Polo automático" : "Autoescola APTOS · São José dos Pinhais"}</p>
+                    <h2 className="text-2xl leading-tight font-black">{index === 0 ? "Seu próximo passo é no automático" : "Conquiste sua CNH com confiança"}</h2>
+                    <p className="text-sm leading-relaxed text-slate-200">{index === 0 ? "Conheça as aulas práticas com o Polo automático da APTOS." : "Formação de condutores com opções de carro e moto. Conheça nossos serviços."}</p>
+                    <Link to={index === 0 ? "/carro-automatico" : "/orcamento"} data-component="HeroMobilePrimaryCTA" onClick={() => index === 0 ? trackEvent("hero_automatico_click", { source: "hero_mobile" }) : trackEnrollmentClick()} className="inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-red-600 px-4 py-3 text-center text-sm font-bold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400">
+                      {index === 0 ? "Conhecer o carro automático" : ctaLabel}
+                    </Link>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+        <div className="flex items-center justify-between gap-3 px-4 pt-4" aria-label="Controles dos banners">
+          <span className="text-xs text-slate-200 tabular-nums" aria-live="polite">{mobileIndex + 1} / {slides.length}</span>
+          <span className="text-[11px] text-slate-300">Deslize para navegar</span>
+          <div className="flex items-center gap-2">
+            <button type="button" onClick={() => mobileApi?.scrollPrev()} aria-label="Banner anterior" className="flex h-11 w-11 items-center justify-center rounded-full border border-white/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-300"><ChevronLeft className="h-5 w-5" /></button>
+            <button type="button" onClick={() => setMobilePlaying(p => !p)} aria-label={mobilePlaying ? "Pausar banners" : "Reproduzir banners"} aria-pressed={mobilePlaying} className="flex h-11 w-11 items-center justify-center rounded-full border border-white/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-300">{mobilePlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}</button>
+            <button type="button" onClick={() => mobileApi?.scrollNext()} aria-label="Próximo banner" className="flex h-11 w-11 items-center justify-center rounded-full border border-white/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-300"><ChevronRight className="h-5 w-5" /></button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="inicio-desktop" className="relative hidden md:flex min-h-screen items-center pt-20">
       {/* Background Carousel */}
       <div className="absolute inset-0 z-0 overflow-hidden" ref={emblaRef}>
         <div className="flex h-full">
@@ -322,6 +379,7 @@ const Hero = () => {
         </div>
       </motion.div>
     </section>
+    </>
   );
 };
 
