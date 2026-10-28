@@ -31,3 +31,12 @@ test("hero mobile respeita altura da navbar fixa no topo", () => {
   assert.match(navbar, /justify-between h-20/);
   assert.match(hero, /data-component="MobileHero" className="[^"]*pt-20/);
 });
+
+test("controles ficam antes da imagem e fora da faixa dos botoes flutuantes", () => {
+  const toolbar = hero.indexOf('data-component="HeroMobileControls"');
+  const carousel = hero.indexOf('ref={mobileRef}');
+  const cta = hero.indexOf('data-component="HeroMobilePrimaryCTA"');
+  assert.ok(toolbar !== -1 && toolbar < carousel && carousel < cta);
+  assert.match(hero.slice(toolbar - 130, toolbar + 250), /min-h-14/);
+  assert.ok(hero.includes('min-[390px]:inline'));
+});
