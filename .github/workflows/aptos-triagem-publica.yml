@@ -1,0 +1,24 @@
+name: APTOS - triagem em navegador no dominio oficial
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/aptos-triagem-publica.yml'
+      - 'scripts/test-public-triage.cjs'
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar navegador de teste isolado
+        run: |
+          npm install --prefix /tmp/aptos-smoke --no-save --no-package-lock playwright@1.56.1
+          /tmp/aptos-smoke/node_modules/.bin/playwright install --with-deps chromium
+      - name: Validar os dois pop-ups publicados sem enviar mensagens
+        env:
+          NODE_PATH: /tmp/aptos-smoke/node_modules
+        run: node scripts/test-public-triage.cjs
