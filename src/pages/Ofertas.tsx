@@ -101,10 +101,9 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
         // que o participante confirme "Enviar" no aplicativo.
         window.location.assign(whatsappOptinUrl(telefone, true));
       } else if (res?.duplicate === true) {
-        // O cadastro existente não é sobrescrito: a pessoa pode continuar no WhatsApp.
-        setError("Este número já está participando. Você pode continuar pelo WhatsApp sem fazer outro cadastro.");
-        setShowFallback(true);
+        // Cadastro já existente: não houve falha nem nova gravação.
         setAlreadyRegistered(true);
+        setShowFallback(true);
       } else {
         setError("Não foi possível confirmar o cadastro. Tente novamente.");
         setShowFallback(true);
@@ -172,7 +171,12 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
                       autoComplete="tel-national"
                       placeholder="(41) 99999-9999"
                       value={telefone}
-                      onChange={(e) => setTelefone(formatBR(e.target.value))}
+                      onChange={(e) => {
+                        setTelefone(formatBR(e.target.value));
+                        setError(null);
+                        setShowFallback(false);
+                        setAlreadyRegistered(false);
+                      }}
                       className="w-full h-12 px-4 rounded-lg border border-input bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                       required
                     />
@@ -195,10 +199,21 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
                     </span>
                   </label>
 
-                  {error && (
-                    <div role="alert" className="text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md px-3 py-3 space-y-3">
-                      <p>{error}</p>
-                      {showFallback && <p>O cadastro ainda não foi confirmado. Você pode falar com a equipe pelo WhatsApp, mas isso não substitui a inscrição na planilha.</p>}
+                  {(error || alreadyRegistered) && (
+                    <div
+                      role={alreadyRegistered ? "status" : "alert"}
+                      className={alreadyRegistered
+                        ? "text-sm text-foreground bg-muted/70 border border-border rounded-md px-3 py-3 space-y-3"
+                        : "text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md px-3 py-3 space-y-3"}
+                    >
+                      {alreadyRegistered ? (
+                        <p><strong>Você já participa!</strong> Este número já está cadastrado no Programa de Ofertas Exclusivas. Nenhum novo cadastro foi criado.</p>
+                      ) : (
+                        <>
+                          <p>{error}</p>
+                          {showFallback && <p>O cadastro ainda não foi confirmado. Você pode falar com a equipe pelo WhatsApp, mas isso não substitui a inscrição na planilha.</p>}
+                        </>
+                      )}
                       {showFallback && aceite && valid && (
                         <a
                           href={whatsappOptinUrl(telefone, false, alreadyRegistered)}
