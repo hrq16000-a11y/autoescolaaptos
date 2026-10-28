@@ -1,0 +1,25 @@
+name: APTOS hero mobile contract
+on:
+  pull_request:
+    paths:
+      - 'src/components/Hero.tsx'
+      - 'tests/hero-mobile-first.test.mjs'
+      - '.github/workflows/hero-mobile-contract.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'src/components/Hero.tsx'
+      - 'tests/hero-mobile-first.test.mjs'
+      - '.github/workflows/hero-mobile-contract.yml'
+permissions:
+  contents: read
+jobs:
+  hero-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/hero-mobile-first.test.mjs
