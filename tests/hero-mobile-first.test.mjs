@@ -24,3 +24,10 @@ test("CTA do polo preserva destino interno", () => {
   assert.match(hero, /index === 0 \? "\/carro-automatico" : "\/orcamento"/);
   assert.match(hero, /data-component="HeroMobilePrimaryCTA"/);
 });
+
+test("hero mobile respeita altura da navbar fixa no topo", () => {
+  const navbar = readFileSync("src/components/Navbar.tsx", "utf8");
+  assert.match(navbar, /fixed top-0 left-0 right-0/);
+  assert.match(navbar, /justify-between h-20/);
+  assert.match(hero, /data-component="MobileHero" className="[^"]*pt-20/);
+});
