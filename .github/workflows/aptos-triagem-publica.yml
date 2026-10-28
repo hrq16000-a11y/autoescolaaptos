@@ -7,6 +7,8 @@ on:
       - '.github/workflows/aptos-triagem-publica.yml'
       - 'scripts/test-public-triage.cjs'
       - 'scripts/test-public-visual.cjs'
+      - 'src/pages/CarroAutomatico.tsx'
+      - 'src/pages/AulasPraticasDirecao.tsx'
 jobs:
   browser-smoke:
     runs-on: ubuntu-24.04
