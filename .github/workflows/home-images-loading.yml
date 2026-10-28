@@ -1,0 +1,27 @@
+name: Home images loading contract
+on:
+  pull_request:
+    paths:
+      - 'src/components/Hero.tsx'
+      - 'src/components/About.tsx'
+      - 'tests/home-images-loading.test.mjs'
+      - '.github/workflows/home-images-loading.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'src/components/Hero.tsx'
+      - 'src/components/About.tsx'
+      - 'tests/home-images-loading.test.mjs'
+      - '.github/workflows/home-images-loading.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/home-images-loading.test.mjs

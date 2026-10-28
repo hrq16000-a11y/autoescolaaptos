@@ -80,6 +80,8 @@ const About = () => {
               <img
                 src={instructorImage}
                 alt="Instrutor da Autoescola APTOS ensinando aluno em aula prática de direção"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-80 object-cover"
               />
             </Card>
@@ -87,6 +89,8 @@ const About = () => {
               <img
                 src={classroomImage}
                 alt="Sala de aula teórica da Autoescola APTOS com alunos estudando"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-64 object-cover"
               />
             </Card>
