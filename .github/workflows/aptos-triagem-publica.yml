@@ -8,6 +8,8 @@ on:
       - 'scripts/test-public-triage.cjs'
       - 'scripts/test-public-visual.cjs'
       - 'scripts/test-public-navbar.cjs'
+      - 'scripts/test-public-home-funnel.cjs'
+      - 'src/components/Services.tsx'
       - 'src/components/Navbar.tsx'
       - 'src/pages/CarroAutomatico.tsx'
       - 'src/pages/AulasPraticasDirecao.tsx'
@@ -35,6 +37,10 @@ jobs:
         env:
           NODE_PATH: /tmp/aptos-smoke/node_modules
         run: node scripts/test-public-navbar.cjs
+      - name: Validar funil de Primeira Habilitacao na home
+        env:
+          NODE_PATH: /tmp/aptos-smoke/node_modules
+        run: node scripts/test-public-home-funnel.cjs
       - name: Guardar evidencias visuais
         if: always()
         uses: actions/upload-artifact@v4
