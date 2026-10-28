@@ -9,7 +9,7 @@ const cases = [
   fs.mkdirSync("artifacts/aptos-visual", { recursive: true });
   const browser = await chromium.launch({ headless: true });
   try {
-    for (const device of [{name:"mobile",width:390,height:844},{name:"desktop",width:1440,height:900}]) {
+    for (const device of [{name:"compact",width:320,height:640},{name:"mobile",width:390,height:844},{name:"tablet",width:768,height:1024},{name:"desktop",width:1440,height:900}]) {
       const page = await browser.newPage({ viewport:{width:device.width,height:device.height}, deviceScaleFactor:1 });
       for(const item of cases) {
         const response=await page.goto(base+item.path,{waitUntil:"networkidle",timeout:45000});
@@ -24,6 +24,21 @@ const cases = [
         });
         if(info.naturalWidth===0||info.naturalHeight===0) throw Error("Imagem quebrada "+item.path+": "+JSON.stringify(info));
         if(info.x < -4 || info.right > device.width+4) throw Error("Imagem fora da tela "+item.path+": "+JSON.stringify(info));
+        // Confere que o botao e o pop-up de triagem permanecem utilizaveis nesta largura.
+        const buttonName = item.path === "/carro-automatico" ? "Falar no WhatsApp" : "Agendar Aulas";
+        await page.getByRole("button", { name: buttonName, exact: true }).first().click();
+        const dialog = page.getByRole("dialog");
+        await dialog.waitFor({ state: "visible" });
+        const dialogBox = await dialog.boundingBox();
+        if (!dialogBox || dialogBox.x < -4 || dialogBox.x + dialogBox.width > device.width + 4)
+          throw Error("Dialog fora da largura " + device.name + " " + item.path);
+        const submit = dialog.getByRole("button", { name: /Continuar no WhatsApp/ });
+        await submit.scrollIntoViewIfNeeded();
+        const submitBox = await submit.boundingBox();
+        if (!submitBox || submitBox.x < -4 || submitBox.x + submitBox.width > device.width + 4)
+          throw Error("Botao de triagem cortado " + device.name + " " + item.path);
+        await page.keyboard.press("Escape");
+        await dialog.waitFor({ state: "hidden" });
         await page.screenshot({path:"artifacts/aptos-visual/"+device.name+"-"+item.path.slice(1)+".png",fullPage:true,animations:"disabled"});
         console.log("PASS "+device.name+" "+item.path+" fotografia "+info.naturalWidth+"x"+info.naturalHeight);
       }
