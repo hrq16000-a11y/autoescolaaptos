@@ -117,7 +117,7 @@ const AulasPraticasDirecao = () => {
       />
       
       <Dialog open={triagemAberta} onOpenChange={setTriagemAberta}>
-        <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-md">
+        <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Vamos agendar suas aulas?</DialogTitle>
             <DialogDescription>Responda três perguntas rápidas e siga ao WhatsApp com a mensagem pronta. A equipe confirma a disponibilidade.</DialogDescription>
@@ -130,8 +130,8 @@ const AulasPraticasDirecao = () => {
           }}>
             <div className="space-y-2">
               <label htmlFor="aulas-modalidade" className="block text-sm font-semibold">Modalidade *</label>
-              <select id="aulas-modalidade" required value={modalidade} onChange={(event) => setModalidade(event.target.value)}
-                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground">
+              <select id="aulas-modalidade" required aria-required="true" value={modalidade} onChange={(event) => setModalidade(event.target.value)}
+                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
                 <option value="">Selecione</option>
                 <option value="Carro manual (categoria B)">Carro manual (categoria B)</option>
                 <option value="Polo automático (categoria B)">Polo automático (categoria B)</option>
@@ -147,8 +147,8 @@ const AulasPraticasDirecao = () => {
             </div>
             <div className="space-y-2">
               <label htmlFor="aulas-objetivo" className="block text-sm font-semibold">O que você precisa? *</label>
-              <select id="aulas-objetivo" required value={objetivo} onChange={(event) => setObjetivo(event.target.value)}
-                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground">
+              <select id="aulas-objetivo" required aria-required="true" value={objetivo} onChange={(event) => setObjetivo(event.target.value)}
+                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
                 <option value="">Selecione</option>
                 <option value="Primeira habilitação">Primeira habilitação</option>
                 <option value="Aulas avulsas">Aulas avulsas</option>
@@ -158,8 +158,8 @@ const AulasPraticasDirecao = () => {
             </div>
             <div className="space-y-2">
               <label htmlFor="aulas-periodo" className="block text-sm font-semibold">Melhor período *</label>
-              <select id="aulas-periodo" required value={periodo} onChange={(event) => setPeriodo(event.target.value)}
-                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground">
+              <select id="aulas-periodo" required aria-required="true" value={periodo} onChange={(event) => setPeriodo(event.target.value)}
+                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
                 <option value="">Selecione</option>
                 <option value="Manhã">Manhã</option>
                 <option value="Tarde">Tarde</option>
@@ -171,7 +171,7 @@ const AulasPraticasDirecao = () => {
               <label htmlFor="aulas-nome" className="block text-sm font-semibold">Primeiro nome (opcional)</label>
               <input id="aulas-nome" autoComplete="given-name" maxLength={80} value={nome}
                 onChange={(event) => setNome(event.target.value)} placeholder="Como podemos chamar você?"
-                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground" />
+                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2" />
             </div>
             <p className="text-xs text-muted-foreground">Suas respostas serão incluídas na mensagem. Nenhum horário será reservado automaticamente.</p>
             <Button type="submit" size="lg" className="min-h-12 w-full" disabled={!modalidade || !objetivo || !periodo}
