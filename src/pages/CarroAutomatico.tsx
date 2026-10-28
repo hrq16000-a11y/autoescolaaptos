@@ -301,7 +301,7 @@ const CarroAutomatico = () => {
             <Button type="button" size="lg" className="min-h-12 w-full" disabled={!objetivo || !periodo}
               onClick={() => {
                 if (!objetivo || !periodo) return;
-                window.open(waHref, "_blank", "noopener,noreferrer");
+                window.location.assign(waHref);
                 handleWhats(origemTriagem);
                 setTriagemAberta(false);
               }}

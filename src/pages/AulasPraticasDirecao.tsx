@@ -125,7 +125,7 @@ const AulasPraticasDirecao = () => {
           <form className="space-y-4" onSubmit={(event) => {
             event.preventDefault();
             if (!modalidade || !objetivo || !periodo) return;
-            window.open(whatsappLink(mensagemAgendamento, "direto"), "_blank", "noopener,noreferrer");
+            window.location.assign(whatsappLink(mensagemAgendamento, "direto"));
             setTriagemAberta(false);
           }}>
             <div className="space-y-2">
