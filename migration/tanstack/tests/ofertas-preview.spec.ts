@@ -20,7 +20,7 @@ test('preview de ofertas não envia cadastros nem confirma gravação', async ({
   await expect(submit).toBeDisabled();
   await page.getByRole('checkbox').check();
   await submit.click();
-  await expect(page.getByRole('alert')).toContainText('Não foi possível confirmar');
+  await expect(page.getByRole('alert')).toContainText('Preview: cadastro desativado');
   await expect(page.getByText('Cadastro realizado com sucesso!')).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Solicitar participação pelo WhatsApp' })).toBeVisible();
   expect(external).toEqual([]);
