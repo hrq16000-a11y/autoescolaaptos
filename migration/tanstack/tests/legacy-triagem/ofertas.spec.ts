@@ -62,6 +62,6 @@ test('ofertas mantém consentimento e oferece contato apenas após falha', async
   const message = target.searchParams.get('text') || '';
   expect(message).toContain('Acabei de confirmar minha participação');
   expect(message).toContain('Autorizo receber novidades');
-  expect(message).toContain('Meu número: (00) 00000-0000');
+  expect(message).toContain('Meu número: (00) 00000-0001');
   expect(calls).toBe(4);
 });
