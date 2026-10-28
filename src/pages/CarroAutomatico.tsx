@@ -263,7 +263,7 @@ const CarroAutomatico = () => {
       />
 
       <Dialog open={triagemAberta} onOpenChange={setTriagemAberta}>
-        <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-md" data-component="CarroAutomaticoTriagem">
+        <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain sm:max-w-md" data-component="CarroAutomaticoTriagem">
           <DialogHeader>
             <DialogTitle>Vamos entender o que você precisa?</DialogTitle>
             <DialogDescription>Responda duas perguntas rápidas. O WhatsApp abrirá com sua mensagem pronta.</DialogDescription>
@@ -271,8 +271,8 @@ const CarroAutomatico = () => {
           <div className="space-y-4">
             <div className="space-y-2">
               <label htmlFor="polo-objetivo" className="block text-sm font-semibold">Qual é seu objetivo? *</label>
-              <select id="polo-objetivo" value={objetivo} onChange={(e) => setObjetivo(e.target.value)}
-                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+              <select id="polo-objetivo" required aria-required="true" value={objetivo} onChange={(e) => setObjetivo(e.target.value)}
+                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
                 <option value="">Selecione uma opção</option>
                 <option value="Primeira habilitação">Primeira habilitação</option>
                 <option value="Aulas avulsas (já tenho CNH)">Aulas avulsas (já tenho CNH)</option>
@@ -282,8 +282,8 @@ const CarroAutomatico = () => {
             </div>
             <div className="space-y-2">
               <label htmlFor="polo-periodo" className="block text-sm font-semibold">Qual período é melhor para você? *</label>
-              <select id="polo-periodo" value={periodo} onChange={(e) => setPeriodo(e.target.value)}
-                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+              <select id="polo-periodo" required aria-required="true" value={periodo} onChange={(e) => setPeriodo(e.target.value)}
+                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
                 <option value="">Selecione uma opção</option>
                 <option value="Manhã">Manhã</option>
                 <option value="Tarde">Tarde</option>
@@ -295,7 +295,7 @@ const CarroAutomatico = () => {
               <label htmlFor="polo-nome" className="block text-sm font-semibold">Como podemos chamar você? (opcional)</label>
               <input id="polo-nome" value={nome} maxLength={80} onChange={(e) => setNome(e.target.value)}
                 autoComplete="given-name" placeholder="Seu primeiro nome"
-                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
+                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2" />
             </div>
             <p className="text-xs text-muted-foreground">As respostas são incluídas na mensagem. Nenhum cadastro é enviado automaticamente.</p>
             <Button type="button" size="lg" className="min-h-12 w-full" disabled={!objetivo || !periodo}
