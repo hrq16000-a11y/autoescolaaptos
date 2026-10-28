@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Car, GraduationCap, RefreshCw, Bike, MessageCircle } from "lucide-react";
+import { Car, GraduationCap, RefreshCw, Bike, MessageCircle, ArrowRight } from "lucide-react";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { Link } from "react-router-dom";
 import { whatsappLink } from "@/lib/whatsapp";
@@ -9,6 +9,12 @@ import { whatsappLink } from "@/lib/whatsapp";
 const Services = () => {
   const { trackServiceRequest, trackWhatsAppClick, trackConsultorClick } = useAnalytics();
   
+  const serviceDetails: Record<string, string> = {
+    "Inclusão de Categoria (A ou B)": "/inclusao-categoria",
+    "Curso de Reciclagem 100% Online": "/reciclagem-cnh",
+    "Reteste Prático": "/reteste-pratico",
+  };
+
   const services = [
     {
       icon: GraduationCap,
@@ -154,6 +160,16 @@ const Services = () => {
                     </a>
                   )}
                 </Button>
+                {serviceDetails[service.title] && (
+                  <Link
+                    to={serviceDetails[service.title]}
+                    className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md text-sm font-semibold text-primary underline-offset-4 transition-colors hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                    data-component="HomeServiceDetails"
+                    data-intent="informacoes"
+                  >
+                    Conhecer este serviço <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </Link>
+                )}
               </Card>
             </motion.div>
           ))}
