@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import poloAutomatico from "@/assets/aptos-polo-automatico-pagina.webp";
 import { 
   Car, 
   Users, 
@@ -149,6 +150,35 @@ const AulasPraticasDirecao = () => {
                 </div>
               </motion.div>
             </div>
+          </div>
+        </section>
+
+        {/* Conexão contextual: categoria B e Polo automático */}
+        <section className="border-y border-primary/20 bg-muted/40 py-10 md:py-14" aria-labelledby="polo-automatico-link">
+          <div className="container mx-auto px-4">
+            <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} className="mx-auto grid max-w-6xl overflow-hidden rounded-3xl border border-border bg-card shadow-medium md:grid-cols-[1.05fr_0.95fr]">
+              <div className="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
+                <span className="mb-3 text-xs font-black uppercase tracking-[0.16em] text-primary">Categoria B · Opção de carro automático</span>
+                <h2 id="polo-automatico-link" className="mb-4 text-2xl font-heading font-black leading-tight sm:text-3xl">
+                  Conheça as aulas no Polo automático da APTOS
+                </h2>
+                <p className="mb-6 text-sm leading-relaxed text-muted-foreground sm:text-base">
+                  Além do carro manual, você pode conhecer a opção de aulas práticas em carro automático.
+                  Confira o veículo, tire dúvidas e confirme com a equipe a modalidade adequada ao seu processo.
+                </p>
+                <Button asChild size="lg" className="w-full sm:w-fit">
+                  <Link to="/carro-automatico" data-component="AulasPraticasPoloCTA" data-intent="internal">
+                    Conhecer o Polo automático <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
+                  </Link>
+                </Button>
+              </div>
+              <Link to="/carro-automatico" aria-label="Ver detalhes das aulas práticas no Polo automático"
+                className="relative block aspect-video overflow-hidden bg-zinc-950 md:aspect-auto md:min-h-[280px]">
+                <img src={poloAutomatico} alt="Polo automático preto e amarelo da Autoescola APTOS em frente à sede"
+                  loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 hover:scale-[1.03]" />
+              </Link>
+            </motion.div>
           </div>
         </section>
 
