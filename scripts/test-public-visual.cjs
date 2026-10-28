@@ -23,7 +23,26 @@ const cases = [
           return {naturalWidth:el.naturalWidth,naturalHeight:el.naturalHeight,x:r.x,right:r.right,width:r.width};
         });
         if(info.naturalWidth===0||info.naturalHeight===0) throw Error("Imagem quebrada "+item.path+": "+JSON.stringify(info));
-        if(info.x < -4 || info.right > device.width+4) throw Error("Imagem fora da tela "+item.path+": "+JSON.stringify(info));
+        if(info.x < -4 || info.right > device.width+4) {
+          const layout = await photo.evaluate(el => {
+            const link = el.parentElement;
+            const grid = link.parentElement;
+            const container = grid.parentElement;
+            const style = getComputedStyle(grid);
+            return {
+              imgRect: el.getBoundingClientRect().toJSON(),
+              linkRect: link.getBoundingClientRect().toJSON(),
+              gridRect: grid.getBoundingClientRect().toJSON(),
+              containerRect: container.getBoundingClientRect().toJSON(),
+              template: style.gridTemplateColumns,
+              columns: grid.className,
+              linkClass: link.className,
+              cssAssets: [...document.querySelectorAll('link[rel=stylesheet]')].map(a => a.href),
+            };
+          });
+          console.error("DIAGNOSTICO_CSS_PUBLICO " + JSON.stringify(layout));
+          throw Error("Imagem fora da tela " + device.name + " " + item.path + ": " + JSON.stringify(info));
+        }
         // Confere que o botao e o pop-up de triagem permanecem utilizaveis nesta largura.
         const buttonName = item.path === "/carro-automatico" ? "Falar no WhatsApp" : "Agendar Aulas";
         await page.getByRole("button", { name: buttonName, exact: true }).first().click();
