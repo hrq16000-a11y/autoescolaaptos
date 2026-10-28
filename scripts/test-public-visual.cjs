@@ -9,6 +9,18 @@ const cases = [
   fs.mkdirSync("artifacts/aptos-visual", { recursive: true });
   const browser = await chromium.launch({ headless: true });
   try {
+    // Regressao: simulador fica oculto da home, mas acessivel por URL direta.
+    const home = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    const homeResponse = await home.goto(base + "/", { waitUntil: "networkidle", timeout: 45000 });
+    if (!homeResponse || homeResponse.status() !== 200) throw Error("Home nao respondeu HTTP 200");
+    const visibleHomeLinks = await home.locator('a[href="/simulado-detran-pr"]').count();
+    if (visibleHomeLinks !== 0) throw Error("Simulado ainda exposto na home: " + visibleHomeLinks + " links");
+    console.log("PASS home: Simulado DETRAN-PR oculto dos links");
+    const directResponse = await home.goto(base + "/simulado-detran-pr", { waitUntil: "domcontentloaded", timeout: 45000 });
+    if (!directResponse || directResponse.status() !== 200) throw Error("Simulado nao acessivel por URL direta");
+    await home.getByRole("heading", { name: /Simulado DETRAN PR 2026/i }).waitFor({ state: "visible", timeout: 15000 });
+    console.log("PASS rota direta: Simulado DETRAN-PR acessivel");
+    await home.close();
     for (const device of [{name:"compact",width:320,height:640},{name:"mobile",width:390,height:844},{name:"tablet",width:768,height:1024},{name:"desktop",width:1440,height:900}]) {
       const page = await browser.newPage({ viewport:{width:device.width,height:device.height}, deviceScaleFactor:1 });
       for(const item of cases) {
