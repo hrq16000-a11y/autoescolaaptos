@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import {
@@ -19,6 +19,7 @@ import Footer from "@/components/Footer";
 import RelatedLinks from "@/components/RelatedLinks";
 import SocialProof from "@/components/SocialProof";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { track } from "@/lib/analytics";
 import { trackWhatsAppClick } from "@/lib/events";
 import { whatsappLink } from "@/lib/whatsapp";
@@ -192,6 +193,11 @@ export const jsonLd = {
 
 const CarroAutomatico = () => {
   const reducedMotion = useReducedMotion();
+  const [triagemAberta, setTriagemAberta] = useState(false);
+  const [origemTriagem, setOrigemTriagem] = useState("hero");
+  const [objetivo, setObjetivo] = useState("");
+  const [periodo, setPeriodo] = useState("");
+  const [nome, setNome] = useState("");
   const utm = useMemo(() => {
     if (typeof window === "undefined") return {};
     return readCampaignUtms();
@@ -206,7 +212,18 @@ const CarroAutomatico = () => {
     recordCampaignEvent("polo_automatico", "view", "landing");
   }, [utm]);
 
-  const waHref = whatsappLink(CAMPAIGN_MESSAGE, "direto");
+  const mensagemTriagem = [
+    CAMPAIGN_MESSAGE,
+    "Objetivo: " + (objetivo || "Não informado"),
+    "Melhor período: " + (periodo || "A combinar"),
+    nome.trim() ? "Nome: " + nome.trim().slice(0, 80) : "",
+  ].filter(Boolean).join("\n");
+  const waHref = whatsappLink(mensagemTriagem, "direto");
+  const abrirTriagem = (source: string) => {
+    setOrigemTriagem(source);
+    setTriagemAberta(true);
+    track("campaign_triage_open", { source, campaign: "polo_automatico", ...utm });
+  };
 
   const handleWhats = (source: string) => {
     trackWhatsAppClick({
@@ -226,33 +243,14 @@ const CarroAutomatico = () => {
     source,
     label = "Falar no WhatsApp",
     className = "",
-  }: {
-    source: string;
-    label?: string;
-    className?: string;
-  }) => (
-    <Button
-      asChild
-      size="lg"
-      className={
-        "min-h-[54px] px-7 text-base font-bold hover:-translate-y-0.5 hover:shadow-glow active:translate-y-0 " +
-        className
-      }
-    >
-      <a
-        href={waHref}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={() => handleWhats(source)}
-        data-component="CarroAutomaticoCTA"
-        data-intent="whatsapp"
-      >
-        <MessageCircle className="w-5 h-5" aria-hidden />
-        {label}
-      </a>
+  }: { source: string; label?: string; className?: string }) => (
+    <Button type="button" size="lg" onClick={() => abrirTriagem(source)}
+      className={"min-h-[54px] px-7 text-base font-bold hover:-translate-y-0.5 hover:shadow-glow active:translate-y-0 " + className}
+      data-component="CarroAutomaticoCTA" data-intent="triagem">
+      <MessageCircle className="w-5 h-5" aria-hidden />
+      {label}
     </Button>
   );
-
 
   return (
     <>
@@ -263,6 +261,56 @@ const CarroAutomatico = () => {
         image="/og-image.png"
         jsonLd={jsonLd}
       />
+
+      <Dialog open={triagemAberta} onOpenChange={setTriagemAberta}>
+        <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-md" data-component="CarroAutomaticoTriagem">
+          <DialogHeader>
+            <DialogTitle>Vamos entender o que você precisa?</DialogTitle>
+            <DialogDescription>Responda duas perguntas rápidas. O WhatsApp abrirá com sua mensagem pronta.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label htmlFor="polo-objetivo" className="block text-sm font-semibold">Qual é seu objetivo? *</label>
+              <select id="polo-objetivo" value={objetivo} onChange={(e) => setObjetivo(e.target.value)}
+                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <option value="">Selecione uma opção</option>
+                <option value="Primeira habilitação">Primeira habilitação</option>
+                <option value="Aulas avulsas (já tenho CNH)">Aulas avulsas (já tenho CNH)</option>
+                <option value="Preparação para reteste">Preparação para reteste</option>
+                <option value="Quero tirar dúvidas">Quero tirar dúvidas</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="polo-periodo" className="block text-sm font-semibold">Qual período é melhor para você? *</label>
+              <select id="polo-periodo" value={periodo} onChange={(e) => setPeriodo(e.target.value)}
+                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <option value="">Selecione uma opção</option>
+                <option value="Manhã">Manhã</option>
+                <option value="Tarde">Tarde</option>
+                <option value="Noite">Noite</option>
+                <option value="A combinar">A combinar</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="polo-nome" className="block text-sm font-semibold">Como podemos chamar você? (opcional)</label>
+              <input id="polo-nome" value={nome} maxLength={80} onChange={(e) => setNome(e.target.value)}
+                autoComplete="given-name" placeholder="Seu primeiro nome"
+                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
+            </div>
+            <p className="text-xs text-muted-foreground">As respostas são incluídas na mensagem. Nenhum cadastro é enviado automaticamente.</p>
+            <Button type="button" size="lg" className="min-h-12 w-full" disabled={!objetivo || !periodo}
+              onClick={() => {
+                if (!objetivo || !periodo) return;
+                window.open(waHref, "_blank", "noopener,noreferrer");
+                handleWhats(origemTriagem);
+                setTriagemAberta(false);
+              }}
+              data-component="CarroAutomaticoTriagemSubmit" data-intent="whatsapp">
+              <MessageCircle className="mr-2 h-5 w-5" aria-hidden /> Continuar no WhatsApp
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Navbar />
 
