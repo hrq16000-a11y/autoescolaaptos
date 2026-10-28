@@ -107,6 +107,15 @@ const Hero = () => {
     <div id="inicio" className="contents">
     <section id="inicio-mobile" data-component="MobileHero" className="relative md:hidden bg-slate-950 text-white pt-20 pb-5">
       <div className="mx-auto max-w-lg">
+        <div data-component="HeroMobileControls" className="relative z-10 flex min-h-14 items-center justify-between gap-2 px-4 py-2 bg-slate-950" aria-label="Controles dos banners">
+          <span className="text-xs text-slate-200 tabular-nums" aria-live="polite">{mobileIndex + 1} / {slides.length}</span>
+          <span className="hidden min-[390px]:inline text-[11px] text-slate-300">Deslize para navegar</span>
+          <div className="flex items-center gap-2">
+            <button type="button" onClick={() => mobileApi?.scrollPrev()} aria-label="Banner anterior" className="flex h-11 w-11 items-center justify-center rounded-full border border-white/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-300"><ChevronLeft className="h-5 w-5" /></button>
+            <button type="button" onClick={() => setMobilePlaying(p => !p)} aria-label={mobilePlaying ? "Pausar banners" : "Reproduzir banners"} aria-pressed={mobilePlaying} className="flex h-11 w-11 items-center justify-center rounded-full border border-white/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-300">{mobilePlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}</button>
+            <button type="button" onClick={() => mobileApi?.scrollNext()} aria-label="Próximo banner" className="flex h-11 w-11 items-center justify-center rounded-full border border-white/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-300"><ChevronRight className="h-5 w-5" /></button>
+          </div>
+        </div>
         <div ref={mobileRef} className="overflow-hidden touch-pan-y" aria-label="Banners da Autoescola APTOS" aria-roledescription="carrossel">
           <div className="flex">
             {slides.map((slide, index) => (
@@ -128,15 +137,7 @@ const Hero = () => {
             ))}
           </div>
         </div>
-        <div className="flex items-center justify-between gap-3 px-4 pt-4" aria-label="Controles dos banners">
-          <span className="text-xs text-slate-200 tabular-nums" aria-live="polite">{mobileIndex + 1} / {slides.length}</span>
-          <span className="text-[11px] text-slate-300">Deslize para navegar</span>
-          <div className="flex items-center gap-2">
-            <button type="button" onClick={() => mobileApi?.scrollPrev()} aria-label="Banner anterior" className="flex h-11 w-11 items-center justify-center rounded-full border border-white/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-300"><ChevronLeft className="h-5 w-5" /></button>
-            <button type="button" onClick={() => setMobilePlaying(p => !p)} aria-label={mobilePlaying ? "Pausar banners" : "Reproduzir banners"} aria-pressed={mobilePlaying} className="flex h-11 w-11 items-center justify-center rounded-full border border-white/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-300">{mobilePlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}</button>
-            <button type="button" onClick={() => mobileApi?.scrollNext()} aria-label="Próximo banner" className="flex h-11 w-11 items-center justify-center rounded-full border border-white/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-300"><ChevronRight className="h-5 w-5" /></button>
-          </div>
-        </div>
+
       </div>
     </section>
     <section id="inicio-desktop" className="relative hidden md:flex min-h-screen items-center pt-20">
