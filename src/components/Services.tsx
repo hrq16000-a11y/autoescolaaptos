@@ -185,9 +185,16 @@ const Services = () => {
           <p className="text-lg mb-6 text-muted-foreground">
             Tem dúvidas sobre qual serviço é ideal para você?
           </p>
-          <Button size="lg" className="shadow-glow" asChild>
+          <div className="flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+            <Button size="lg" variant="outline" className="min-h-12" asChild>
+              <Link to="/comparador" data-component="HomeDuvidasComparador" data-intent="informacoes">
+                <ArrowRight className="mr-2 h-5 w-5" aria-hidden="true" />
+                Comparar categorias A, B e AB
+              </Link>
+            </Button>
+          <Button size="lg" className="shadow-glow min-h-12" asChild>
             <a
-              href="https://api.whatsapp.com/send?phone=5541991453627&text=Olá,%20preciso%20de%20ajuda%20para%20escolher%20o%20serviço%20ideal"
+              href={whatsappLink("Olá! Preciso de ajuda para escolher o serviço ideal da Autoescola APTOS.", "direto")}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackConsultorClick()}
@@ -196,6 +203,7 @@ const Services = () => {
               Fale com um Consultor
             </a>
           </Button>
+          </div>
         </motion.div>
       </div>
     </section>
