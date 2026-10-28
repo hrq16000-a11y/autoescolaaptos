@@ -112,6 +112,7 @@ const AdminOptin = () => {
     if (filters.status) p.set("status", filters.status);
     if (filters.campaign_source) p.set("campaign_source", filters.campaign_source);
     if (filters.sync_status) p.set("sync_status", filters.sync_status);
+    if (filters.q) p.set("q", filters.q.replace(/\\D/g, ""));
     return p;
   };
 
@@ -757,11 +758,9 @@ const AdminOptin = () => {
         {metrics && (
           <>
             {filters.q && (
-              <div role="status" data-component="AdminOptinFiltroTelefone" className="rounded-xl border border-primary/30 bg-primary/5 px-4 py-3 text-sm">
-                <strong>{rows.length} cadastro(s) na lista com o telefone pesquisado.</strong>{" "}
-                Os indicadores abaixo consideram os filtros de período, status, campanha e sincronização,
-                mas não a busca por telefone. Limpe o campo Telefone para comparar lista e indicadores.
-              </div>
+              <p role="status" data-component="AdminOptinFiltroTelefone" className="rounded-xl border border-primary/30 bg-primary/5 px-4 py-3 text-sm">
+                Lista e indicadores consideram a pesquisa por telefone. {rows.length} cadastro(s) encontrado(s).
+              </p>
             )}
             {/* Cards de status */}
             <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
