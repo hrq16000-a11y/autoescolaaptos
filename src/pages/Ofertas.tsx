@@ -35,6 +35,47 @@ function isValidBRMobile(v: string) {
   return d.length === 10 || d.length === 11;
 }
 
+
+/** Atribuição declarada por UTMs ou indícios do navegador; não equivale à identidade do visitante. */
+function origemDaVisita() {
+  if (typeof window === "undefined") return { campaignSource: null, template: null, origemUrl: null };
+  const url = new URL(window.location.href);
+  const params = url.searchParams;
+  const tag = (key: string) => (params.get(key) || "").trim().slice(0, 80);
+  let referencia: URL | null = null;
+  try { if (document.referrer) referencia = new URL(document.referrer); } catch { /* Referência indisponível */ }
+  const host = (referencia?.hostname || "").toLowerCase();
+  const source = (tag("utm_source") || tag("src") || "").toLowerCase();
+  const channel = source ||
+    (/^(l\\.|m\\.|www\\.)?instagram\\.com$/.test(host) || host === "ig.me" || params.has("igshid") ? "instagram" :
+    /(^|\\.)facebook\\.com$/.test(host) || host === "fb.me" ? "facebook" :
+    params.has("fbclid") ? "meta (Facebook/Instagram)" :
+    params.has("gclid") || params.has("gbraid") || params.has("wbraid") ? "google ads" :
+    /(^|\\.)google\\./.test(host) ? "google orgânico" :
+    /(^|\\.)wa\\.me$/.test(host) || /(^|\\.)whatsapp\\.com$/.test(host) ? "whatsapp" :
+    referencia ? "referência externa" : "direto / não identificado");
+  const campaign = tag("utm_campaign") || tag("campanha");
+  const medium = tag("utm_medium");
+  const sourceLabel = [channel, medium && `meio: ${medium}`, campaign && `campanha: ${campaign}`]
+    .filter(Boolean).join(" | ").slice(0, 120);
+  // Não gravar identificadores únicos de clique, telefones ou outros parâmetros sensíveis.
+  const origem = new URL(url.pathname, url.origin);
+  for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "campanha", "src"]) {
+    if (tag(key)) origem.searchParams.set(key, tag(key));
+  }
+  if (referencia && /^https?:$/.test(referencia.protocol)) {
+    // URL interna identifica a página clicada; de sites externos preservamos somente o domínio.
+    const valor = referencia.origin === url.origin
+      ? referencia.origin + referencia.pathname : referencia.origin;
+    origem.searchParams.set("referencia", valor.slice(0, 200));
+  }
+  return {
+    campaignSource: sourceLabel || null,
+    template: tag("template") || tag("tpl") || null,
+    origemUrl: origem.toString().slice(0, 500),
+  };
+}
+
 export default function Ofertas({ preview = false }: { preview?: boolean } = {}) {
   const [telefone, setTelefone] = useState("");
   const [aceite, setAceite] = useState(false);
@@ -44,16 +85,7 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
   const [showFallback, setShowFallback] = useState(false);
   const [alreadyRegistered, setAlreadyRegistered] = useState(false);
 
-  const { campaignSource, template, origemUrl } = useMemo(() => {
-    if (typeof window === "undefined") return { campaignSource: null, template: null, origemUrl: null };
-    const params = new URLSearchParams(window.location.search);
-    return {
-      campaignSource:
-        params.get("campanha") || params.get("src") || params.get("utm_campaign") || null,
-      template: params.get("template") || params.get("tpl") || null,
-      origemUrl: window.location.href,
-    };
-  }, []);
+  const { campaignSource, template, origemUrl } = useMemo(origemDaVisita, []);
 
   useEffect(() => {
     document.documentElement.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
@@ -158,6 +190,10 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
 
                 <p className="text-sm text-foreground/80 mb-4">
                   Após confirmar o cadastro, abriremos o WhatsApp com uma mensagem pronta. Você só precisa tocar em Enviar.
+                </p>
+                <p className="text-xs text-foreground/70 mb-4">
+                  Com sua autorização, registramos também a origem da visita (como campanha, página
+                  de referência ou acesso direto), quando disponível, para avaliar nossas divulgações.
                 </p>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
