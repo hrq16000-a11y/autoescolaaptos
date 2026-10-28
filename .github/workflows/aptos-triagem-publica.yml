@@ -7,6 +7,8 @@ on:
       - '.github/workflows/aptos-triagem-publica.yml'
       - 'scripts/test-public-triage.cjs'
       - 'scripts/test-public-visual.cjs'
+      - 'scripts/test-public-navbar.cjs'
+      - 'src/components/Navbar.tsx'
       - 'src/pages/CarroAutomatico.tsx'
       - 'src/pages/AulasPraticasDirecao.tsx'
 jobs:
@@ -29,6 +31,10 @@ jobs:
         env:
           NODE_PATH: /tmp/aptos-smoke/node_modules
         run: node scripts/test-public-visual.cjs
+      - name: Validar menu mobile em navegador real
+        env:
+          NODE_PATH: /tmp/aptos-smoke/node_modules
+        run: node scripts/test-public-navbar.cjs
       - name: Guardar evidencias visuais
         if: always()
         uses: actions/upload-artifact@v4
