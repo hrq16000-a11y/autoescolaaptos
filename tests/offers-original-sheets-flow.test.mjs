@@ -15,6 +15,8 @@ test("ofertas mantém fluxo original da planilha com POST simples sem preflight 
   assert.doesNotMatch(src, /marketing-api-msolus\.vercel\.app/);
   assert.match(src, /lgpd_aceite:\s*true/);
   assert.match(src, /res\?\.success === true/);
-  assert.match(src, /window\.location\.assign\(whatsappOptinUrl\(telefone, true\)\)/);
+  assert.match(src, /window\.location\.assign\(whatsappOptinUrl\(telefone, true, false, \{ campaignSource, origemUrl \}\)\)/);
+  assert.match(src, /Canal\/campanha:/);
+  assert.match(src, /Página\/referência:/);
   assert.match(src, /cadastro ainda não foi confirmado/);
 });
