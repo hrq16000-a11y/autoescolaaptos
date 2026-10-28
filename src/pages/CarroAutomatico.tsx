@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import {
@@ -19,6 +19,7 @@ import Footer from "@/components/Footer";
 import RelatedLinks from "@/components/RelatedLinks";
 import SocialProof from "@/components/SocialProof";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { track } from "@/lib/analytics";
 import { trackWhatsAppClick } from "@/lib/events";
 import { whatsappLink } from "@/lib/whatsapp";
@@ -192,6 +193,11 @@ export const jsonLd = {
 
 const CarroAutomatico = () => {
   const reducedMotion = useReducedMotion();
+  const [triagemAberta, setTriagemAberta] = useState(false);
+  const [origemTriagem, setOrigemTriagem] = useState("hero");
+  const [objetivo, setObjetivo] = useState("");
+  const [periodo, setPeriodo] = useState("");
+  const [nome, setNome] = useState("");
   const utm = useMemo(() => {
     if (typeof window === "undefined") return {};
     return readCampaignUtms();
@@ -206,7 +212,18 @@ const CarroAutomatico = () => {
     recordCampaignEvent("polo_automatico", "view", "landing");
   }, [utm]);
 
-  const waHref = whatsappLink(CAMPAIGN_MESSAGE, "direto");
+  const mensagemTriagem = [
+    CAMPAIGN_MESSAGE,
+    "Objetivo: " + (objetivo || "Não informado"),
+    "Melhor período: " + (periodo || "A combinar"),
+    nome.trim() ? "Nome: " + nome.trim().slice(0, 80) : "",
+  ].filter(Boolean).join("\n");
+  const waHref = whatsappLink(mensagemTriagem, "direto");
+  const abrirTriagem = (source: string) => {
+    setOrigemTriagem(source);
+    setTriagemAberta(true);
+    track("campaign_triage_open", { source, campaign: "polo_automatico", ...utm });
+  };
 
   const handleWhats = (source: string) => {
     trackWhatsAppClick({
@@ -226,33 +243,14 @@ const CarroAutomatico = () => {
     source,
     label = "Falar no WhatsApp",
     className = "",
-  }: {
-    source: string;
-    label?: string;
-    className?: string;
-  }) => (
-    <Button
-      asChild
-      size="lg"
-      className={
-        "min-h-[54px] px-7 text-base font-bold hover:-translate-y-0.5 hover:shadow-glow active:translate-y-0 " +
-        className
-      }
-    >
-      <a
-        href={waHref}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={() => handleWhats(source)}
-        data-component="CarroAutomaticoCTA"
-        data-intent="whatsapp"
-      >
-        <MessageCircle className="w-5 h-5" aria-hidden />
-        {label}
-      </a>
+  }: { source: string; label?: string; className?: string }) => (
+    <Button type="button" size="lg" onClick={() => abrirTriagem(source)}
+      className={"min-h-[54px] px-7 text-base font-bold hover:-translate-y-0.5 hover:shadow-glow active:translate-y-0 " + className}
+      data-component="CarroAutomaticoCTA" data-intent="triagem">
+      <MessageCircle className="w-5 h-5" aria-hidden />
+      {label}
     </Button>
   );
-
 
   return (
     <>
