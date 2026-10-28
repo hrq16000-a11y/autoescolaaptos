@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
@@ -6,6 +7,8 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { whatsappLink } from "@/lib/whatsapp";
 import poloAutomatico from "@/assets/aptos-polo-automatico-pagina.webp";
 import { 
   Car, 
@@ -44,6 +47,19 @@ export const jsonLd = {
   };
 
 const AulasPraticasDirecao = () => {
+  const [triagemAberta, setTriagemAberta] = useState(false);
+  const [modalidade, setModalidade] = useState("");
+  const [objetivo, setObjetivo] = useState("");
+  const [periodo, setPeriodo] = useState("");
+  const [nome, setNome] = useState("");
+  const mensagemAgendamento = [
+    "Olá! Vim pela página de aulas práticas da Autoescola APTOS e gostaria de agendar aulas.",
+    "Modalidade: " + modalidade,
+    "Objetivo: " + objetivo,
+    "Período de preferência: " + periodo,
+    nome.trim() ? "Meu nome: " + nome.trim().slice(0, 80) : "",
+  ].filter(Boolean).join("\n");
+
 
   const diferenciais = [
     {
@@ -137,15 +153,10 @@ const AulasPraticasDirecao = () => {
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Button size="lg" className="shadow-glow" asChild>
-                    <a
-                      href="https://api.whatsapp.com/send?phone=5541991453627&text=Olá,%20gostaria%20de%20agendar%20aulas%20práticas%20de%20direção"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <MessageCircle className="w-5 h-5 mr-2" />
-                      Agendar Aulas
-                    </a>
+                  <Button type="button" size="lg" className="shadow-glow" onClick={() => setTriagemAberta(true)}
+                    data-component="AulasPraticasAgendarCTA" data-intent="triagem">
+                    <MessageCircle className="w-5 h-5 mr-2" />
+                    Agendar Aulas
                   </Button>
                 </div>
               </motion.div>
