@@ -234,8 +234,8 @@ const AulasPraticasDirecao = () => {
         <section className="border-y border-primary/20 bg-muted/40 py-10 md:py-14" aria-labelledby="polo-automatico-link">
           <div className="container mx-auto px-4">
             <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} className="mx-auto grid max-w-6xl overflow-hidden rounded-3xl border border-border bg-card shadow-medium md:grid-cols-[1.05fr_0.95fr]">
-              <div className="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
+              viewport={{ once: true }} className="mx-auto grid max-w-6xl overflow-hidden rounded-3xl border border-border bg-card shadow-medium grid-cols-[minmax(0,1fr)] md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+              <div className="min-w-0 flex flex-col justify-center p-6 sm:p-8 lg:p-10">
                 <span className="mb-3 text-xs font-black uppercase tracking-[0.16em] text-primary">Categoria B · Opção de carro automático</span>
                 <h2 id="polo-automatico-link" className="mb-4 text-2xl font-heading font-black leading-tight sm:text-3xl">
                   Conheça as aulas no Polo automático da APTOS
@@ -251,7 +251,7 @@ const AulasPraticasDirecao = () => {
                 </Button>
               </div>
               <Link to="/carro-automatico" aria-label="Ver detalhes das aulas práticas no Polo automático"
-                className="relative block aspect-video overflow-hidden bg-zinc-950 md:aspect-auto md:min-h-[280px]">
+                className="relative block min-w-0 w-full aspect-video overflow-hidden bg-zinc-950 md:aspect-auto md:min-h-[280px]">
                 <img src={poloAutomatico} alt="Polo automático preto e amarelo da Autoescola APTOS em frente à sede"
                   loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 hover:scale-[1.03]" />
               </Link>
