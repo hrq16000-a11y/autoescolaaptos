@@ -52,12 +52,6 @@ interface Metrics {
 const FN_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-optin`;
 const TOKEN_KEY = "aptos_admin_leads_token";
 
-const defaultFrom = () => {
-  const d = new Date();
-  d.setDate(d.getDate() - 30);
-  return d.toISOString().slice(0, 10);
-};
-
 const pct = (n: number) => `${(n * 100).toFixed(1)}%`;
 
 const syncBadge = (s?: string | null) => {
@@ -101,8 +95,8 @@ const AdminOptin = () => {
   const [batchRunning, setBatchRunning] = useState(false);
   const [batchPreview, setBatchPreview] = useState<{ would_process: number; by_status: Record<string, number> } | null>(null);
   const [filters, setFilters] = useState({
-    from: defaultFrom(),
-    to: new Date().toISOString().slice(0, 10),
+    from: "",
+    to: "",
     status: "",
     campaign_source: "",
     sync_status: "",
@@ -444,7 +438,7 @@ const AdminOptin = () => {
                 <Gift className="w-5 h-5 text-primary" /> Ofertas Exclusivas
               </h1>
               <p className="text-xs text-muted-foreground">
-                {metrics ? `${metrics.total} opt-in(s) no período` : "—"}
+                {metrics ? `${metrics.total} cadastro(s) na base Supabase${filters.from || filters.to || filters.status || filters.campaign_source || filters.sync_status ? " (período/filtros)" : " (histórico completo)"}` : "—"}
               </p>
             </div>
           </div>
@@ -484,13 +478,14 @@ const AdminOptin = () => {
         className="container mx-auto mt-4 px-4"
       >
         <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">
-          <strong className="block mb-1">Atenção: este painel consulta apenas a base legada do Supabase.</strong>
-          O formulário público de ofertas passou a gravar cadastros em armazenamento privado da Vercel.
-          Os novos participantes não são incluídos automaticamente nesta lista, nos indicadores ou no CSV deste painel.
-          Este painel exibe somente a base antiga. Para consultar os novos participantes, abra{" "}
+          <strong className="block mb-1">Fonte dos números: banco Supabase original da APTOS.</strong>
+          O formulário público /ofertas utiliza esta base. Por padrão o painel apresenta todo o histórico;
+          os filtros de data e situação podem reduzir a contagem exibida.
+          Existe também uma API Vercel separada, com armazenamento próprio. Seus registros não estão incluídos
+          neste total e não devem ser somados sem conciliação por ID e telefone.{" "}
           <Link to="/admin/ofertas-vercel" className="font-semibold underline">
-            Cadastros novos (Vercel)
-          </Link>. Não utilize os indicadores antigos como total consolidado.
+            Consultar armazenamento Vercel separadamente
+          </Link>.
         </div>
       </section>
 
@@ -763,7 +758,7 @@ const AdminOptin = () => {
           <>
             {/* Cards de status */}
             <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <MetricCard label="Total opt-ins" value={String(metrics.total)} highlight />
+              <MetricCard label="Opt-ins (filtros)" value={String(metrics.total)} highlight />
               <MetricCard label="Sincronizados" value={String(metrics.bySync?.ok || 0)} />
               <MetricCard label="Pendentes" value={String(metrics.bySync?.pending || 0)} />
               <MetricCard label="Com erro" value={String(metrics.bySync?.error || 0)} />
