@@ -103,11 +103,6 @@ const Index = () => {
       description: "Aulas focadas no que reprovou. Volte preparado.",
     },
     {
-      title: "Simulado DETRAN-PR",
-      href: "/simulado-detran-pr",
-      description: "30 questões grátis no padrão da prova teórica.",
-    },
-    {
       title: "Perguntas Frequentes",
       href: "/perguntas-frequentes",
       description: "+80 dúvidas respondidas sobre CNH no Paraná.",
