@@ -262,6 +262,56 @@ const CarroAutomatico = () => {
         jsonLd={jsonLd}
       />
 
+      <Dialog open={triagemAberta} onOpenChange={setTriagemAberta}>
+        <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-md" data-component="CarroAutomaticoTriagem">
+          <DialogHeader>
+            <DialogTitle>Vamos entender o que você precisa?</DialogTitle>
+            <DialogDescription>Responda duas perguntas rápidas. O WhatsApp abrirá com sua mensagem pronta.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label htmlFor="polo-objetivo" className="block text-sm font-semibold">Qual é seu objetivo? *</label>
+              <select id="polo-objetivo" value={objetivo} onChange={(e) => setObjetivo(e.target.value)}
+                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <option value="">Selecione uma opção</option>
+                <option value="Primeira habilitação">Primeira habilitação</option>
+                <option value="Aulas avulsas (já tenho CNH)">Aulas avulsas (já tenho CNH)</option>
+                <option value="Preparação para reteste">Preparação para reteste</option>
+                <option value="Quero tirar dúvidas">Quero tirar dúvidas</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="polo-periodo" className="block text-sm font-semibold">Qual período é melhor para você? *</label>
+              <select id="polo-periodo" value={periodo} onChange={(e) => setPeriodo(e.target.value)}
+                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <option value="">Selecione uma opção</option>
+                <option value="Manhã">Manhã</option>
+                <option value="Tarde">Tarde</option>
+                <option value="Noite">Noite</option>
+                <option value="A combinar">A combinar</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="polo-nome" className="block text-sm font-semibold">Como podemos chamar você? (opcional)</label>
+              <input id="polo-nome" value={nome} maxLength={80} onChange={(e) => setNome(e.target.value)}
+                autoComplete="given-name" placeholder="Seu primeiro nome"
+                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
+            </div>
+            <p className="text-xs text-muted-foreground">As respostas são incluídas na mensagem. Nenhum cadastro é enviado automaticamente.</p>
+            <Button type="button" size="lg" className="min-h-12 w-full" disabled={!objetivo || !periodo}
+              onClick={() => {
+                if (!objetivo || !periodo) return;
+                window.open(waHref, "_blank", "noopener,noreferrer");
+                handleWhats(origemTriagem);
+                setTriagemAberta(false);
+              }}
+              data-component="CarroAutomaticoTriagemSubmit" data-intent="whatsapp">
+              <MessageCircle className="mr-2 h-5 w-5" aria-hidden /> Continuar no WhatsApp
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Navbar />
 
       <main className="min-h-screen bg-background pt-20">
