@@ -3,6 +3,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Car, GraduationCap, RefreshCw, Bike, MessageCircle } from "lucide-react";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { Link } from "react-router-dom";
+import { whatsappLink } from "@/lib/whatsapp";
 
 const Services = () => {
   const { trackServiceRequest, trackWhatsAppClick, trackConsultorClick } = useAnalytics();
@@ -127,18 +129,30 @@ const Services = () => {
                 </ul>
 
                 <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors" asChild>
-                  <a
-                    href={`https://api.whatsapp.com/send?phone=5541991453627&text=Olá,%20gostaria%20de%20informações%20sobre%20o%20serviço%20de%20${encodeURIComponent(service.title)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => {
-                      trackServiceRequest(service.title);
-                      trackWhatsAppClick('services', service.title);
-                    }}
-                  >
-                    <MessageCircle className="w-4 h-4 mr-2" />
-                    Solicitar Orçamento
-                  </a>
+                  {service.title === "Primeira Habilitação" ? (
+                    <Link
+                      to="/orcamento"
+                      onClick={() => trackServiceRequest(service.title)}
+                      data-component="HomePrimeiraHabilitacaoFunil"
+                      data-intent="orcamento"
+                    >
+                      <MessageCircle className="w-4 h-4 mr-2" />
+                      Fazer orçamento em 3 passos
+                    </Link>
+                  ) : (
+                    <a
+                      href={whatsappLink("Olá! Gostaria de informações sobre o serviço de " + service.title + " na Autoescola APTOS.", "direto")}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => {
+                        trackServiceRequest(service.title);
+                        trackWhatsAppClick("services", service.title);
+                      }}
+                    >
+                      <MessageCircle className="w-4 h-4 mr-2" />
+                      Solicitar Orçamento
+                    </a>
+                  )}
                 </Button>
               </Card>
             </motion.div>
