@@ -756,6 +756,13 @@ const AdminOptin = () => {
 
         {metrics && (
           <>
+            {filters.q && (
+              <div role="status" data-component="AdminOptinFiltroTelefone" className="rounded-xl border border-primary/30 bg-primary/5 px-4 py-3 text-sm">
+                <strong>{rows.length} cadastro(s) na lista com o telefone pesquisado.</strong>{" "}
+                Os indicadores abaixo consideram os filtros de período, status, campanha e sincronização,
+                mas não a busca por telefone. Limpe o campo Telefone para comparar lista e indicadores.
+              </div>
+            )}
             {/* Cards de status */}
             <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <MetricCard label="Opt-ins (filtros)" value={String(metrics.total)} highlight />
@@ -826,7 +833,7 @@ const AdminOptin = () => {
 
         {/* Lista */}
         <section className="bg-card border border-border rounded-xl p-4 overflow-x-auto">
-          <h2 className="font-heading font-bold mb-3">Opt-ins ({rows.length})</h2>
+          <h2 className="font-heading font-bold mb-3">Opt-ins na lista ({rows.length})</h2>
           <table className="w-full text-xs min-w-[1100px]">
             <thead className="text-left text-muted-foreground border-b">
               <tr>
