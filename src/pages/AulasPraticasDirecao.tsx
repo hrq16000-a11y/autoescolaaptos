@@ -116,6 +116,72 @@ const AulasPraticasDirecao = () => {
         jsonLd={jsonLd}
       />
       
+      <Dialog open={triagemAberta} onOpenChange={setTriagemAberta}>
+        <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Vamos agendar suas aulas?</DialogTitle>
+            <DialogDescription>Responda três perguntas rápidas e siga ao WhatsApp com a mensagem pronta. A equipe confirma a disponibilidade.</DialogDescription>
+          </DialogHeader>
+          <form className="space-y-4" onSubmit={(event) => {
+            event.preventDefault();
+            if (!modalidade || !objetivo || !periodo) return;
+            window.open(whatsappLink(mensagemAgendamento, "direto"), "_blank", "noopener,noreferrer");
+            setTriagemAberta(false);
+          }}>
+            <div className="space-y-2">
+              <label htmlFor="aulas-modalidade" className="block text-sm font-semibold">Modalidade *</label>
+              <select id="aulas-modalidade" required value={modalidade} onChange={(event) => setModalidade(event.target.value)}
+                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground">
+                <option value="">Selecione</option>
+                <option value="Carro manual (categoria B)">Carro manual (categoria B)</option>
+                <option value="Polo automático (categoria B)">Polo automático (categoria B)</option>
+                <option value="Moto (categoria A)">Moto (categoria A)</option>
+                <option value="Preciso de orientação">Preciso de orientação</option>
+              </select>
+              {modalidade === "Polo automático (categoria B)" && (
+                <Link to="/carro-automatico" onClick={() => setTriagemAberta(false)}
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline">
+                  Conhecer o Polo automático <ArrowRight className="h-3 w-3" aria-hidden />
+                </Link>
+              )}
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="aulas-objetivo" className="block text-sm font-semibold">O que você precisa? *</label>
+              <select id="aulas-objetivo" required value={objetivo} onChange={(event) => setObjetivo(event.target.value)}
+                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground">
+                <option value="">Selecione</option>
+                <option value="Primeira habilitação">Primeira habilitação</option>
+                <option value="Aulas avulsas">Aulas avulsas</option>
+                <option value="Preparação para reteste">Preparação para reteste</option>
+                <option value="Tirar dúvidas">Tirar dúvidas</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="aulas-periodo" className="block text-sm font-semibold">Melhor período *</label>
+              <select id="aulas-periodo" required value={periodo} onChange={(event) => setPeriodo(event.target.value)}
+                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground">
+                <option value="">Selecione</option>
+                <option value="Manhã">Manhã</option>
+                <option value="Tarde">Tarde</option>
+                <option value="Noite">Noite</option>
+                <option value="A combinar">A combinar</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="aulas-nome" className="block text-sm font-semibold">Primeiro nome (opcional)</label>
+              <input id="aulas-nome" autoComplete="given-name" maxLength={80} value={nome}
+                onChange={(event) => setNome(event.target.value)} placeholder="Como podemos chamar você?"
+                className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground" />
+            </div>
+            <p className="text-xs text-muted-foreground">Suas respostas serão incluídas na mensagem. Nenhum horário será reservado automaticamente.</p>
+            <Button type="submit" size="lg" className="min-h-12 w-full" disabled={!modalidade || !objetivo || !periodo}
+              data-component="AulasPraticasTriagemSubmit" data-intent="whatsapp">
+              <MessageCircle className="mr-2 h-5 w-5" aria-hidden /> Continuar no WhatsApp
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
       <Navbar />
       
       <main className="min-h-screen pt-20">
