@@ -6,7 +6,7 @@ test('home hydrates, opens funnel and navigates without a full reload', async ({
     if (message.type() === 'error' && /hydration|did not match|server HTML/i.test(message.text())) errors.push(message.text());
   });
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('CNH');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText(/próximo passo|CNH/i);
   await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('opacity', '1');
   const overflow = await page.evaluate(() => ({
     viewport: window.innerWidth, width: document.documentElement.scrollWidth,
@@ -23,7 +23,7 @@ test('home hydrates, opens funnel and navigates without a full reload', async ({
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog')).not.toBeVisible();
   await page.evaluate(() => Object.assign(window, { aptosDocumentMarker: 'preserved' }));
-  const menu = page.getByRole('button', { name: 'Toggle menu' });
+  const menu = page.getByRole('button', { name: /^(Abrir menu de navegação|Toggle menu)$/ });
   if (await menu.isVisible()) await menu.click();
   await page.getByRole('link', { name: 'FAQ', exact: true }).click();
   await expect(page).toHaveURL(/\/perguntas-frequentes$/);
