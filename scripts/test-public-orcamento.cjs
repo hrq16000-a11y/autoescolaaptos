@@ -17,7 +17,7 @@ const base = "https://autoescolaaptos.com.br/orcamento";
    await review.waitFor({state:"visible"});
    const final=page.getByRole("link",{name:"Receber meu orçamento agora"});
    const href=await final.getAttribute("href");
-   if(!href||!/(api\\.whatsapp\\.com|wa\\.me)/.test(href)) throw Error("WhatsApp indisponivel "+width);
+   if(!href||!/(api\.whatsapp\.com|wa\.me)/.test(href)) throw Error("WhatsApp indisponivel "+width);
    const msg=new URL(href).searchParams.get("text")||"";
    for (const phrase of ["Carro","Este mês","Já dirijo"]) if(!msg.includes(phrase)) throw Error("Resposta ausente "+phrase+" "+width);
    if(msg.includes("Nunca dirigi"))throw Error("Resposta antiga permaneceu na mensagem");
