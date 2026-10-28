@@ -5,6 +5,7 @@ on:
       - 'src/pages/admin/AdminOptin.tsx'
       - 'supabase/functions/admin-optin/index.ts'
       - 'tests/admin-optin-filter-contract.test.mjs'
+      - 'tests/admin-optin-csv-safety.test.mjs'
       - '.github/workflows/admin-optin-filter-contract.yml'
   push:
     branches: [main]
@@ -12,6 +13,7 @@ on:
       - 'src/pages/admin/AdminOptin.tsx'
       - 'supabase/functions/admin-optin/index.ts'
       - 'tests/admin-optin-filter-contract.test.mjs'
+      - 'tests/admin-optin-csv-safety.test.mjs'
       - '.github/workflows/admin-optin-filter-contract.yml'
 permissions:
   contents: read
@@ -25,4 +27,4 @@ jobs:
         with:
           node-version: '22'
       - name: Check list and metrics filter contract
-        run: node --test tests/admin-optin-filter-contract.test.mjs
+        run: node --test tests/admin-optin-filter-contract.test.mjs tests/admin-optin-csv-safety.test.mjs
