@@ -38,5 +38,5 @@ test("controles ficam antes da imagem e fora da faixa dos botoes flutuantes", ()
   const cta = hero.indexOf('data-component="HeroMobilePrimaryCTA"');
   assert.ok(toolbar !== -1 && toolbar < carousel && carousel < cta);
   assert.match(hero.slice(toolbar - 130, toolbar + 250), /min-h-14/);
-  assert.match(hero, /min-\\[390px\\]:inline/);
+  assert.ok(hero.includes('min-[390px]:inline'));
 });
