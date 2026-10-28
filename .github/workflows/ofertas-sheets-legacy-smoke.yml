@@ -33,6 +33,29 @@ jobs:
             -H 'Access-Control-Request-Method: POST' \
             -H 'Access-Control-Request-Headers: authorization,apikey,content-type,x-client-info' "$base")"
           echo "$headers" | grep -qi '^access-control-allow-origin:'
+      - name: Validate browser simple POST and CORS without registering anyone
+        shell: bash
+        run: |
+          set -euo pipefail
+          endpoint="https://jbvepseodqytqxxckgtu.supabase.co/functions/v1/marketing-optin"
+          headers="$(mktemp)"
+          response="$(mktemp)"
+          trap 'rm -f "$headers" "$response"' EXIT
+          status="$(curl --max-time 18 -sS -X POST -D "$headers" -o "$response" \
+            -H 'Origin: https://autoescolaaptos.com.br' \
+            -H 'Content-Type: text/plain;charset=UTF-8' \
+            --data-binary '{}' -w '%{http_code}' "$endpoint")"
+          echo "Simple POST validation status: $status"
+          if [[ "$status" != "400" ]]; then
+            echo "::error::Expected HTTP 400 for missing number and consent, got $status"
+            exit 1
+          fi
+          if ! grep -qi '^access-control-allow-origin: \*' "$headers"; then
+            echo "::error::Missing usable CORS header for browser simple POST"
+            exit 1
+          fi
+          node -e 'const fs=require("fs");const x=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));if(x.success!==false)process.exit(1)' "$response"
+          echo "PASS: no participant created and response is accessible cross-origin"
       - name: Confirm existing Google Sheets connector with a read-only provider check
         shell: bash
         run: |

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet";
-import { supabase } from "@/integrations/supabase/client";
+
 
 const APTOS_WHATSAPP = "554133833627";
 
@@ -71,19 +71,29 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
     setAlreadyRegistered(false);
     try {
       if (preview) throw new Error("Preview: cadastro desativado");
-      // Reutiliza a conexão original de Ofertas, que já sincroniza
-      // cadastros autorizados com a planilha Google Sheets existente.
-      const { data: res, error: invokeError } = await supabase.functions.invoke("marketing-optin", {
-        body: {
+      // A função original permanece como única fonte do cadastro e da integração
+      // Google Sheets. verify_jwt=false nessa função pública de opt-in.
+      // Uma requisição simples (text/plain, sem Authorization/apikey) dispensa
+      // o preflight CORS que podia falhar no navegador antes do POST.
+      const endpoint = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/marketing-optin`;
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=UTF-8" },
+        body: JSON.stringify({
           telefone,
           campaign_source: campaignSource,
           ultimo_template_enviado: template,
           origem_url: origemUrl,
           lgpd_aceite: true,
-        },
+        }),
       });
-      if (invokeError) {
-        throw new Error("Não foi possível confirmar o cadastro na planilha. Tente novamente.");
+      const res = await response.json().catch(() => null);
+      if (!response.ok) {
+        throw new Error(
+          typeof res?.message === "string" && res.message.trim()
+            ? res.message
+            : "Não foi possível confirmar o cadastro. Tente novamente."
+        );
       }
       if (res?.success === true && typeof res.id === "string" && res.id.trim().length > 0) {
         setDone(true);
@@ -188,7 +198,7 @@ export default function Ofertas({ preview = false }: { preview?: boolean } = {})
                   {error && (
                     <div role="alert" className="text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md px-3 py-3 space-y-3">
                       <p>{error}</p>
-                      {showFallback && <p>Não foi possível confirmar seu cadastro automático. Você pode entrar em contato pelo WhatsApp para solicitar a participação.</p>}
+                      {showFallback && <p>O cadastro ainda não foi confirmado. Você pode falar com a equipe pelo WhatsApp, mas isso não substitui a inscrição na planilha.</p>}
                       {showFallback && aceite && valid && (
                         <a
                           href={whatsappOptinUrl(telefone, false, alreadyRegistered)}
