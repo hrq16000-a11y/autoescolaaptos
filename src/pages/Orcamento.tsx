@@ -135,7 +135,7 @@ const Orcamento = () => {
                     Pronto! Seu orçamento está a um clique.
                   </h2>
                   <p className="text-muted-foreground mb-8">
-                    Clique no botão abaixo e nossa equipe envia em instantes o valor exato para o seu perfil.
+                    Confira suas respostas e siga para o WhatsApp. A equipe confirmará valores e condições para seu caso.
                   </p>
 
                   <div className="bg-muted/40 rounded-xl p-4 text-left mb-8 max-w-md mx-auto text-sm">
@@ -144,7 +144,13 @@ const Orcamento = () => {
                     <div className="flex justify-between py-1"><span className="text-muted-foreground">Experiência</span><strong>{resp.experiencia}</strong></div>
                   </div>
 
-                  <Button size="lg" className="text-lg h-14 px-8 shadow-glow" asChild>
+                  <Button type="button" variant="outline" onClick={() => setStep(2)}
+                    className="mb-4 min-h-11 w-full max-w-md" data-component="OrcamentoRevisarRespostas">
+                    <ArrowLeft className="mr-2 h-4 w-4" aria-hidden="true" />
+                    Revisar minhas respostas
+                  </Button>
+                  <div>
+                  <Button size="lg" className="text-base sm:text-lg min-h-14 h-auto px-5 sm:px-8 shadow-glow w-full max-w-md whitespace-normal" asChild>
                     <a
                       href={finalUrl}
                       target="_blank"
@@ -175,8 +181,12 @@ const Orcamento = () => {
                       Receber meu orçamento agora
                     </a>
                   </Button>
+                  </div>
                   <p className="text-xs text-muted-foreground mt-4">
-                    Atendimento de segunda a sábado · Resposta em até 10 minutos no horário comercial.
+                    A mensagem será preparada no WhatsApp. Revise e toque em enviar para concluir o contato.
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Atendimento conforme disponibilidade da equipe.
                   </p>
                 </motion.div>
               )}
