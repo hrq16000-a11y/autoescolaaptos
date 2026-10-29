@@ -66,12 +66,13 @@ function origemDaVisita() {
   const host = (referencia?.hostname || "").toLowerCase();
   const source = (tag("utm_source") || tag("src") || "").toLowerCase();
   const channel = source ||
-    (/^(l\\.|m\\.|www\\.)?instagram\\.com$/.test(host) || host === "ig.me" || params.has("igshid") ? "instagram" :
-    /(^|\\.)facebook\\.com$/.test(host) || host === "fb.me" ? "facebook" :
+    (/^(l\.|m\.|www\.)?instagram\.com$/.test(host) || host === "ig.me" || params.has("igshid") ? "instagram" :
+    /(^|\.)facebook\.com$/.test(host) || host === "fb.me" ? "facebook" :
     params.has("fbclid") ? "meta (Facebook/Instagram)" :
     params.has("gclid") || params.has("gbraid") || params.has("wbraid") ? "google ads" :
-    /(^|\\.)google\\./.test(host) ? "google orgânico" :
-    /(^|\\.)wa\\.me$/.test(host) || /(^|\\.)whatsapp\\.com$/.test(host) ? "whatsapp" :
+    /(^|\.)google\./.test(host) ? "google orgânico" :
+    /(^|\.)wa\.me$/.test(host) || /(^|\.)whatsapp\.com$/.test(host) ? "whatsapp" :
+    referencia?.origin === url.origin ? "site / página interna" :
     referencia ? "referência externa" : "direto / não identificado");
   const campaign = tag("utm_campaign") || tag("campanha");
   const medium = tag("utm_medium");
