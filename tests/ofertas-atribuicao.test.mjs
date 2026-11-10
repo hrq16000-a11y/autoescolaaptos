@@ -10,11 +10,14 @@ const end = source.indexOf("export default function Ofertas", start);
 assert.ok(start > 0 && end > start, "função origemDaVisita deve estar no formulário");
 const fnSource = source.slice(start, end)
   .replace("let referencia: URL | null = null;", "let referencia = null;")
-  .replace("(key: string)", "(key)");
+  .replace("(key: string)", "(key)")
+  .replace("key as keyof typeof remembered", "key")
+  .replace(" as Record<string, string>", "");
 
-function origem(href, referrer = "") {
+function origem(href, referrer = "", remembered = {}) {
   return runInNewContext(fnSource + "\norigemDaVisita()", {
     URL, window: { location: { href } }, document: { referrer },
+    readAttributionUtms: () => remembered,
   }, { timeout: 500 });
 }
 
@@ -53,4 +56,14 @@ test("acesso sem referência não inventa atribuição de origem", () => {
   const data = origem(page);
   assert.equal(data.campaignSource, "direto / não identificado");
   assert.equal(new URL(data.origemUrl).searchParams.get("referencia"), null);
+});
+
+
+test("preserva origem de anúncio Instagram ao navegar da landing para ofertas", () => {
+  const remembered = { utm_source: "ig", utm_medium: "paid_social", utm_campaign: "matriculas_novembro" };
+  const data = origem(page, "https://autoescolaaptos.com.br/campanha", remembered);
+  assert.match(data.campaignSource, /instagram/);
+  assert.match(data.campaignSource, /paid_social/);
+  assert.match(data.campaignSource, /matriculas_novembro/);
+  assert.equal(new URL(data.origemUrl).searchParams.get("utm_source"), "ig");
 });
