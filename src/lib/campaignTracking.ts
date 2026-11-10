@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { getAnonId } from "@/lib/events";
+import { readAttributionUtms } from "@/lib/attribution";
 
 export type CampaignName =
   | "polo_automatico"
@@ -10,15 +11,7 @@ export type CampaignName =
 export type CampaignEventType = "view" | "whatsapp_click";
 
 export function readCampaignUtms() {
-  if (typeof window === "undefined") return {};
-  const params = new URLSearchParams(window.location.search);
-  return {
-    utm_source: params.get("utm_source") ?? undefined,
-    utm_medium: params.get("utm_medium") ?? undefined,
-    utm_campaign: params.get("utm_campaign") ?? undefined,
-    utm_content: params.get("utm_content") ?? undefined,
-    utm_term: params.get("utm_term") ?? undefined,
-  };
+  return readAttributionUtms();
 }
 
 function detectDevice() {

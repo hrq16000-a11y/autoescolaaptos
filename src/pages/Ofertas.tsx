@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet";
+import { readAttributionUtms } from "@/lib/attribution";
 
 
 const APTOS_WHATSAPP = "554133833627";
@@ -60,12 +61,13 @@ function origemDaVisita() {
   if (typeof window === "undefined") return { campaignSource: null, template: null, origemUrl: null };
   const url = new URL(window.location.href);
   const params = url.searchParams;
-  const tag = (key: string) => (params.get(key) || "").trim().slice(0, 80);
+  const remembered = readAttributionUtms();
+  const tag = (key: string) => (params.get(key) || (key.startsWith("utm_") ? remembered[key as keyof typeof remembered] : "") || "").trim().slice(0, 80);
   let referencia: URL | null = null;
   try { if (document.referrer) referencia = new URL(document.referrer); } catch { /* Referência indisponível */ }
   const host = (referencia?.hostname || "").toLowerCase();
   const source = (tag("utm_source") || tag("src") || "").toLowerCase();
-  const channel = source ||
+  const channel = ({ ig: "instagram", fb: "facebook" } as Record<string, string>)[source] || source ||
     (/^(l\.|m\.|www\.)?instagram\.com$/.test(host) || host === "ig.me" || params.has("igshid") ? "instagram" :
     /(^|\.)facebook\.com$/.test(host) || host === "fb.me" ? "facebook" :
     params.has("fbclid") ? "meta (Facebook/Instagram)" :

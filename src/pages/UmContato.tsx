@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import SEO from "@/components/SEO";
 import { whatsappLink } from "@/lib/whatsapp";
+import { readAttributionUtms } from "@/lib/attribution";
 import { track, trackConversion } from "@/lib/analytics";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -77,17 +78,6 @@ function detectDevice(): string {
   return "desktop";
 }
 
-function readUtms() {
-  if (typeof window === "undefined") return {};
-  const p = new URLSearchParams(window.location.search);
-  return {
-    utm_source: p.get("utm_source") || undefined,
-    utm_medium: p.get("utm_medium") || undefined,
-    utm_campaign: p.get("utm_campaign") || undefined,
-    utm_term: p.get("utm_term") || undefined,
-    utm_content: p.get("utm_content") || undefined,
-  };
-}
 
 // ---------- component ----------
 
@@ -299,7 +289,7 @@ const UmContato = () => {
     setSubmitting(true);
     setSubmitError(null);
 
-    const utms = readUtms();
+    const utms = readAttributionUtms();
     const tempo = Math.round((Date.now() - startedAt.current) / 1000);
 
     const payload = {

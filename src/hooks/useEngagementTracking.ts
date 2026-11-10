@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { track, trackPageView } from "@/lib/analytics";
 import { addSignal, getLeadProfile, classifyLead } from "@/lib/leadScore";
 import { identifyLead } from "@/lib/analytics";
+import { captureCampaignAttribution } from "@/lib/attribution";
 
 /**
  * Hook único e global: trackeia page_view, tempo na página, contagem de páginas
@@ -10,6 +11,11 @@ import { identifyLead } from "@/lib/analytics";
  */
 export const useEngagementTracking = () => {
   const location = useLocation();
+
+  // A source tagged on the landing page must survive internal React Router navigation.
+  useEffect(() => {
+    captureCampaignAttribution();
+  }, [location.search]);
 
   // page_view + contagem de páginas
   useEffect(() => {
