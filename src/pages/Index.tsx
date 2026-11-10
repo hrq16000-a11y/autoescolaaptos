@@ -17,6 +17,7 @@ import MobileStickyBar from "@/components/MobileStickyBar";
 import RelatedLinks from "@/components/RelatedLinks";
 import SEO from "@/components/SEO";
 import { useScrollTracking } from "@/hooks/useScrollTracking";
+import { track } from "@/lib/analytics";
 
 export const homeJsonLd = {
     "@context": "https://schema.org",
@@ -67,6 +68,11 @@ const Index = () => {
 
 
   const homeRelated = [
+    {
+      title: "Inclusão de categoria A — moto manual ou automática",
+      href: "/inclusao-moto",
+      description: "Campanha de inclusão da categoria A com PCX ou Fan 160 por R$ 750 à vista; taxas do DETRAN à parte.",
+    },
     {
       title: "Aulas em carro automático",
       href: "/carro-automatico",
@@ -144,6 +150,31 @@ const Index = () => {
           >
             Conhecer carro automático →
           </Link>
+        </div>
+      </section>
+
+      <section aria-label="Campanha de inclusão de categoria A" className="border-y border-amber-300/30 bg-zinc-950 text-white">
+        <div className="container mx-auto grid items-center gap-5 px-4 py-7 sm:grid-cols-[1fr_auto] md:gap-8">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.15em] text-yellow-300">Nova campanha · Inclusão de moto</p>
+            <h2 className="mt-2 text-2xl font-black leading-tight md:text-3xl">
+              Categoria A: <span className="text-yellow-300">PCX automática</span> ou Fan 160 manual
+            </h2>
+            <p className="mt-2 text-sm text-zinc-200 md:text-base">
+              <strong className="text-yellow-300">R$ 750 à vista</strong> · taxas do DETRAN não inclusas (média estimada de R$ 399).
+            </p>
+            <Link to="/inclusao-moto" data-component="HomeMotoCallout" data-intent="internal"
+              onClick={() => track("campaign_cta_click", { campaign: "inclusao_categoria_a_moto", source: "home_moto_callout" })}
+              className="mt-4 inline-flex min-h-12 w-full items-center justify-center rounded-lg bg-red-600 px-5 py-3 text-center text-sm font-bold text-white shadow-lg transition hover:bg-red-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-300 sm:w-auto">
+              Conhecer o plano de moto <span aria-hidden className="ml-2">→</span>
+            </Link>
+          </div>
+          <img
+            src="https://res.cloudinary.com/dqnwlodjs/image/upload/v1794352826/aptos/categoria-a/banner-horizontal-2026.png"
+            alt="Campanha de moto da Autoescola APTOS com opção manual ou automática"
+            loading="lazy" decoding="async"
+            className="mx-auto aspect-video w-full max-w-[240px] rounded-xl border border-zinc-700 object-contain sm:w-[200px] md:max-w-[260px] md:w-[260px]"
+          />
         </div>
       </section>
 
