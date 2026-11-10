@@ -130,7 +130,8 @@ const AppRoutes = () => {
         <Route path="/ofertas" element={<Ofertas />} />
         <Route path="/campanha" element={<Campanha />} />
         <Route path="/carro-automatico" element={<CarroAutomatico />} />
-        <Route path="/inclusao-categoria-a" element={<InclusaoCategoriaA />} />
+        <Route path="/inclusao-moto" element={<InclusaoCategoriaA />} />
+        <Route path="/inclusao-categoria-a" element={<Navigate to="/inclusao-moto" replace />} />
         {/* Legacy URL redirects — mapa central em src/lib/legacyRedirects.ts */}
         {LEGACY_REDIRECTS.map((r) => (
           <Route key={r.from} path={r.from} element={<Navigate to={r.to} replace />} />
