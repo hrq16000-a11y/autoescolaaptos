@@ -54,6 +54,7 @@ const OAuthConsent = lazy(() => import("./pages/OAuthConsent"));
 const Ofertas = lazy(() => import("./pages/Ofertas"));
 const Campanha = lazy(() => import("./pages/Campanha"));
 const CarroAutomatico = lazy(() => import("./pages/CarroAutomatico"));
+const InclusaoCategoriaA = lazy(() => import("./pages/InclusaoCategoriaA"));
 const AdminCampanhas = lazy(() => import("./pages/admin/AdminCampanhas"));
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -129,6 +130,7 @@ const AppRoutes = () => {
         <Route path="/ofertas" element={<Ofertas />} />
         <Route path="/campanha" element={<Campanha />} />
         <Route path="/carro-automatico" element={<CarroAutomatico />} />
+        <Route path="/inclusao-categoria-a" element={<InclusaoCategoriaA />} />
         {/* Legacy URL redirects — mapa central em src/lib/legacyRedirects.ts */}
         {LEGACY_REDIRECTS.map((r) => (
           <Route key={r.from} path={r.from} element={<Navigate to={r.to} replace />} />
