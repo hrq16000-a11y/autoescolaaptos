@@ -1,0 +1,85 @@
+name: Aptos - inclusao moto live smoke
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/inclusao-moto-live-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aptos-inclusao-moto-live
+  cancel-in-progress: true
+
+jobs:
+  live-smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install isolated browser
+        run: |
+          npm install --prefix /tmp/aptos-inclusao-moto-smoke --no-save --no-package-lock playwright@1.56.1
+          /tmp/aptos-inclusao-moto-smoke/node_modules/.bin/playwright install --with-deps chromium
+      - name: Verify official domain on mobile without submitting leads
+        env:
+          NODE_PATH: /tmp/aptos-inclusao-moto-smoke/node_modules
+        run: |
+          node <<'NODE'
+          const { chromium } = require("playwright");
+          const assert = require("node:assert/strict");
+          const SITE = "https://autoescolaaptos.com.br";
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            try {
+              const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+              const problems = [];
+              page.on("pageerror", e => problems.push(e.message));
+              await page.route("**/*", async route => {
+                // Browsing-only check: never send private leads, submit forms or contact third parties.
+                const method = route.request().method();
+                if (method !== "GET" && method !== "HEAD") return route.abort();
+                return route.continue();
+              });
+              const campaign = await page.goto(SITE + "/inclusao-moto?utm_source=ig&utm_medium=paid_social&utm_campaign=qa_moto", { waitUntil: "domcontentloaded", timeout: 40000 });
+              await page.waitForTimeout(2200);
+              const text = (await page.locator("body").innerText()).slice(0, 12000);
+              const heading = await page.locator("h1").allTextContents();
+              const title = await page.title();
+              console.log(JSON.stringify({ page:"/inclusao-moto", status: campaign?.status(), title, heading, contains404:/página não encontrada|erro 404/i.test(text) }, null, 2));
+              assert.ok(campaign && campaign.status() < 400, "A landing retorna erro HTTP");
+              assert.doesNotMatch(text, /página não encontrada|erro 404/i, "A rota renderiza a página de erro em vez da landing");
+              assert.match(text, /inclusão de categoria A/i, "Título da campanha ausente");
+              assert.match(text, /R\$\s*750/i, "Oferta não renderizada");
+              assert.match(text, /399/, "Estimativa Detran não renderizada");
+              assert.match(text, /Honda PCX/, "PCX não renderizada");
+              assert.match(text, /Fan 160/, "Fan 160 não renderizada");
+              const images = await page.locator("main img").evaluateAll(nodes => nodes.map(n => ({src:n.getAttribute("src"), loaded:n.complete && n.naturalWidth > 0, naturalWidth:n.naturalWidth})));
+              console.log("Images:", JSON.stringify(images));
+              assert.ok(images.length >= 4, "Não há quatro imagens da campanha");
+              assert.ok(images.every(image => image.loaded), "Imagem quebrada no site público");
+              const width = await page.evaluate(() => ({ page: document.documentElement.scrollWidth, viewport: innerWidth }));
+              assert.ok(width.page <= width.viewport + 2, "Overflow horizontal no mobile: " + JSON.stringify(width));
+              const button = page.getByRole("button", { name:/Honda Fan 160/i }).first();
+              await button.click();
+              const link = page.getByRole("link", { name:/Quero minha categoria A/i }).first();
+              const href = await link.getAttribute("href");
+              console.log("Landing CTA target", href);
+              assert.equal(new URL(href, SITE).searchParams.get("moto"), "fan160");
+              assert.equal(new URL(href, SITE).searchParams.get("utm_source"), "ig");
+              await page.goto(SITE + "/1contato?origem=inclusao_categoria_a_moto&moto=fan160&utm_source=ig", {waitUntil:"domcontentloaded",timeout:40000});
+              await page.getByText(/Interesse selecionado: Honda Fan 160 manual/i).waitFor({timeout:15000});
+              console.log("Triagem reconheceu moto manual antes de enviar dados");
+              await page.goto(SITE + "/", {waitUntil:"domcontentloaded",timeout:40000});
+              await page.getByRole("link", { name:/Conhecer o plano de moto/i }).waitFor({timeout:15000});
+              console.log("Home CTA presente");
+              await page.goto(SITE + "/carro-automatico", {waitUntil:"domcontentloaded",timeout:40000});
+              assert.doesNotMatch((await page.locator("body").innerText()).slice(0,5000), /página não encontrada|erro 404/i);
+              assert.equal(problems.length, 0, "Erros JS: " + problems.join("; "));
+              console.log("PASS: pagina, imagens, mobile, triagem e home confirmadas no dominio oficial.");
+            } finally { await browser.close(); }
+          })().catch(e=>{console.error(e);process.exit(1)});
+          NODE
