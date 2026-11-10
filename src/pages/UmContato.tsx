@@ -94,6 +94,13 @@ function readUtms() {
 const STORAGE_KEY = "aptos:1contato:draft:v1";
 
 const UmContato = () => {
+  const motoCampanha = useMemo<"pcx" | "fan160" | null>(() => {
+    if (typeof window === "undefined") return null;
+    const params = new URLSearchParams(window.location.search);
+    const value = params.get("moto");
+    return params.get("origem") === "inclusao_categoria_a_moto" && (value === "pcx" || value === "fan160") ? value : null;
+  }, []);
+  const motoLabel = motoCampanha === "pcx" ? "Honda PCX automática" : motoCampanha === "fan160" ? "Honda Fan 160 manual" : null;
   const [step, setStep] = useState(0);
   const [resp, setResp] = useState<Respostas>({ lgpd: false, aceita_whats: true });
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -151,6 +158,13 @@ const UmContato = () => {
       }
     } catch { /* noop */ }
   }, []);
+
+  // Uma campanha de moto prevalece sobre o rascunho de uma campanha antiga.
+  useEffect(() => {
+    if (!motoCampanha) return;
+    setResp(prev => ({ ...prev, servico: "Mudança / Inclusão de Categoria",
+      categoria: "A (moto)", lgpd: false }));
+  }, [motoCampanha]);
 
   // Persiste rascunho a cada mudança relevante (não persiste após envio)
   useEffect(() => {
@@ -252,6 +266,7 @@ const UmContato = () => {
       `\n` +
       `🎯 *O que eu preciso*\n` +
       `• Serviço: ${servicoLinha}\n` +
+      (motoLabel ? `• Moto de interesse: ${motoLabel}\n` : "") +
       `• Experiência: ${r.experiencia}\n` +
       `\n` +
       `📋 *Sobre o processo*\n` +
@@ -262,7 +277,7 @@ const UmContato = () => {
     );
   };
 
-  const finalUrl = useMemo(() => whatsappLink(buildMessage(resp), "funil"), [resp]);
+  const finalUrl = useMemo(() => whatsappLink(buildMessage(resp), "funil"), [resp, motoLabel]);
 
   const canFinish =
     !!resp.experiencia &&
@@ -314,7 +329,7 @@ const UmContato = () => {
       aceita_whats: resp.aceita_whats ?? true,
       aceita_email: resp.aceita_email ?? false,
       lgpd_aceite: !!resp.lgpd,
-      origem: "1contato",
+      origem: motoCampanha ? `inclusao_moto_${motoCampanha}` : "1contato",
       user_agent: typeof navigator !== "undefined" ? navigator.userAgent : null,
       referrer: typeof document !== "undefined" ? document.referrer || null : null,
       device: detectDevice(),
@@ -348,6 +363,7 @@ const UmContato = () => {
 
     // Analytics — Lead event + custom
     trackConversion("Lead", {
+      ...(motoCampanha ? { campanha: "inclusao_categoria_a_moto", moto_interesse: motoCampanha } : {}),
       lead_source: "1contato_triagem",
       servico: payload.servico,
       categoria: payload.categoria,
@@ -453,6 +469,7 @@ const UmContato = () => {
               <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
               Triagem em menos de 60s
             </div>
+            {motoLabel && <p className="mb-2 rounded-lg border border-primary/25 bg-primary/5 px-3 py-2 text-sm font-semibold text-foreground">Interesse selecionado: {motoLabel} · Inclusão categoria A</p>}
             <h1 className="text-2xl md:text-4xl font-heading font-black mb-1.5 leading-tight">
               Vamos entender <span className="text-primary">seu caso</span> em 3 passos
             </h1>
@@ -684,6 +701,7 @@ const UmContato = () => {
                   <div className="bg-muted/40 rounded-xl p-4 text-left mb-6 max-w-md mx-auto text-sm space-y-2">
                     <SummaryRow ok label={resp.servico} />
                     {resp.categoria && <SummaryRow ok label={`Categoria ${resp.categoria}`} />}
+                    {motoLabel && <SummaryRow ok label={`Moto de interesse: ${motoLabel}`} />}
                     <SummaryRow ok label={resp.experiencia} />
                     <SummaryRow ok label={resp.conhece} />
                     <SummaryRow ok label={`Início: ${resp.prazo}`} />

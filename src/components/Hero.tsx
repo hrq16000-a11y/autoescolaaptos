@@ -107,6 +107,7 @@ const Hero = () => {
     <div id="inicio" className="contents">
     <section id="inicio-mobile" data-component="MobileHero" className="relative md:hidden bg-slate-950 text-white pt-20 pb-5">
       <div className="mx-auto max-w-lg">
+        <h1 className="px-4 pt-3 text-lg font-heading font-black leading-snug text-white">Seu próximo passo para a <span className="text-yellow-300">CNH</span> começa na APTOS</h1>
         <div data-component="HeroMobileControls" className="relative z-10 flex min-h-14 items-center justify-between gap-2 px-4 py-2 bg-slate-950" aria-label="Controles dos banners">
           <span className="text-xs text-slate-200 tabular-nums" aria-live="polite">{mobileIndex + 1} / {slides.length}</span>
           <span className="hidden min-[390px]:inline text-[11px] text-slate-300">Deslize para navegar</span>
