@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { track } from "@/lib/analytics";
 import { readCampaignUtms } from "@/lib/campaignTracking";
 
-const PATH = "/inclusao-categoria-a";
+const PATH = "/inclusao-moto";
 const CAMPAIGN = "inclusao_categoria_a_moto";
 const SITE = "https://autoescolaaptos.com.br";
 type Moto = "pcx" | "fan160";
@@ -20,7 +20,7 @@ const motocicletas = [
     tipo: "Automática",
     titulo: "Praticidade para aprender",
     descricao: "Uma opção sem troca manual de marchas, com uma experiência de pilotagem mais simples para quem prefere moto automática.",
-    imagem: "/campanhas/categoria-a/pcx-aptos-real.webp",
+    imagem: "https://res.cloudinary.com/dqnwlodjs/image/upload/v1794352862/aptos/categoria-a/pcx-foto-real-2026.jpg",
     alt: "Foto real da Honda PCX automática da Autoescola APTOS, na rua em São José dos Pinhais",
   },
   {
@@ -29,7 +29,7 @@ const motocicletas = [
     tipo: "Manual",
     titulo: "Aprenda com câmbio manual",
     descricao: "Opção para quem deseja praticar na motocicleta manual e desenvolver controle de embreagem, marchas e frenagem.",
-    imagem: "/campanhas/categoria-a/fan160-aptos-real.webp",
+    imagem: "https://res.cloudinary.com/dqnwlodjs/image/upload/v1794352866/aptos/categoria-a/fan160-foto-real-2026.jpg",
     alt: "Foto da Honda Fan 160 azul manual informada pela Autoescola APTOS",
   },
 ];
@@ -125,7 +125,7 @@ const InclusaoCategoriaA = () => {
         title="Inclusão de Categoria A Moto por R$ 750 à vista | APTOS SJP"
         description="Inclua categoria A com opção de Honda PCX automática ou Honda Fan 160 manual na Autoescola APTOS em São José dos Pinhais. R$ 750 à vista. Taxas do DETRAN à parte, média de R$ 399."
         canonical={PATH}
-        image="/og-image.png"
+        image="https://res.cloudinary.com/dqnwlodjs/image/upload/v1794352826/aptos/categoria-a/banner-horizontal-2026.png"
         jsonLd={jsonLd}
       />
       <Navbar />
@@ -191,6 +191,30 @@ const InclusaoCategoriaA = () => {
                 ))}
               </div>
             </div>
+          </div>
+        </section>
+
+
+        <section aria-label="Materiais visuais da campanha" className="border-b border-border bg-zinc-950 px-4 py-8 text-white">
+          <div className="container mx-auto flex flex-col items-center justify-center gap-5 md:flex-row">
+            <figure className="w-full max-w-md overflow-hidden rounded-2xl border border-white/20 bg-zinc-900 p-2">
+              <img
+                src="https://res.cloudinary.com/dqnwlodjs/image/upload/v1794352826/aptos/categoria-a/banner-horizontal-2026.png"
+                alt="Campanha Autoescola APTOS: inclusão de categoria A, moto manual ou automática, R$ 750 à vista"
+                className="aspect-video w-full rounded-xl object-contain"
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+            <figure className="w-36 shrink-0 overflow-hidden rounded-2xl border border-white/20 bg-zinc-900 p-2">
+              <img
+                src="https://res.cloudinary.com/dqnwlodjs/image/upload/v1794352859/aptos/categoria-a/poster-vertical-2026.png"
+                alt="Arte vertical da campanha de inclusão de moto da APTOS"
+                className="h-auto w-full rounded-xl"
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
           </div>
         </section>
 
