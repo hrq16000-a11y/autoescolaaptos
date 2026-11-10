@@ -125,7 +125,7 @@ const InclusaoCategoriaA = () => {
         title="Inclusão de Categoria A Moto por R$ 750 à vista | APTOS SJP"
         description="Inclua categoria A com opção de Honda PCX automática ou Honda Fan 160 manual na Autoescola APTOS em São José dos Pinhais. R$ 750 à vista. Taxas do DETRAN à parte, média de R$ 399."
         canonical={PATH}
-        image="https://res.cloudinary.com/dqnwlodjs/image/upload/v1794352826/aptos/categoria-a/banner-horizontal-2026.png"
+        image="https://res.cloudinary.com/dqnwlodjs/image/upload/c_scale,w_1200/v1794352826/aptos/categoria-a/banner-horizontal-2026.png"
         jsonLd={jsonLd}
       />
       <Navbar />
