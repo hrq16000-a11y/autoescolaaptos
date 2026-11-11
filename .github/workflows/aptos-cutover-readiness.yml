@@ -49,6 +49,14 @@ jobs:
             const routes=['/','/inclusao-moto','/carro-automatico','/1contato','/ofertas','/login','/admin','/admin/ofertas'];
             for(const path of routes){await nav(NEW,path);}
             for(const path of ['/','/inclusao-moto','/carro-automatico','/ofertas']){await nav(OLD,path);}
+            await nav(NEW,'/1contato');
+            console.log('TRIAGE_OVERFLOW_ELEMENTS',JSON.stringify(await page.evaluate(()=>{
+              const width=innerWidth;
+              return Array.from(document.querySelectorAll('body *')).map(el=>{
+                const rect=el.getBoundingClientRect();
+                return {tag:el.tagName.toLowerCase(),cls:String(el.className||'').slice(0,130),right:Math.round(rect.right),left:Math.round(rect.left),scrollWidth:el.scrollWidth};
+              }).filter(x=>x.right>width+2||x.left < -2).slice(0,16);
+            })));
             await nav(NEW,'/login');
             console.log('LOGIN_UI',JSON.stringify({google:await page.getByRole('button',{name:/Continuar com Google/i}).count(),email:await page.locator('input[type="email"]').count(),password:await page.locator('input[type="password"]').count()}));
             await nav(NEW,'/ofertas');
