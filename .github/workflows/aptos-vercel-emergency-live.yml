@@ -1,0 +1,71 @@
+name: APTOS emergency Vercel campaign live validation
+on:
+  push:
+    branches: [ops/aptos-vercel-live-test-20261110]
+    paths: ['.github/workflows/aptos-vercel-emergency-live.yml']
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install temporary browser
+        run: |
+          npm install --prefix /tmp/aptos-campaign-smoke --no-save --no-package-lock playwright@1.56.1
+          /tmp/aptos-campaign-smoke/node_modules/.bin/playwright install --with-deps chromium
+      - name: Confirm live landing and funnel without submitting leads
+        env:
+          NODE_PATH: /tmp/aptos-campaign-smoke/node_modules
+          BASE_URL: https://autoescolaaptos-campanhas.vercel.app
+        run: |
+          node <<'NODE'
+          const { chromium } = require("playwright");
+          const assert = require("node:assert/strict");
+          const base = process.env.BASE_URL;
+          (async () => {
+            const browser = await chromium.launch({headless:true});
+            try {
+              const page = await browser.newPage({viewport:{width:390,height:844}});
+              await page.route("**/*", route => ["POST","PUT","PATCH","DELETE"].includes(route.request().method()) ? route.abort() : route.continue());
+              const response = await page.goto(base + "/inclusao-moto?utm_source=ig&utm_medium=paid_social&utm_campaign=smoke_teste", { waitUntil:"domcontentloaded",timeout:45000 });
+              await page.getByRole("heading",{level:1,name:/Inclusão de categoria A/i}).waitFor({timeout:20000});
+              const body = await page.locator("body").innerText();
+              assert.ok(response.status()<400, "HTTP landing");
+              assert.match(body,/R\$\s*750/i);
+              assert.match(body,/399/);
+              assert.match(body,/Honda PCX/i);
+              assert.match(body,/Fan 160/i);
+              const size = await page.evaluate(() => ({scroll:document.documentElement.scrollWidth,inner:innerWidth}));
+              assert.ok(size.scroll<=size.inner+2,JSON.stringify({overflow:size}));
+              const imgs = await page.locator("main img").evaluateAll(nodes=>nodes.map(el=>el.getAttribute("src")));
+              console.log("LANDING",response.status(),await page.title(),"images:",imgs.length);
+              assert.ok(imgs.length>=4,"four campaign pictures");
+              for(const src of [...new Set(imgs)]){
+                const img = await page.request.get(new URL(src,base).href,{timeout:20000});
+                assert.equal(img.status(),200,src);
+                assert.match(img.headers()["content-type"]||"","image/",src);
+                console.log("IMG",img.status(),src);
+              }
+              await page.getByRole("button",{name:/Honda Fan 160/}).first().click();
+              const link=await page.getByRole("link",{name:/Quero minha categoria A/}).first().getAttribute("href");
+              const target=new URL(link,base);
+              assert.equal(target.searchParams.get("moto"),"fan160");
+              assert.equal(target.searchParams.get("utm_source"),"ig");
+              console.log("CTA",target.pathname,target.search);
+              const triage=await page.goto(target.href,{waitUntil:"domcontentloaded",timeout:45000});
+              await page.getByText(/Interesse selecionado: Honda Fan 160 manual/i).waitFor({timeout:15000});
+              assert.ok(triage.status()<400,"triagem HTTP");
+              console.log("TRIAGEM",triage.status());
+              await page.goto(base + "/",{waitUntil:"domcontentloaded",timeout:45000});
+              await page.getByRole("link",{name:/Conhecer o plano de moto/}).waitFor({timeout:15000});
+              console.log("HOME: CTA OK");
+              const car=await page.goto(base+"/carro-automatico",{waitUntil:"domcontentloaded",timeout:45000});
+              await page.getByRole("heading",{level:1}).first().waitFor({timeout:15000});
+              assert.ok(car.status()<400,"carro automatico HTTP");
+              console.log("CARRO",car.status());
+              console.log("PASS: Vercel landing live, real pictures, mobile width, UTM, triagem, home, carro");
+            } finally {await browser.close()}
+          })().catch(e=>{console.error(e);process.exit(1)})
+          NODE
