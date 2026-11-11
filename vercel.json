@@ -7,6 +7,14 @@
   ],
   "rewrites": [
     {
+      "source": "/inclusao-moto",
+      "destination": "/inclusao-moto/index.html"
+    },
+    {
+      "source": "/inclusao-moto/",
+      "destination": "/inclusao-moto/index.html"
+    },
+    {
       "source": "/((?!api/|assets/|.*\\.).*)",
       "destination": "/index.html"
     }
