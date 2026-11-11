@@ -98,3 +98,5 @@ Nunca use chave service-role em variáveis `VITE_`.
 Para hospedagem externa, configure fallback das rotas SPA para `index.html` e valide login,
 redirecionamentos OAuth, formulários e WhatsApp em preview antes de trocar domínio.
 Esta etapa não altera hospedagem, domínio nem migra o framework para TanStack Start.
+
+<!-- Aptos Git sync probe 2026-11-10: documentation-only notification to synchronize main with the connected Lovable project; no application code, DNS or deployment change. GitHub main and lovable-sync matched at e08f877 before this probe. -->
