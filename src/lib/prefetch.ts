@@ -13,7 +13,6 @@ const ROUTES: Record<string, Importer> = {
   "/orcamento": () => import("@/pages/Orcamento"),
   "/1contato": () => import("@/pages/UmContato"),
   "/calculadora-cnh": () => import("@/pages/CalculadoraCnh"),
-  "/simulado-detran-pr": () => import("@/pages/SimuladoDetranPr"),
   "/primeira-habilitacao": () => import("@/pages/PrimeiraHabilitacao"),
   "/perguntas-frequentes": () => import("@/pages/FAQ"),
 };
