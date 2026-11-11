@@ -30,7 +30,6 @@ const ExamesDetran = lazy(() => import("./pages/ExamesDetran"));
 const PorQueAutoescola = lazy(() => import("./pages/PorQueAutoescola"));
 const PromoAniversario = lazy(() => import("./pages/PromoAniversario"));
 const PromoIndiqueAmigo = lazy(() => import("./pages/PromoIndiqueAmigo"));
-const SimuladoDetranPr = lazy(() => import("./pages/SimuladoDetranPr"));
 const Orcamento = lazy(() => import("./pages/Orcamento"));
 const UmContato = lazy(() => import("./pages/UmContato"));
 const AutoescolaSaoJoseDosPinhais = lazy(() => import("./pages/AutoescolaSaoJoseDosPinhais"));
@@ -97,7 +96,7 @@ const AppRoutes = () => {
         <Route path="/por-que-autoescola-credenciada" element={<PorQueAutoescola />} />
         <Route path="/promocao-aniversario" element={<PromoAniversario />} />
         <Route path="/promocao-indique-amigo" element={<PromoIndiqueAmigo />} />
-        <Route path="/simulado-detran-pr" element={<SimuladoDetranPr />} />
+        <Route path="/simulado-detran-pr" element={<Navigate to="/formas-estudo-teorico" replace />} />
         <Route path="/orcamento" element={<Orcamento />} />
         <Route path="/1contato" element={<UmContato />} />
         <Route path="/triagem" element={<Navigate to="/1contato" replace />} />
