@@ -531,7 +531,7 @@ const UmContato = () => {
           <div className="relative">
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -inset-6 md:hidden bg-gradient-to-b from-primary/10 via-background/40 to-background/0 blur-2xl -z-10"
+              className="pointer-events-none absolute inset-0 md:hidden bg-gradient-to-b from-primary/10 via-background/40 to-background/0 blur-2xl -z-10"
             />
             <div
               ref={cardRef}
