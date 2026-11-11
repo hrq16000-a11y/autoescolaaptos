@@ -1,0 +1,73 @@
+name: APTOS cutover readiness read-only
+on:
+  push:
+    branches:
+      - ops/aptos-domain-cutover-readiness-20261110
+    paths:
+      - .github/workflows/aptos-cutover-readiness.yml
+permissions:
+  contents: read
+concurrency:
+  group: aptos-cutover-readiness
+  cancel-in-progress: true
+jobs:
+  read-only:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - name: Browser (isolated)
+        run: |
+          npm install --prefix /tmp/aptos-readiness --no-save --no-package-lock playwright@1.56.1
+          /tmp/aptos-readiness/node_modules/.bin/playwright install --with-deps chromium
+      - name: Compare public routes, backend GET and login UI; never submit lead
+        env:
+          NODE_PATH: /tmp/aptos-readiness/node_modules
+        run: |
+          node <<'NODE'
+          const {chromium}=require('playwright');
+          const NEW='https://autoescolaaptos-campanhas.vercel.app';
+          const OLD='https://autoescolaaptos.com.br';
+          const SB='https://jbvepseodqytqxxckgtu.supabase.co';
+          const browserPromise=chromium.launch({headless:true});
+          (async()=>{
+            const b=await browserPromise;
+            const page=await b.newPage({viewport:{width:390,height:844}});
+            const errors=[];
+            page.on('pageerror',e=>errors.push(e.message));
+            await page.route('**/*',r=>['POST','PUT','PATCH','DELETE'].includes(r.request().method())?r.abort():r.continue());
+            const nav=async (base,path)=>{
+              try{
+                const response=await page.goto(base+path,{waitUntil:'domcontentloaded',timeout:40000});
+                await page.waitForTimeout(600);
+                const body=(await page.locator('body').innerText()).slice(0,6000);
+                const result={origin:base,path,status:response?.status(),title:await page.title(),notFound:/página não encontrada|erro 404/i.test(body),scroll:await page.evaluate(()=>document.documentElement.scrollWidth),viewport:390};
+                console.log('ROUTE',JSON.stringify(result));
+                return result;
+              }catch(e){console.log('ROUTE_ERROR',base,path,String(e).slice(0,160));return null;}
+            };
+            const routes=['/','/inclusao-moto','/carro-automatico','/1contato','/ofertas','/login','/admin','/admin/ofertas'];
+            for(const path of routes){await nav(NEW,path);}
+            for(const path of ['/','/inclusao-moto','/carro-automatico','/ofertas']){await nav(OLD,path);}
+            await nav(NEW,'/login');
+            console.log('LOGIN_UI',JSON.stringify({google:await page.getByRole('button',{name:/Continuar com Google/i}).count(),email:await page.locator('input[type="email"]').count(),password:await page.locator('input[type="password"]').count()}));
+            await nav(NEW,'/ofertas');
+            console.log('OFFERS_UI',JSON.stringify({inputs:await page.locator('input').count(),buttons:await page.locator('button').count()}));
+            const readonly=[
+              [NEW+'/api/marketing-optin','GET'],
+              [NEW+'/api/admin-marketing-optins','GET'],
+              [NEW+'/api/sync-marketing-optins','GET'],
+              [SB+'/functions/v1/submit-triagem','OPTIONS'],
+              [SB+'/functions/v1/marketing-optin','OPTIONS'],
+              [SB+'/auth/v1/health','GET']
+            ];
+            for(const [u,method] of readonly){
+              try{
+                const r=await page.request.fetch(u,{method,timeout:18000});
+                console.log('API_READ_ONLY',JSON.stringify({url:u,method,status:r.status(),type:r.headers()['content-type']||null,allowOrigin:r.headers()['access-control-allow-origin']||null}));
+              }catch(e){console.log('API_READ_ONLY_ERROR',u,method,String(e).slice(0,160));}
+            }
+            console.log('JS_RUNTIME_ERRORS',JSON.stringify(errors.slice(0,12)));
+            await b.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          NODE
