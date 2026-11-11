@@ -45,7 +45,7 @@ jobs:
               for(const src of [...new Set(imgs)]){
                 const img = await page.request.get(new URL(src,base).href,{timeout:20000});
                 assert.equal(img.status(),200,src);
-                assert.match(img.headers()["content-type"]||"","image/",src);
+                assert.ok((img.headers()["content-type"]||"").startsWith("image/"),src);
                 console.log("IMG",img.status(),src);
               }
               await page.getByRole("button",{name:/Honda Fan 160/}).first().click();
