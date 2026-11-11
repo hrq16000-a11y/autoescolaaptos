@@ -31,4 +31,5 @@ jobs:
       - run: node --test tests/ofertas-atribuicao.test.mjs
       - run: node --test tests/inclusao-moto.test.mjs
       - run: npm run ${{ matrix.command }}
+      - run: node --test tests/inclusao-moto-http.test.mjs
 
