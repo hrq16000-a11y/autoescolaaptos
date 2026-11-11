@@ -44,6 +44,28 @@ jobs:
                 if (method !== "GET" && method !== "HEAD") return route.abort();
                 return route.continue();
               });
+              const home = await page.goto(SITE + "/", { waitUntil: "domcontentloaded", timeout: 40000 });
+              await page.waitForTimeout(1600);
+              console.log("PUBLIC HOME:", JSON.stringify({
+                status:home?.status(),
+                title:await page.title(),
+                motoLinks: await page.locator('a[href="/inclusao-moto"]').count(),
+                carroLinks: await page.locator('a[href="/carro-automatico"]').count(),
+                motoText:(await page.locator('body').innerText()).includes("Categoria A:"),
+              }));
+              for (const asset of [
+                "https://res.cloudinary.com/dqnwlodjs/image/upload/v1794352862/aptos/categoria-a/pcx-foto-real-2026.jpg",
+                "https://res.cloudinary.com/dqnwlodjs/image/upload/v1794352866/aptos/categoria-a/fan160-foto-real-2026.jpg",
+                "https://res.cloudinary.com/dqnwlodjs/image/upload/v1794352826/aptos/categoria-a/banner-horizontal-2026.png",
+                "https://res.cloudinary.com/dqnwlodjs/image/upload/v1794352859/aptos/categoria-a/poster-vertical-2026.png",
+              ]) {
+                try {
+                  const resp = await page.request.get(asset, { timeout: 18000 });
+                  console.log("IMAGE CDN:", JSON.stringify({ url: asset, status:resp.status(), type:resp.headers()["content-type"], bytes:(await resp.body()).byteLength }));
+                } catch (e) {
+                  console.log("IMAGE CDN ERROR:", asset, String(e));
+                }
+              }
               const campaign = await page.goto(SITE + "/inclusao-moto?utm_source=ig&utm_medium=paid_social&utm_campaign=qa_moto", { waitUntil: "domcontentloaded", timeout: 40000 });
               await page.waitForTimeout(2200);
               const text = (await page.locator("body").innerText()).slice(0, 12000);
