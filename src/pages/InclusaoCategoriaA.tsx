@@ -45,7 +45,7 @@ const faq = [
   },
   {
     pergunta: "O valor de R$ 750 inclui as taxas do DETRAN?",
-    resposta: "Não. A campanha informa R$ 750 à vista pelo plano da autoescola, mais taxas do DETRAN-PR não inclusas, estimadas em média em R$ 399. Taxas oficiais podem variar e devem ser consultadas no momento do processo.",
+    resposta: "Não. A campanha informa R$ 750 à vista pelo plano da autoescola, mais taxas do DETRAN-PR não inclusas, estimadas em média em R$ 299. Taxas oficiais podem variar e devem ser consultadas no momento do processo.",
   },
   {
     pergunta: "Como recebo atendimento para garantir minha vaga?",
@@ -69,7 +69,7 @@ const jsonLd = {
         "@type": "Offer",
         price: "750.00",
         priceCurrency: "BRL",
-        description: "Preço à vista do plano da autoescola. Taxas do DETRAN não inclusas (estimativa média R$ 399); condições e agenda sujeitas à confirmação.",
+        description: "Preço à vista do plano da autoescola. Taxas do DETRAN não inclusas (estimativa média R$ 299); condições e agenda sujeitas à confirmação.",
         url: SITE + PATH,
       },
     },
@@ -123,7 +123,7 @@ const InclusaoCategoriaA = () => {
     <>
       <SEO
         title="Inclusão de Categoria A Moto por R$ 750 à vista | APTOS SJP"
-        description="Inclua categoria A com opção de Honda PCX automática ou Honda Fan 160 manual na Autoescola APTOS em São José dos Pinhais. R$ 750 à vista. Taxas do DETRAN à parte, média de R$ 399."
+        description="Inclua categoria A com opção de Honda PCX automática ou Honda Fan 160 manual na Autoescola APTOS em São José dos Pinhais. R$ 750 à vista. Taxas do DETRAN à parte, média de R$ 299."
         canonical={PATH}
         image="https://res.cloudinary.com/dqnwlodjs/image/upload/c_scale,w_1200/v1794352826/aptos/categoria-a/banner-horizontal-2026.png"
         jsonLd={jsonLd}
@@ -156,7 +156,7 @@ const InclusaoCategoriaA = () => {
                   <p className="text-sm font-semibold uppercase tracking-widest text-zinc-200">Plano de inclusão · valor à vista</p>
                   <p className="mt-1 text-5xl font-black tracking-tight text-yellow-300 sm:text-6xl">R$ 750<span className="text-3xl sm:text-4xl">,00</span></p>
                   <p className="mt-2 text-sm leading-relaxed text-zinc-100">
-                    <strong>Taxas do DETRAN não inclusas.</strong> Estimativa média de R$ 399,00, sujeita aos valores oficiais vigentes.
+                    <strong>Taxas do DETRAN não inclusas.</strong> Estimativa média de R$ 299,00, sujeita aos valores oficiais vigentes.
                   </p>
                 </div>
                 <div className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -268,7 +268,7 @@ const InclusaoCategoriaA = () => {
               ))}
             </div>
             <div className="mx-auto mt-6 max-w-5xl rounded-xl border border-amber-400/40 bg-amber-50 p-4 text-sm leading-relaxed text-amber-950 dark:bg-amber-950/20 dark:text-amber-100">
-              <strong>Valores e regras:</strong> R$ 750,00 à vista pelo plano divulgado. Taxas do DETRAN-PR não inclusas (média estimada de R$ 399). A aplicação da moto automática no exame deve ser confirmada com a equipe conforme o processo e as regras atuais.
+              <strong>Valores e regras:</strong> R$ 750,00 à vista pelo plano divulgado. Taxas do DETRAN-PR não inclusas (média estimada de R$ 299). A aplicação da moto automática no exame deve ser confirmada com a equipe conforme o processo e as regras atuais.
             </div>
           </div>
         </section>
