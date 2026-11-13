@@ -161,7 +161,7 @@ const Index = () => {
               Categoria A: <span className="text-yellow-300">PCX automática</span> ou Fan 160 manual
             </h2>
             <p className="mt-2 text-sm text-zinc-200 md:text-base">
-              <strong className="text-yellow-300">R$ 750 à vista</strong> · taxas do DETRAN não inclusas (média estimada de R$ 399).
+              <strong className="text-yellow-300">R$ 750 à vista</strong> · taxas do DETRAN não inclusas (média estimada de R$ 299).
             </p>
             <Link to="/inclusao-moto" data-component="HomeMotoCallout" data-intent="internal"
               onClick={() => track("campaign_cta_click", { campaign: "inclusao_categoria_a_moto", source: "home_moto_callout" })}
