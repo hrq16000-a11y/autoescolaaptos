@@ -10,5 +10,12 @@
       "source": "/((?!api/|assets/|.*\\.).*)",
       "destination": "/index.html"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/simulado-detran-pr",
+      "destination": "/formas-estudo-teorico",
+      "permanent": true
+    }
   ]
 }

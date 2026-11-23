@@ -190,11 +190,6 @@ declare module '@/pages/Aprovados' {
 }
 
 
-declare module '@/pages/SimuladoDetranPr' {
-  import type { FunctionComponent } from 'react';
-  const Page: FunctionComponent;
-  export default Page;
-}
 
 
 declare module '@/pages/DiagnosticoSeo' {

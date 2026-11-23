@@ -43,7 +43,7 @@ const FormasEstudoTeorico = () => {
         "Interação direta com instrutores para esclarecer dúvidas",
         "Ambiente focado no aprendizado sem distrações",
         "Material didático atualizado e aprovado pelo DETRAN",
-        "Simulados presenciais com acompanhamento",
+        "Orientação individual para organizar os estudos",
         "Maior retenção de conhecimento comprovada"
       ],
       consideracoes: [
